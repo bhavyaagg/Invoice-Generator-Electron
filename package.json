@@ -1,0 +1,25 @@
+{
+  "name": "invoice-generator",
+  "version": "1.0.0",
+  "description": "Invoice Generator in Electron",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bhavyaagg/Invoice-Generator-Electron.git"
+  },
+  "keywords": [
+    "Electron"
+  ],
+  "author": "bhavyaagg <bhavyaaggarwal1209@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bhavyaagg/Invoice-Generator-Electron/issues"
+  },
+  "homepage": "https://github.com/bhavyaagg/Invoice-Generator-Electron#readme",
+  "devDependencies": {
+    "electron": "^1.7.10"
+  }
+}
