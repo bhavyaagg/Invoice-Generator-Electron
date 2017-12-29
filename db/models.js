@@ -42,11 +42,11 @@ const PartyMaster = sequelize.define('partymaster', {
   name: Sequelize.DataTypes.STRING,
   destination: Sequelize.DataTypes.STRING,
   marka: Sequelize.DataTypes.STRING,
-  openingbalance: Sequelize.DataTypes.INTEGER,
-  openingbalancedate: Sequelize.DataTypes.DATEONLY,
+  openingBalance: Sequelize.DataTypes.INTEGER,
+  openingBalanceDate: Sequelize.DataTypes.DATEONLY,
   transport: Sequelize.DataTypes.STRING,
   discount: Sequelize.DataTypes.INTEGER,
-  spldiscount: Sequelize.DataTypes.INTEGER,
+  splDiscount: Sequelize.DataTypes.INTEGER,
   cd: Sequelize.DataTypes.INTEGER
 });
 

@@ -109,7 +109,7 @@ $(document).ready(function () {
         </div>   
         <div class="row">
           <div class="col text-center">
-            <button id="addPartyMaster" class="btn btn-primary">Submit</button>
+            <button id="submitPartyMaster" class="btn btn-primary">Submit</button>
           </div>  
           <div class="col text-center">
             <button id="resetPartyMaster" class="btn btn-danger">Reset</button>
@@ -117,18 +117,46 @@ $(document).ready(function () {
         </div>    
       `)
 
-      $('#addPartyMaster').click(function () {
-        ipcRenderer.send('addPartyMaster', {
+      $('#submitPartyMaster').click(function () {
+
+        let partyMasterData = {
           name: $('#partyName').val(),
           destination: $('#destination').val(),
           marka: $('#marka').val(),
-          openingbalance: $('#openingBalance').val(),
-          openingbalancedate: $('#openingBalanceDate').val(),
+          openingBalance: $('#openingBalance').val(),
+          openingBalanceDate: $('#openingBalanceDate').val(),
           transport: $('#transport').val(),
           discount: $('#discount').val(),
-          spldiscount: $('#splDiscount').val(),
+          splDiscount: $('#splDiscount').val(),
           cd: $('#cd').val()
-        });
+        };
+
+        if (!partyMasterData.name || !partyMasterData.destination || !partyMasterData.marka
+          || partyMasterData.openingBalance === "" || partyMasterData.openingBalanceDate === ""
+          || !partyMasterData.transport || !partyMasterData.discount=== ""
+          || partyMasterData.splDiscount === "" || partyMasterData.cd ==="" ){
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Please Provide all the fields");
+         // console.log(partyMasterData);
+        }
+
+        else {
+          ipcRenderer.send('addPartyMaster', partyMasterData);
+          ipcRenderer.once('addedPartyMaster', function (event, data) {
+            if (data.success) {
+              $resultRow.removeClass('text-danger').addClass('text-success');
+              $resultRow.text("Party Has Been Added");
+              $mainContent.empty();
+            } else {
+              $resultRow.removeClass('text-success').addClass('text-danger');
+              $resultRow.text("Party Could Not Be Added Because " + data.error);
+            }
+          });
+
+          console.log("ho gya")
+          /*$resultRow.removeClass('text-danger').addClass('text-success');
+          $resultRow.text("Product Category Has Been Added");*/
+        }
       });
 
       $('#resetPartyMaster').click(function () {
@@ -144,6 +172,119 @@ $(document).ready(function () {
         $('#cd').val("");
 
       })
+
+    })
+
+    $('#viewPartyMaster').click(function () {
+      $mainContent.empty();
+      $resultRow.empty();
+
+      ipcRenderer.send('viewPartyMaster');
+      ipcRenderer.once('getPartyMaster', function (event, data) {
+        if(data.success) {
+
+          if (data.partyMasterRows.length === 0) {
+            $mainContent.empty();
+            $resultRow.empty();
+            $resultRow.removeClass('text-success').addClass('text-danger');
+            $resultRow.text("Add a party master First.");
+            return;
+          }
+
+
+          let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-1">
+                    <b>S.No. Name</b>
+                  </div>
+                  <div class="col-2">
+                    <b>Part Name</b>
+                  </div>
+                  <div class="col-1">
+                    <b>Destination</b>
+                  </div>
+                  <div class="col-1">
+                    <b>Marka</b>
+                  </div>
+                  <div class="col-1">
+                    <b>Opening Bal.</b>
+                  </div>
+                  <div class="col-1">
+                    <b>Opening Date</b>
+                  </div>
+                  <div class="col-1">
+                    <b>S.No. Name</b>
+                  </div>
+                  <div class="col-2">
+                    <b>Transport</b>
+                  </div>
+                  <div class="col-1">
+                    <b>Discount</b>
+                  </div>
+                  <div class="col-1">
+                    <b>Spl. Discount</b>
+                  </div>
+                  <div class="col-1">
+                    <b>CD</b>
+                  </div>
+                  
+                </div>
+              </li>
+          `;
+
+          data.partyMasterRows.forEach(function (row) {
+            str += `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-1">
+                    ${row.id}
+                  </div>
+                  <div class="col-2">
+                    ${row.name}
+                  </div>
+                  <div class="col-1">
+                    ${row.destination}
+                  </div>
+                  <div class="col-1">
+                    ${row.marka}
+                  </div>
+                  <div class="col-1">
+                    ${row.openingBalance}
+                  </div>
+                  <div class="col-1">
+                    ${row.openingBalanceDate}
+                  </div>
+                  <div class="col-2">
+                    ${row.transport}
+                  </div>
+                  <div class="col-1">
+                    ${row.discount}
+                  </div>
+                  <div class="col-1">
+                    ${row.splDiscount}
+                  </div>
+                  <div class="col-1">
+                    ${row.cd}
+                  </div>
+                  
+                </div>
+              </li>
+          `;
+          });
+          str += "</ul>"
+
+          $mainContent.append(str);
+
+
+        }
+        else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Error is" + data.error);
+        }
+      });
 
     })
   });

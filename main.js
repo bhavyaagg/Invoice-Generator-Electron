@@ -119,8 +119,31 @@ ipcMain.on('log', function (event, data) {
 ipcMain.on('addPartyMaster', function (event, data) {
   models.PartyMaster.create(data)
     .then(partyMaster => {
-      console.log(partyMaster)
-    })
-});
 
+      event.sender.send('addedPartyMaster', {
+        success: true
+      });
+    })
+    .catch(function (err) {
+      event.sender.send('addedPartyMaster', {
+        success: false,
+        error: err
+      })
+    });
+});
+ipcMain.on('viewPartyMaster', function (event) {
+  models.PartyMaster.findAll({})
+    .then(function (rows) {
+
+      event.sender.send('getPartyMaster', {
+      success: true,
+      partyMasterRows: rows.map((v) => v.get())
+    });
+  }).catch(function (err) {
+    event.sender.send('getPartyMaster', {
+      success: false,
+      error: err
+    });
+  })
+});
 
