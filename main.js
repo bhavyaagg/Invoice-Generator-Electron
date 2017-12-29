@@ -25,6 +25,8 @@ function createWindow() {
     mainWindow = null;
     console.log("Window Closed")
   })
+
+
 }
 
 app.on('ready', createWindow);
@@ -40,3 +42,4 @@ app.on('activate', () => {
     createWindow();
   }
 });
+

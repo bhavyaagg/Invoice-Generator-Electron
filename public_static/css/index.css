@@ -1,3 +1,24 @@
-h1 {
-    color: blue;
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    padding-top: 15px;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.container-fluid {
+    padding: 0;
+    height: 100%;
+}
+
+.row{
+    margin-bottom: 20px;
+}
+
+button {
+    cursor: pointer;
 }
