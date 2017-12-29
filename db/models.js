@@ -27,6 +27,15 @@ const ProductCategory = sequelize.define('productcategory', {
   name: Sequelize.DataTypes.STRING
 });
 
+const Product = sequelize.define('product', {
+  id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  name: Sequelize.DataTypes.STRING,
+  price: Sequelize.DataTypes.DECIMAL
+});
+
+Product.belongsTo(ProductCategory);
+ProductCategory.hasMany(Product);
+
 sequelize.sync({force: false}).then(function () {
   console.log("Database Configured");
 });
