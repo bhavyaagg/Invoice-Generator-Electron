@@ -60,7 +60,7 @@ ipcMain.on('addProduct', function (event, data) {
   models.Product.create({
     name: data.productName,
     price: data.productPrice,
-    productCategoryId: data.productCategoryId
+    productcategoryId: data.productCategoryId
   }).then(function (result) {
     event.sender.send('addedProduct', {
       success: true
@@ -81,6 +81,26 @@ ipcMain.on('viewProductCategories', function (event) {
     });
   }).catch(function (err) {
     event.sender.send('getProductCategories', {
+      success: false,
+      error: err
+    });
+  })
+});
+
+ipcMain.on('viewProducts', function (event) {
+  models.Product.findAll({
+    include: [models.ProductCategory]
+  }).then(function (rows) {
+    event.sender.send('getProducts', {
+      success: true,
+      products: rows.map((v) => {
+        v = v.get();
+        v.productcategory = v.productcategory.get();
+        return v;
+      })
+    });
+  }).catch(function (err) {
+    event.sender.send('getProducts', {
       success: false,
       error: err
     });
