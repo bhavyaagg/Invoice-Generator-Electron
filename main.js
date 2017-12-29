@@ -9,7 +9,9 @@ const url = require('url');
 let mainWindow;
 
 function createWindow() {
-  mainWindow = new BrowserWindow({width: 400, height: 400});
+  let mainScreenDimensions = require('electron').screen.getPrimaryDisplay().size;
+
+  mainWindow = new BrowserWindow({width: mainScreenDimensions.width, height: mainScreenDimensions.height});
   console.log(process.versions.node)
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'public_static', 'index.html'),
