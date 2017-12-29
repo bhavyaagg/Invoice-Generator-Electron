@@ -56,6 +56,23 @@ ipcMain.on('addProductCategory', function (event, data) {
   })
 });
 
+ipcMain.on('addProduct', function (event, data) {
+  models.Product.create({
+    name: data.productName,
+    price: data.productPrice,
+    productCategoryId: data.productCategoryId
+  }).then(function (result) {
+    event.sender.send('addedProduct', {
+      success: true
+    });
+  }).catch(function (err) {
+    event.sender.send('addedProduct', {
+      success: false,
+      error: err
+    })
+  })
+});
+
 ipcMain.on('viewProductCategories', function (event) {
   models.ProductCategory.findAll({}).then(function (rows) {
     event.sender.send('getProductCategories', {
