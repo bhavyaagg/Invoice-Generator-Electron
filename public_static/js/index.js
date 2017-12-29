@@ -8,7 +8,7 @@ $(document).ready(function () {
     , $partyMasterButton = $('#partyMasterButton')
     , $productButton = $('#productButton')
     , $subHeader = $('#subHeader')
-    , $mainArea = $('#mainArea');
+    , $mainContent = $('#mainContent');
 
 
   $invoicesButton.click(function () {
@@ -36,8 +36,8 @@ $(document).ready(function () {
 
     $('#addPartyMaster').click(function () {
 
-      $mainArea.empty();
-      $mainArea.append(`<div class="form-group row">
+      $mainContent.empty();
+      $mainContent.append(`<div class="form-group row">
   <label for="example-text-input" class="col-2 col-form-label">Text</label>
   <div class="col-10">
     <input class="form-control" type="text" value="Artisanal kale" id="example-text-input">
