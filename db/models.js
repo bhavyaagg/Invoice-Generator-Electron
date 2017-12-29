@@ -36,10 +36,26 @@ const Product = sequelize.define('product', {
 Product.belongsTo(ProductCategory);
 ProductCategory.hasMany(Product);
 
+
+const PartyMaster = sequelize.define('partymaster', {
+  id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  name: Sequelize.DataTypes.STRING,
+  destination: Sequelize.DataTypes.STRING,
+  marka: Sequelize.DataTypes.STRING,
+  openingbalance: Sequelize.DataTypes.INTEGER,
+  openingbalancedate: Sequelize.DataTypes.DATEONLY,
+  transport: Sequelize.DataTypes.STRING,
+  discount: Sequelize.DataTypes.INTEGER,
+  spldiscount: Sequelize.DataTypes.INTEGER,
+  cd: Sequelize.DataTypes.INTEGER
+});
+
 sequelize.sync({force: false}).then(function () {
   console.log("Database Configured");
 });
 
 module.exports = {
-  ProductCategory
+  ProductCategory,
+  Product,
+  PartyMaster
 };

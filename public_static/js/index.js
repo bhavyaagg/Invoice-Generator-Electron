@@ -73,7 +73,7 @@ $(document).ready(function () {
         <div class="form-group row">
           <label for="openingBalanceDate" class="col-3 col-form-label">Opening Balance Date: </label>
           <div class="col-9">
-            <input class="form-control" type="date" value="2011-08-19" id="openingBalanceDate">
+            <input class="form-control" type="date"  id="openingBalanceDate">
           </div>
         </div>
         
@@ -104,25 +104,43 @@ $(document).ready(function () {
             <input class="form-control" type="number" id="cd">
           </div>
         </div>   
-        
-        <div class="col text-center">
-          <button id="submitParty" class="btn btn-primary">Submit</button>
-        </div>      
+        <div class="row">
+          <div class="col text-center">
+            <button id="addPartyMaster" class="btn btn-primary">Submit</button>
+          </div>  
+          <div class="col text-center">
+            <button id="resetPartyMaster" class="btn btn-danger">Reset</button>
+          </div>  
+        </div>    
       `)
 
-      $('#submitParty').click(function () {
-        ipcRenderer.send('submitParty', {
-          partyName: $('#partyName').val(),
+      $('#addPartyMaster').click(function () {
+        ipcRenderer.send('addPartyMaster', {
+          name: $('#partyName').val(),
           destination: $('#destination').val(),
           marka: $('#marka').val(),
-          openingBalance: $('#openingBalance').val(),
-          openingBalanceDate: $('#openingBalanceDate').val(),
+          openingbalance: $('#openingBalance').val(),
+          openingbalancedate: $('#openingBalanceDate').val(),
           transport: $('#transport').val(),
           discount: $('#discount').val(),
-          splDiscount: $('#splDiscount').val(),
+          spldiscount: $('#splDiscount').val(),
           cd: $('#cd').val()
         });
       });
+
+      $('#resetPartyMaster').click(function () {
+
+        $('#partyName').val("");
+        $('#destination').val("");
+        $('#marka').val("");
+        $('#openingBalance').val("");
+        $('#openingBalanceDate').val("");
+        $('#transport').val("");
+        $('#discount').val("");
+        $('#splDiscount').val("");
+        $('#cd').val("");
+
+      })
 
     })
   });
