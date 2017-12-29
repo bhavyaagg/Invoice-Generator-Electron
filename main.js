@@ -41,6 +41,36 @@ app.on('activate', () => {
   }
 });
 
+ipcMain.on('addProductCategory', function (event, data) {
+  models.ProductCategory.create({
+    name: data.productCategoryName
+  }).then(function (result) {
+    event.sender.send('addedProductCategory', {
+      success: true
+    });
+  }).catch(function (err) {
+    event.sender.send('addedProductCategory', {
+      success: false,
+      error: err
+    })
+  })
+});
+
+ipcMain.on('viewProductCategories', function (event) {
+  models.ProductCategory.findAll({}).then(function (rows) {
+    event.sender.send('getProductCategories', {
+      success: true,
+      productCategories: rows.map((v) => v.get())
+    });
+  }).catch(function (err) {
+    event.sender.send('getProductCategories', {
+      success: false,
+      error: err
+    });
+  })
+});
+
+
 ipcMain.on('log', function (event, data) {
   console.log(event.sender);
   console.log(data)
@@ -53,4 +83,5 @@ ipcMain.on('submitParty', function (event, data) {
   console.log(event);
   console.log(data);
 });
+
 
