@@ -159,8 +159,76 @@ $(document).ready(function () {
             <input id="productName" class="form-control" type="text" placeholder="Enter Product Name">
           </div>
         </div>
-      `)
-    })
+        <div class="form-group row">
+          <label for="productPrice" class="col-3 col-form-label">Product Price: </label>
+          <div class="col-9">
+            <input id="productPrice" class="form-control" type="number" placeholder="Enter Product Price">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="productCategoriesList" class="col-3 col-form-label">Select Product Category: </label>
+          <div class="col-9">
+            <select id="productCategoriesList" class="custom-select">
+              <option value="0">None</option>
+            </select>
+          </div>
+        </div>
+        <br/>
+        <div class="row">
+          <div class="col text-center">
+            <button id="submitProduct" class="btn btn-success">Submit</button>
+          </div>
+          <div class="col text-center">
+            <button id="resetProduct" class="btn btn-danger">Reset</button>
+          </div>
+        </div>
+      `);
+
+      ipcRenderer.send('viewProductCategories');
+      ipcRenderer.once('getProductCategories', function (event, data) {
+        if (data.success) {
+          let str = "";
+          data.productCategories.forEach(function (productCategory) {
+            str = `<option value="${productCategory.id}">${productCategory.name}</option>`
+          });
+
+          $('#productCategoriesList').append(str);
+        } else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Product Category Could Not Be Viewed Because " + data.error);
+        }
+      });
+
+
+      const $submitProduct = $('#submitProduct');
+      const $resetProduct = $('#resetProduct');
+
+      $submitProduct.click(function () {
+        let productCategoryName = $('#productCategoryName').val();
+        if (!productCategoryName) {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Please Provide the Product Category Name.");
+        } else {
+          ipcRenderer.send('addProductCategory', {
+            productCategoryName: productCategoryName
+          });
+          ipcRenderer.once('getProductCategories', function (event, data) {
+            $mainContent.empty();
+            $resultRow.empty();
+            if (data.success) {
+              $resultRow.removeClass('text-danger').addClass('text-success');
+              $resultRow.text("Product Category Has Been Added");
+            } else {
+              $resultRow.removeClass('text-success').addClass('text-danger');
+              $resultRow.text("Product Category Could Not Be Added Because " + data.error);
+            }
+          })
+        }
+      });
+      $resetProduct.click(function () {
+        $('#productCategoryName').val("");
+      })
+    });
 
     $viewProductsButton.click(function () {
       $mainContent.empty();
@@ -192,27 +260,32 @@ $(document).ready(function () {
             <button id="resetProductCategory" class="btn btn-danger">Reset</button>
           </div>
         </div>
-        <div class="row"></div>
-      `)
+      `);
 
       const $submitProductCategory = $('#submitProductCategory');
       const $resetProductCategory = $('#resetProductCategory');
 
       $submitProductCategory.click(function () {
-        ipcRenderer.send('addProductCategory', {
-          productCategoryName: $('#productCategoryName').val()
-        });
-        ipcRenderer.on('addedProductCategory', function (event, data) {
-          $mainContent.empty();
-          $resultRow.empty();
-          if (data.success) {
-            $resultRow.removeClass('text-danger').addClass('text-success');
-            $resultRow.text("Product Category Has Been Added");
-          } else {
-            $resultRow.removeClass('text-success').addClass('text-danger');
-            $resultRow.text("Product Category Could Not Be Added Because " + data.error);
-          }
-        })
+        let productCategoryName = $('#productCategoryName').val();
+        if (!productCategoryName) {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Please Provide the Product Category Name.");
+        } else {
+          ipcRenderer.send('addProductCategory', {
+            productCategoryName: productCategoryName
+          });
+          ipcRenderer.once('addedProductCategory', function (event, data) {
+            $mainContent.empty();
+            $resultRow.empty();
+            if (data.success) {
+              $resultRow.removeClass('text-danger').addClass('text-success');
+              $resultRow.text("Product Category Has Been Added");
+            } else {
+              $resultRow.removeClass('text-success').addClass('text-danger');
+              $resultRow.text("Product Category Could Not Be Added Because " + data.error);
+            }
+          })
+        }
       });
 
       $resetProductCategory.click(function () {
@@ -222,7 +295,7 @@ $(document).ready(function () {
 
     $viewProductCategoriesButton.click(function () {
       ipcRenderer.send('viewProductCategories');
-      ipcRenderer.on('getProductCategories', function (event, data) {
+      ipcRenderer.once('getProductCategories', function (event, data) {
         $mainContent.empty();
         $resultRow.empty();
         if (data.success) {
@@ -240,14 +313,15 @@ $(document).ready(function () {
           data.productCategories.forEach(function (productCategory) {
             str += `
             <li class="list-group-item">
-                <div class="row">
-                  <div class="col-12">
-                    ${productCategory.name}
-                  </div>
+              <div class="row">
+                <div class="col-12">
+                  ${productCategory.name}
                 </div>
-              </li>
+              </div>
+            </li>
             `
           });
+          str += "</ul>"
 
           $mainContent.append(str);
         } else {
