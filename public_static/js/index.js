@@ -187,7 +187,7 @@ $(document).ready(function () {
           <label for="productCategoriesList" class="col-3 col-form-label">Select Product Category: </label>
           <div class="col-9">
             <select id="productCategoriesList" class="custom-select">
-              <option value="0">None</option>
+              <option name="productCategoriesList" value="0">None</option>
             </select>
           </div>
         </div>
@@ -207,13 +207,13 @@ $(document).ready(function () {
         if (data.success) {
           let str = "";
           data.productCategories.forEach(function (productCategory) {
-            str = `<option value="${productCategory.id}">${productCategory.name}</option>`
+            str = `<option name="productCategoriesList" value="${productCategory.id}">${productCategory.name}</option>`
           });
 
           $('#productCategoriesList').append(str);
         } else {
           $resultRow.removeClass('text-success').addClass('text-danger');
-          $resultRow.text("Product Category Could Not Be Viewed Because " + data.error);
+          $resultRow.text("Product Categories Could Not Be Viewed Because " + data.error);
         }
       });
 
@@ -222,29 +222,36 @@ $(document).ready(function () {
       const $resetProduct = $('#resetProduct');
 
       $submitProduct.click(function () {
-        let productCategoryName = $('#productCategoryName').val();
-        if (!productCategoryName) {
+        let productName = $('#productName').val();
+        let productPrice = $('#productPrice').val();
+        let productCategoryId = +($('#productCategoriesList').val());
+
+        if (!productName || !productPrice || productCategoryId === 0) {
           $resultRow.removeClass('text-success').addClass('text-danger');
-          $resultRow.text("Please Provide the Product Category Name.");
+          $resultRow.text("Please Provide All The Details For The Product.");
         } else {
-          ipcRenderer.send('addProductCategory', {
-            productCategoryName: productCategoryName
+          ipcRenderer.send('addProduct', {
+            productName: productName,
+            productPrice: productPrice,
+            productCategoryId: productCategoryId
           });
-          ipcRenderer.once('getProductCategories', function (event, data) {
+          ipcRenderer.once('addedProduct', function (event, data) {
             $mainContent.empty();
             $resultRow.empty();
             if (data.success) {
               $resultRow.removeClass('text-danger').addClass('text-success');
-              $resultRow.text("Product Category Has Been Added");
+              $resultRow.text("Product Has Been Added");
             } else {
               $resultRow.removeClass('text-success').addClass('text-danger');
-              $resultRow.text("Product Category Could Not Be Added Because " + data.error);
+              $resultRow.text("Product Could Not Be Added Because " + data.error);
             }
           })
         }
       });
       $resetProduct.click(function () {
-        $('#productCategoryName').val("");
+        $('#productName').val("");
+        $('#productPrice').val("");
+        $('option[value=0][name="productCategoriesList"]').attr('selected', true);
       })
     });
 
@@ -300,7 +307,7 @@ $(document).ready(function () {
               $resultRow.text("Product Category Has Been Added");
             } else {
               $resultRow.removeClass('text-success').addClass('text-danger');
-              $resultRow.text("Product Category Could Not Be Added Because " + data.error);
+              $resultRow.text("Product Categories Could Not Be Added Because " + data.error);
             }
           })
         }
