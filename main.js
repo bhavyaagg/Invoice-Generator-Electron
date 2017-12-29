@@ -2,7 +2,7 @@
  * Created by bhavyaagg on 28/12/17.
  */
 
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
 const url = require('url');
 
@@ -25,8 +25,6 @@ function createWindow() {
     mainWindow = null;
     console.log("Window Closed")
   })
-
-
 }
 
 app.on('ready', createWindow);
@@ -41,5 +39,13 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.on('log', function (event, data) {
+  console.log(event.sender);
+  console.log(data)
+  setTimeout(function () {
+    event.sender.send('logback', "World")
+  }, 2000)
 });
 

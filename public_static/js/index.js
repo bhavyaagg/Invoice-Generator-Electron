@@ -4,6 +4,8 @@
 
 $(document).ready(function () {
 
+  const {ipcRenderer} = require('electron');
+
   const $invoicesButton = $('#invoicesButton')
     , $partyMasterButton = $('#partyMasterButton')
     , $productButton = $('#productButton')
@@ -172,6 +174,17 @@ $(document).ready(function () {
           </div>
         </div>
       `)
+
+      const $submitProductCategory = $('#submitProductCategory');
+      const $resetProductCategory = $('#resetProductCategory');
+
+      $submitProductCategory.click(function () {
+        ipcRenderer.send('log', "Hello")
+        ipcRenderer.on('logback', function (event, k) {
+          console.log(event)
+          console.log(k)
+        })
+      })
     });
 
     $viewProductCategoriesButton.click(function () {
