@@ -203,31 +203,58 @@ $(document).ready(function () {
           productCategoryName: $('#productCategoryName').val()
         });
         ipcRenderer.on('addedProductCategory', function (event, data) {
+          $mainContent.empty();
+          $resultRow.empty();
           if (data.success) {
-            $mainContent.empty();
-            $resultRow.empty();
-            $resultRow.removeClass('text-danger').addClass('text-center');
+            $resultRow.removeClass('text-danger').addClass('text-success');
             $resultRow.text("Product Category Has Been Added");
           } else {
-            $mainContent.empty();
-            $resultRow.empty();
             $resultRow.removeClass('text-success').addClass('text-danger');
             $resultRow.text("Product Category Could Not Be Added Because " + data.error);
           }
         })
+      });
+
+      $resetProductCategory.click(function () {
+        $('#productCategoryName').val("");
       })
     });
 
     $viewProductCategoriesButton.click(function () {
-      $mainContent.empty();
-      $mainContent.append(`
-        <div class="form-group row">
-          <label for="productName" class="col-4 col-form-label">Product Category Name: </label>
-          <div class="col-8">
-            <input id="productName" class="form-control" type="text" placeholder="Enter Product Category Name">
-          </div>
-        </div>
-      `)
+      ipcRenderer.send('viewProductCategories');
+      ipcRenderer.on('getProductCategories', function (event, data) {
+        $mainContent.empty();
+        $resultRow.empty();
+        if (data.success) {
+          let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-12">
+                    <b>Product Category Name</b>
+                  </div>
+                </div>
+              </li>
+          `;
+
+          data.productCategories.forEach(function (productCategory) {
+            str += `
+            <li class="list-group-item">
+                <div class="row">
+                  <div class="col-12">
+                    ${productCategory.name}
+                  </div>
+                </div>
+              </li>
+            `
+          });
+
+          $mainContent.append(str);
+        } else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Product Category Could Not Be Viewed Because " + data.error);
+        }
+      });
     })
 
   });
