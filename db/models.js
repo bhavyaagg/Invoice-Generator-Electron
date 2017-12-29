@@ -23,6 +23,7 @@ const sequelize = new Sequelize(config.db.NAME, config.db.USER, config.db.PASSWO
 });
 
 const ProductCategory = sequelize.define('productcategory', {
+  id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
   name: Sequelize.DataTypes.STRING
 });
 
@@ -32,4 +33,4 @@ sequelize.sync({force: false}).then(function () {
 
 module.exports = {
   ProductCategory
-}
+};
