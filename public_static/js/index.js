@@ -10,7 +10,8 @@ $(document).ready(function () {
     , $partyMasterButton = $('#partyMasterButton')
     , $productButton = $('#productButton')
     , $subHeader = $('#subHeader')
-    , $mainContent = $('#mainContent');
+    , $mainContent = $('#mainContent')
+    , $resultRow = $('#resultRow');
 
 
   $invoicesButton.click(function () {
@@ -159,9 +160,9 @@ $(document).ready(function () {
       $mainContent.empty();
       $mainContent.append(`
         <div class="form-group row">
-          <label for="productName" class="col-4 col-form-label">Product Category Name: </label>
+          <label for="productCategoryName" class="col-4 col-form-label">Product Category Name: </label>
           <div class="col-8">
-            <input id="productName" class="form-control" type="text" placeholder="Enter Product Category Name">
+            <input id="productCategoryName" class="form-control" type="text" placeholder="Enter Product Category Name">
           </div>
         </div>
         <br/>
@@ -173,16 +174,28 @@ $(document).ready(function () {
             <button id="resetProductCategory" class="btn btn-danger">Reset</button>
           </div>
         </div>
+        <div class="row"></div>
       `)
 
       const $submitProductCategory = $('#submitProductCategory');
       const $resetProductCategory = $('#resetProductCategory');
 
       $submitProductCategory.click(function () {
-        ipcRenderer.send('log', "Hello")
-        ipcRenderer.on('logback', function (event, k) {
-          console.log(event)
-          console.log(k)
+        ipcRenderer.send('addProductCategory', {
+          productCategoryName: $('#productCategoryName').val()
+        });
+        ipcRenderer.on('addedProductCategory', function (event, data) {
+          if (data.success) {
+            $mainContent.empty();
+            $resultRow.empty();
+            $resultRow.removeClass('text-danger').addClass('text-center');
+            $resultRow.text("Product Category Has Been Added");
+          } else {
+            $mainContent.empty();
+            $resultRow.empty();
+            $resultRow.removeClass('text-success').addClass('text-danger');
+            $resultRow.text("Product Category Could Not Be Added Because " + data.error);
+          }
         })
       })
     });
