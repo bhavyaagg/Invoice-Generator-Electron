@@ -4,16 +4,16 @@
 
 $(document).ready(function () {
 
-    const $invoicesButton = $('#invoicesButton')
-        , $partyMasterButton = $('#partyMasterButton')
-        , $productButton = $('#productButton')
-        , $subHeader = $('#subHeader')
-        , $mainArea = $('#mainArea');
+  const $invoicesButton = $('#invoicesButton')
+    , $partyMasterButton = $('#partyMasterButton')
+    , $productButton = $('#productButton')
+    , $subHeader = $('#subHeader')
+    , $mainArea = $('#mainArea');
 
 
-    $invoicesButton.click(function () {
-        $subHeader.empty();
-        $subHeader.append(`
+  $invoicesButton.click(function () {
+    $subHeader.empty();
+    $subHeader.append(`
       <div class="col text-center">
         <button id="addInvoiceButton" class="btn btn-primary">Add Invoice</button>
       </div>
@@ -21,23 +21,23 @@ $(document).ready(function () {
         <button id="viewInvoicesButton" class="btn btn-primary">View Invoices</button>
       </div>
     `)
-    });
+  });
 
-    $partyMasterButton.click(function () {
-        $subHeader.empty();
-        $subHeader.append(`
+  $partyMasterButton.click(function () {
+    $subHeader.empty();
+    $subHeader.append(`
       <div class="col text-center">
         <button id="addPartyMaster" class="btn btn-primary">Add Party Master</button>
       </div>
       <div class="col text-center">
         <button id="viewPartyMaster" class="btn btn-primary">View Party Master</button>
       </div>
-    `)
+    `);
 
-        $('#addPartyMaster').click(function () {
+    $('#addPartyMaster').click(function () {
 
-            $mainArea.empty();
-            $mainArea.append(`<div class="form-group row">
+      $mainArea.empty();
+      $mainArea.append(`<div class="form-group row">
   <label for="example-text-input" class="col-2 col-form-label">Text</label>
   <div class="col-10">
     <input class="form-control" type="text" value="Artisanal kale" id="example-text-input">
@@ -117,11 +117,19 @@ $(document).ready(function () {
 </div>
         `)
 
-        })
+    })
+  });
 
 
-    });
-
-
-
+  $productButton.click(function () {
+    $subHeader.empty();
+    $subHeader.append(`
+      <div class="col text-center">
+        <button id="addProductButton" class="btn btn-primary">Add Product</button>
+      </div>
+      <div class="col text-center">
+        <button id="viewProductsButton" class="btn btn-primary">View Products</button>
+      </div>
+    `)
+  });
 });
