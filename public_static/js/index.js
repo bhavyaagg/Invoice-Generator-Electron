@@ -302,7 +302,7 @@ $(document).ready(function () {
                   ${product.price}
                 </div>
                 <div class="col-4">
-                  ${product.productCategory.name}
+                  ${product.productcategory.name}
                 </div>
               </div>
             </li>
