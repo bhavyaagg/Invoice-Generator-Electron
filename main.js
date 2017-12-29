@@ -49,3 +49,8 @@ ipcMain.on('log', function (event, data) {
   }, 2000)
 });
 
+ipcMain.on('submitParty', function (event, data) {
+  console.log(event);
+  console.log(data);
+});
+
