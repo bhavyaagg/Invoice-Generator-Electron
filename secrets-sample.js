@@ -8,6 +8,7 @@ config.db = {
   "NAME": "",
   "USER": "",
   "PASSWORD": "",
+  "DIALECT": "",
   "HOST": "",
   "STORAGE": ""
 };
