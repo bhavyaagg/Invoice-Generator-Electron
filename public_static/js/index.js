@@ -103,8 +103,26 @@ $(document).ready(function () {
           <div class="col-9">
             <input class="form-control" type="number" id="cd">
           </div>
-        </div>         
+        </div>   
+        
+        <div class="col text-center">
+          <button id="submitParty" class="btn btn-primary">Submit</button>
+        </div>      
       `)
+
+      $('#submitParty').click(function () {
+        ipcRenderer.send('submitParty', {
+          partyName: $('#partyName').val(),
+          destination: $('#destination').val(),
+          marka: $('#marka').val(),
+          openingBalance: $('#openingBalance').val(),
+          openingBalanceDate: $('#openingBalanceDate').val(),
+          transport: $('#transport').val(),
+          discount: $('#discount').val(),
+          splDiscount: $('#splDiscount').val(),
+          cd: $('#cd').val()
+        });
+      });
 
     })
   });
