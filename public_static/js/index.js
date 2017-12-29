@@ -16,6 +16,7 @@ $(document).ready(function () {
 
   $invoicesButton.click(function () {
     $subHeader.empty();
+    $resultRow.empty();
     $subHeader.append(`
       <div class="col text-center">
         <button id="addInvoiceButton" class="btn btn-primary">Add Invoice</button>
@@ -28,6 +29,7 @@ $(document).ready(function () {
 
   $partyMasterButton.click(function () {
     $subHeader.empty();
+    $resultRow.empty();
     $subHeader.append(`
       <div class="col text-center">
         <button id="addPartyMaster" class="btn btn-primary">Add Party Master</button>
@@ -40,6 +42,7 @@ $(document).ready(function () {
     $('#addPartyMaster').click(function () {
 
       $mainContent.empty();
+      $resultRow.empty();
       $mainContent.append(`
       
         <div class="form-group row">
@@ -148,6 +151,7 @@ $(document).ready(function () {
 
   $productButton.click(function () {
     $subHeader.empty();
+    $resultRow.empty();
     $subHeader.append(`
       <div class="col text-center">
         <button id="addProductButton" class="btn btn-primary">Add Product</button>
@@ -170,6 +174,7 @@ $(document).ready(function () {
 
     $addProductButton.click(function () {
       $mainContent.empty();
+      $resultRow.empty();
       $mainContent.append(`
         <div class="form-group row">
           <label for="productName" class="col-3 col-form-label">Product Name: </label>
@@ -206,6 +211,13 @@ $(document).ready(function () {
       ipcRenderer.once('getProductCategories', function (event, data) {
         if (data.success) {
           let str = "";
+          if (data.productCategories.length === 0) {
+            $mainContent.empty();
+            $resultRow.empty();
+            $resultRow.removeClass('text-success').addClass('text-danger');
+            $resultRow.text("Add a Product Category First.");
+            return;
+          }
           data.productCategories.forEach(function (productCategory) {
             str = `<option name="productCategoriesList" value="${productCategory.id}">${productCategory.name}</option>`
           });
@@ -252,11 +264,13 @@ $(document).ready(function () {
         $('#productName').val("");
         $('#productPrice').val("");
         $('option[value=0][name="productCategoriesList"]').attr('selected', true);
+        $resultRow.empty();
       })
     });
 
     $viewProductsButton.click(function () {
       $mainContent.empty();
+      $resultRow.empty();
       $mainContent.append(`
         <div class="form-group row">
           <label for="productName" class="col-3 col-form-label">Product Name: </label>
@@ -269,6 +283,7 @@ $(document).ready(function () {
 
     $addProductCategoryButton.click(function () {
       $mainContent.empty();
+      $resultRow.empty();
       $mainContent.append(`
         <div class="form-group row">
           <label for="productCategoryName" class="col-4 col-form-label">Product Category Name: </label>
