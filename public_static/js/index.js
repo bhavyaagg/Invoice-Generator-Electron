@@ -269,17 +269,54 @@ $(document).ready(function () {
     });
 
     $viewProductsButton.click(function () {
-      $mainContent.empty();
-      $resultRow.empty();
-      $mainContent.append(`
-        <div class="form-group row">
-          <label for="productName" class="col-3 col-form-label">Product Name: </label>
-          <div class="col-9">
-            <input id="productName" class="form-control" type="text" placeholder="Enter Product Name">
-          </div>
-        </div>
-      `)
-    })
+      ipcRenderer.send('viewProducts');
+      ipcRenderer.once('getProducts', function (event, data) {
+        $mainContent.empty();
+        $resultRow.empty();
+        if (data.success) {
+          let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-4">
+                    <b>Product Name</b>
+                  </div>
+                  <div class="col-4">
+                    <b>Product Price</b>
+                  </div>
+                  <div class="col-4">
+                    <b>Product Category</b>
+                  </div>
+                </div>
+              </li>
+          `;
+
+          data.products.forEach(function (product) {
+            str += `
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-4">
+                  ${product.name}
+                </div>
+                <div class="col-4">
+                  ${product.price}
+                </div>
+                <div class="col-4">
+                  ${product.productCategory.name}
+                </div>
+              </div>
+            </li>
+            `
+          });
+          str += "</ul>"
+
+          $mainContent.append(str);
+        } else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Products Could Not Be Viewed Because " + data.error);
+        }
+      });
+    });
 
     $addProductCategoryButton.click(function () {
       $mainContent.empty();
