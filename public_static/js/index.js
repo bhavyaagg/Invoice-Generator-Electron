@@ -40,64 +40,64 @@ $(document).ready(function () {
       $mainContent.append(`
       
         <div class="form-group row">
-          <label for="partyName" class="col-2 col-form-label">Party Name</label>
-          <div class="col-10">
+          <label for="partyName" class="col-3 col-form-label">Party Name: </label>
+          <div class="col-9">
             <input class="form-control" type="text" value="" id="partyName">
           </div>
         </div>
         
         <div class="form-group row">
-          <label for="destination" class="col-2 col-form-label">Destination</label>
-          <div class="col-10">
+          <label for="destination" class="col-3 col-form-label">Destination: </label>
+          <div class="col-9">
             <input class="form-control" type="text" value="" id="destination">
           </div>
         </div>
         
         <div class="form-group row">
-          <label for="marka" class="col-2 col-form-label">Marka</label>
-          <div class="col-10">
+          <label for="marka" class="col-3 col-form-label">Marka: </label>
+          <div class="col-9">
             <input class="form-control" type="text" value="" id="marka">
           </div>
         </div>
         
         <div class="form-group row">
-          <label for="openingBalance" class="col-2 col-form-label">Opening Balance</label>
-          <div class="col-10">
+          <label for="openingBalance" class="col-3 col-form-label">Opening Balance: </label>
+          <div class="col-9">
             <input class="form-control" type="number" id="openingBalance">
           </div>
         </div>
         
         <div class="form-group row">
-          <label for="openingBalanceDate" class="col-2 col-form-label">Opening Balance Date</label>
-          <div class="col-10">
+          <label for="openingBalanceDate" class="col-3 col-form-label">Opening Balance Date: </label>
+          <div class="col-9">
             <input class="form-control" type="date" value="2011-08-19" id="openingBalanceDate">
           </div>
         </div>
         
         <div class="form-group row">
-          <label for="transport" class="col-2 col-form-label">Transport</label>
-          <div class="col-10">
+          <label for="transport" class="col-3 col-form-label">Transport: </label>
+          <div class="col-9">
             <input class="form-control" type="text" value="" id="transport">
           </div>
         </div>
         
         <div class="form-group row">
-          <label for="discount" class="col-2 col-form-label">Discount(%)</label>
-          <div class="col-10">
+          <label for="discount" class="col-3 col-form-label">Discount(%): </label>
+          <div class="col-9">
             <input class="form-control" type="number" id="discount">
           </div>
         </div>       
          
         <div class="form-group row">
-          <label for="splDiscount" class="col-2 col-form-label">Spl. Discount(%)</label>
-          <div class="col-10">
+          <label for="splDiscount" class="col-3 col-form-label">Spl. Discount(%): </label>
+          <div class="col-9">
             <input class="form-control" type="number" id="splDiscount">
           </div>
         </div>        
         
         <div class="form-group row">
-          <label for="cd" class="col-2 col-form-label">CD(%)</label>
-          <div class="col-10">
+          <label for="cd" class="col-3 col-form-label">CD(%): </label>
+          <div class="col-9">
             <input class="form-control" type="number" id="cd">
           </div>
         </div>         
