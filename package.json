@@ -25,6 +25,11 @@
   },
   "homepage": "https://github.com/bhavyaagg/Invoice-Generator-Electron#readme",
   "devDependencies": {
-    "electron": "^1.8.2-beta.3"
+    "electron": "^1.8.2-beta.3",
+    "electron-rebuild": "^1.6.0"
+  },
+  "dependencies": {
+    "sequelize": "^4.28.6",
+    "sqlite3": "^3.1.13"
   }
 }
