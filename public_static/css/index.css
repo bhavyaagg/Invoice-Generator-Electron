@@ -15,10 +15,19 @@ body {
     height: 100%;
 }
 
-.row{
+.row {
     margin-bottom: 20px;
 }
 
 button {
     cursor: pointer;
+}
+
+#mainContent {
+    padding: 30px;
+}
+
+#header, #subHeader {
+    padding-left: 20px;
+    padding-right: 20px;
 }

@@ -131,6 +131,75 @@ $(document).ready(function () {
       <div class="col text-center">
         <button id="viewProductsButton" class="btn btn-primary">View Products</button>
       </div>
-    `)
+      <div class="col text-center">
+        <button id="addProductCategoryButton" class="btn btn-primary">Add Product Category</button>
+      </div>
+      <div class="col text-center">
+        <button id="viewProductCategoriesButton" class="btn btn-primary">View Product Categories</button>
+      </div>
+    `);
+
+    const $addProductButton = $('#addProductButton');
+    const $viewProductsButton = $('#viewProductsButton');
+    const $addProductCategoryButton = $('#addProductCategoryButton');
+    const $viewProductCategoriesButton = $('#viewProductCategoriesButton');
+
+    $addProductButton.click(function () {
+      $mainContent.empty();
+      $mainContent.append(`
+        <div class="form-group row">
+          <label for="productName" class="col-3 col-form-label">Product Name: </label>
+          <div class="col-9">
+            <input id="productName" class="form-control" type="text" placeholder="Enter Product Name">
+          </div>
+        </div>
+      `)
+    })
+
+    $viewProductsButton.click(function () {
+      $mainContent.empty();
+      $mainContent.append(`
+        <div class="form-group row">
+          <label for="productName" class="col-3 col-form-label">Product Name: </label>
+          <div class="col-9">
+            <input id="productName" class="form-control" type="text" placeholder="Enter Product Name">
+          </div>
+        </div>
+      `)
+    })
+
+    $addProductCategoryButton.click(function () {
+      $mainContent.empty();
+      $mainContent.append(`
+        <div class="form-group row">
+          <label for="productName" class="col-4 col-form-label">Product Category Name: </label>
+          <div class="col-8">
+            <input id="productName" class="form-control" type="text" placeholder="Enter Product Category Name">
+          </div>
+        </div>
+        <br/>
+        <div class="row">
+          <div class="col text-center">
+            <button id="submitProductCategory" class="btn btn-success">Submit</button>
+          </div>
+          <div class="col text-center">
+            <button id="resetProductCategory" class="btn btn-danger">Reset</button>
+          </div>
+        </div>
+      `)
+    });
+
+    $viewProductCategoriesButton.click(function () {
+      $mainContent.empty();
+      $mainContent.append(`
+        <div class="form-group row">
+          <label for="productName" class="col-4 col-form-label">Product Category Name: </label>
+          <div class="col-8">
+            <input id="productName" class="form-control" type="text" placeholder="Enter Product Category Name">
+          </div>
+        </div>
+      `)
+    })
+
   });
 });
