@@ -12,3 +12,5 @@ config.db = {
   "HOST": "",
   "STORAGE": ""
 };
+
+module.exports = config

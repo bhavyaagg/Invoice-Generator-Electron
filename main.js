@@ -49,8 +49,16 @@ ipcMain.on('log', function (event, data) {
   }, 2000)
 });
 
-ipcMain.on('submitParty', function (event, data) {
+ipcMain.on('addPartyMaster', function (event, data) {
   console.log(event);
+  addPartyMasterToDb(data);
   console.log(data);
 });
+
+function addPartyMasterToDb(data) {
+  models.PartyMaster.create(data)
+    .then(partyMaster=>{
+      console.log(partyMaster)
+    })
+}
 
