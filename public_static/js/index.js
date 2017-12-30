@@ -13,6 +13,13 @@ $(document).ready(function () {
     , $mainContent = $('#mainContent')
     , $resultRow = $('#resultRow');
 
+  const $editProductCategoryModal = $('#editProductCategoryModal');
+
+  const $editProductCategorySubmit = $('#editProductCategorySubmit');
+
+  const $editProductCategoryName = $('#editProductCategoryName');
+
+  const $editProductCategoryError = $('#editProductCategoryError');
 
   $invoicesButton.click(function () {
     $subHeader.empty();
@@ -421,8 +428,6 @@ $(document).ready(function () {
     })
 
   });
-
-
   $productButton.click(function () {
     $subHeader.empty();
     $mainContent.empty();
@@ -683,14 +688,24 @@ $(document).ready(function () {
             </li>
             `
           });
-          str += "</ul>"
+          str += "</ul>";
 
           $mainContent.append(str);
 
           $('.edit-product-category').click(function (e) {
             let productCategoryId = +(e.target.getAttribute("productCategoryId"));
-            $('#editProductCategoryModal').modal('show');
-
+            ipcRenderer.send('viewProductCategoryById', {
+              id: productCategoryId
+            });
+            ipcRenderer.once('getProductCategoryById', function (event, data) {
+              if (data.success) {
+                $editProductCategoryName.val(data.productCategory.name);
+                $editProductCategoryModal.modal('show');
+              } else {
+                $resultRow.removeClass('text-success').addClass('text-danger');
+                $resultRow.text("Product Category Could Not Be Edited Because " + data.error);
+              }
+            });
           });
 
           $('.delete-product-category').click(function (e) {
@@ -705,4 +720,30 @@ $(document).ready(function () {
     })
 
   });
+
+
+  $editProductCategorySubmit.click(function (e) {
+    let productCategoryId = +(e.target.getAttribute("productCategoryId"));
+    let productCategoryName = $editProductCategoryName.val();
+
+    if (productCategoryName === "") {
+      $editProductCategoryError.text("Please Enter the Product Category Name");
+    } else {
+      ipcRenderer.send('editProductCategory', {
+        id: productCategoryId,
+        name: productCategoryName
+      });
+      ipcRenderer.once('editedProductCategory', function (event, data) {
+        $editProductCategoryModal.modal('hide');
+        $('#viewProductCategoriesButton').click();
+        if (data.success) {
+          $resultRow.removeClass('text-danger').addClass('text-success');
+          $resultRow.text("Product Category Has Been Updated");
+        } else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Product Category Could Not Be Updated Because " + data.error);
+        }
+      })
+    }
+  })
 });
