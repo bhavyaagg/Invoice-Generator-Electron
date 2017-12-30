@@ -654,7 +654,6 @@ $(document).ready(function () {
       ipcRenderer.send('viewProductCategories');
       ipcRenderer.once('getProductCategories', function (event, data) {
         $mainContent.empty();
-        $resultRow.empty();
         if (data.success) {
           let str = `
             <ul class="list-group text-center">
@@ -700,6 +699,8 @@ $(document).ready(function () {
             ipcRenderer.once('getProductCategoryById', function (event, data) {
               if (data.success) {
                 $editProductCategoryName.val(data.productCategory.name);
+                $editProductCategorySubmit[0].setAttribute('productCategoryId', productCategoryId);
+                $resultRow.empty();
                 $editProductCategoryModal.modal('show');
               } else {
                 $resultRow.removeClass('text-success').addClass('text-danger');
@@ -735,8 +736,8 @@ $(document).ready(function () {
       });
       ipcRenderer.once('editedProductCategory', function (event, data) {
         $editProductCategoryModal.modal('hide');
-        $('#viewProductCategoriesButton').click();
         if (data.success) {
+          $('#viewProductCategoriesButton').click();
           $resultRow.removeClass('text-danger').addClass('text-success');
           $resultRow.text("Product Category Has Been Updated");
         } else {

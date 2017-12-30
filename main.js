@@ -105,6 +105,33 @@ ipcMain.on('viewProductCategoryById', function (event, productCategory) {
   })
 });
 
+ipcMain.on('editProductCategory', function (event, productCategory) {
+  models.ProductCategory.update({
+    name: productCategory.name
+  }, {
+    where: {
+      id: productCategory.id
+    }
+  }).then(function (result) {
+    if (result[0] > 0) {
+      event.sender.send('editedProductCategory', {
+        success: true,
+      })
+    } else {
+      event.sender.send('editedProductCategory', {
+        success: false,
+        error: "Incorrect ID"
+      })
+    }
+  }).catch(function (err) {
+    console.log(err)
+    event.sender.send('editedProductCategory', {
+      success: false,
+      error: err
+    });
+  })
+});
+
 ipcMain.on('viewProducts', function (event) {
   models.Product.findAll({
     include: [models.ProductCategory]
@@ -123,15 +150,6 @@ ipcMain.on('viewProducts', function (event) {
       error: err
     });
   })
-});
-
-
-ipcMain.on('log', function (event, data) {
-  console.log(event.sender);
-  console.log(data)
-  setTimeout(function () {
-    event.sender.send('logback', "World")
-  }, 2000)
 });
 
 ipcMain.on('addPartyMaster', function (event, data) {
