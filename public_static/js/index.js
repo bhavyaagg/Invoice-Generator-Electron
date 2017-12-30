@@ -16,6 +16,7 @@ $(document).ready(function () {
 
   $invoicesButton.click(function () {
     $subHeader.empty();
+    $mainContent.empty();
     $resultRow.empty();
     $subHeader.append(`
       <div class="col text-center">
@@ -24,7 +25,7 @@ $(document).ready(function () {
       <div class="col text-center">
         <button id="viewInvoicesButton" class="btn btn-primary">View Invoices</button>
       </div>
-    `)
+    `);
 
     $('#addInvoiceButton').click(function () {
       $mainContent.empty();
@@ -163,6 +164,7 @@ $(document).ready(function () {
   });
   $partyMasterButton.click(function () {
     $subHeader.empty();
+    $mainContent.empty();
     $resultRow.empty();
     $subHeader.append(`
       <div class="col text-center">
@@ -178,7 +180,6 @@ $(document).ready(function () {
       $mainContent.empty();
       $resultRow.empty();
       $mainContent.append(`
-      
         <div class="form-group row">
           <label for="partyName" class="col-3 col-form-label">Party Name: </label>
           <div class="col-9">
@@ -424,6 +425,7 @@ $(document).ready(function () {
 
   $productButton.click(function () {
     $subHeader.empty();
+    $mainContent.empty();
     $resultRow.empty();
     $subHeader.append(`
       <div class="col text-center">
@@ -653,8 +655,12 @@ $(document).ready(function () {
             <ul class="list-group text-center">
               <li class="list-group-item">
                 <div class="row">
-                  <div class="col-12">
+                  <div class="col-6">
                     <b>Product Category Name</b>
+                  </div>
+                  <div class="col">
+                  </div>
+                  <div class="col">
                   </div>
                 </div>
               </li>
@@ -664,8 +670,14 @@ $(document).ready(function () {
             str += `
             <li class="list-group-item">
               <div class="row">
-                <div class="col-12">
+                <div class="col-6">
                   ${productCategory.name}
+                </div>
+                <div class="col">
+                    <button class="btn btn-success edit-product-category" productCategoryId=${productCategory.id}>EDIT</button>
+                </div>
+                <div class="col">
+                  <button class="btn btn-danger delete-product-category" productCategoryId=${productCategory.id}>DELETE</button>
                 </div>
               </div>
             </li>
@@ -674,6 +686,17 @@ $(document).ready(function () {
           str += "</ul>"
 
           $mainContent.append(str);
+
+          $('.edit-product-category').click(function (e) {
+            let productCategoryId = +(e.target.getAttribute("productCategoryId"));
+            $('#editProductCategoryModal').modal('show');
+
+          });
+
+          $('.delete-product-category').click(function (e) {
+            console.log(e);
+          });
+
         } else {
           $resultRow.removeClass('text-success').addClass('text-danger');
           $resultRow.text("Product Category Could Not Be Viewed Because " + data.error);
