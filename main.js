@@ -87,6 +87,24 @@ ipcMain.on('viewProductCategories', function (event) {
   })
 });
 
+ipcMain.on('viewProductCategoryById', function (event, productCategory) {
+  models.ProductCategory.find({
+    where: {
+      id: productCategory.id
+    }
+  }).then(function (productCategory) {
+    event.sender.send('getProductCategoryById', {
+      success: true,
+      productCategory: productCategory.get()
+    })
+  }).catch(function (err) {
+    event.sender.send('getProductCategoryById', {
+      success: false,
+      error: err
+    });
+  })
+});
+
 ipcMain.on('viewProducts', function (event) {
   models.Product.findAll({
     include: [models.ProductCategory]
@@ -136,10 +154,10 @@ ipcMain.on('viewPartyMaster', function (event) {
     .then(function (rows) {
 
       event.sender.send('getPartyMaster', {
-      success: true,
-      partyMasterRows: rows.map((v) => v.get())
-    });
-  }).catch(function (err) {
+        success: true,
+        partyMasterRows: rows.map((v) => v.get())
+      });
+    }).catch(function (err) {
     event.sender.send('getPartyMaster', {
       success: false,
       error: err
