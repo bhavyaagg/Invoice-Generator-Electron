@@ -101,10 +101,10 @@ $(document).ready(function () {
         </div>
       `);
 
-      
+
       let $partyMasterList = $('#partyMasterList');
-      let partyMasterRowObj ={} ; 
-      
+      let partyMasterRowObj = {};
+
       ipcRenderer.send('viewPartyMaster');
       ipcRenderer.once('getPartyMaster', function (event, data) {
         if (data.success) {
@@ -128,7 +128,7 @@ $(document).ready(function () {
               <option name="partyMasterList" value="${row.id}">${row.name}</option>
             `;
           });
-          
+
           $partyMasterList.append(str);
         }
         else {
@@ -143,7 +143,7 @@ $(document).ready(function () {
       let $transport = $('#transport');
 
       $partyMasterList.change(function () {
-        if($partyMasterList.val()===0)
+        if ($partyMasterList.val() === 0)
           return;
         console.log(partyMasterRowObj[$partyMasterList.val()]);
         let selectedRow = partyMasterRowObj[$partyMasterList.val()];
@@ -267,11 +267,11 @@ $(document).ready(function () {
 
         if (!partyMasterData.name || !partyMasterData.destination || !partyMasterData.marka
           || partyMasterData.openingBalance === "" || partyMasterData.openingBalanceDate === ""
-          || !partyMasterData.transport || !partyMasterData.discount=== ""
-          || partyMasterData.splDiscount === "" || partyMasterData.cd ==="" ){
+          || !partyMasterData.transport || !partyMasterData.discount === ""
+          || partyMasterData.splDiscount === "" || partyMasterData.cd === "") {
           $resultRow.removeClass('text-success').addClass('text-danger');
           $resultRow.text("Please Provide all the fields");
-         // console.log(partyMasterData);
+          // console.log(partyMasterData);
         }
 
         else {
@@ -315,7 +315,7 @@ $(document).ready(function () {
 
       ipcRenderer.send('viewPartyMaster');
       ipcRenderer.once('getPartyMaster', function (event, data) {
-        if(data.success) {
+        if (data.success) {
 
           if (data.partyMasterRows.length === 0) {
             $mainContent.empty();
@@ -492,7 +492,7 @@ $(document).ready(function () {
             return;
           }
           data.productCategories.forEach(function (productCategory) {
-            str = `<option name="productCategoriesList" value="${productCategory.id}">${productCategory.name}</option>`
+            str += `<option name="productCategoriesList" value="${productCategory.id}">${productCategory.name}</option>`
           });
 
           $('#productCategoriesList').append(str);
