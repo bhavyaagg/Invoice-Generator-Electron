@@ -25,8 +25,142 @@ $(document).ready(function () {
         <button id="viewInvoicesButton" class="btn btn-primary">View Invoices</button>
       </div>
     `)
-  });
 
+    $('#addInvoiceButton').click(function () {
+      $mainContent.empty();
+      $mainContent.append(`
+        <div class="row">
+          <div class="col text-center">
+            <h1>Company Name(XYZ)</h1>
+            <h6>Rough Estimate</h6>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-4">
+            <select id="partyMasterList" class="custom-select">
+              <option name="partyMasterList" value="0">None</option>
+            </select>
+          </div>
+          <div class="col-4" >
+            Slip No.:   
+          </div>
+          <div class="col-4">
+            DATE: 
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4" id="marka">
+            Marka:    
+          </div>
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="cases" class="col-2 col-form-label">Cases</label>
+              <div class="col-4">
+                <input class="form-control" type="number" value="0" id="cases">
+              </div>
+            </div>
+          </div>
+          <div class="col-4" id="transport">
+            Transport:    
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3">
+            <div class="form-group row">
+              <label for="bilityNumber" class="col-4 col-form-label">Bilty No.</label>
+              <div class="col-8">
+                <input class="form-control" type="number" value="0" id="bilityNumber">
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group row">
+              <label for="bilityDate" class="col-4 col-form-label">BiltyDate</label>
+              <div class="col-8">
+                <input class="form-control" type="date" value="2017-08-19" id="bilityDate">
+              </div>  
+            </div>    
+          </div>
+          <div class="col-3">
+            <div class="form-group row">
+              <label for="chalanNumber" class="col-5 col-form-label text-right">Chalan No.</label>
+              <div class="col-7">
+                <input class="form-control" type="number" value="0" id="chalanNumber">
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group row">
+              <label for="bilityDate" class="col-4 col-form-label">Date</label>
+              <div class="col-8">
+                <input class="form-control" type="date" value="2017-08-19" id="bilityDate">
+              </div>  
+            </div>    
+          </div>
+        </div>
+      `);
+
+      
+      let $partyMasterList = $('#partyMasterList');
+      let partyMasterRowObj ={} ; 
+      
+      ipcRenderer.send('viewPartyMaster');
+      ipcRenderer.once('getPartyMaster', function (event, data) {
+        if (data.success) {
+
+          if (data.partyMasterRows.length === 0) {
+            $mainContent.empty();
+            $resultRow.empty();
+            $resultRow.removeClass('text-success').addClass('text-danger');
+            $resultRow.text("Add a party master First.");
+            return;
+          }
+
+
+          let str = `
+            
+          `;
+
+          data.partyMasterRows.forEach(function (row) {
+            partyMasterRowObj[row.id] = row;
+            str += `
+              <option name="partyMasterList" value="${row.id}">${row.name}</option>
+            `;
+          });
+          
+          $partyMasterList.append(str);
+        }
+        else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Error is" + data.error);
+        }
+
+      });
+
+      let $marka = $('#marka');
+      let $cases = $('#cases');
+      let $transport = $('#transport');
+
+      $partyMasterList.change(function () {
+        if($partyMasterList.val()===0)
+          return;
+        console.log(partyMasterRowObj[$partyMasterList.val()]);
+        let selectedRow = partyMasterRowObj[$partyMasterList.val()];
+
+        $marka.empty();
+        $marka.append(`Marka: ${selectedRow.marka}`);
+
+        $transport.empty();
+        $transport.append(`Transport: ` + selectedRow.transport);
+
+
+      });
+
+    });
+
+
+  });
   $partyMasterButton.click(function () {
     $subHeader.empty();
     $resultRow.empty();
@@ -197,7 +331,7 @@ $(document).ready(function () {
               <li class="list-group-item">
                 <div class="row">
                   <div class="col-1">
-                    <b>S.No. Name</b>
+                    <b>S.No.</b>
                   </div>
                   <div class="col-2">
                     <b>Part Name</b>
@@ -213,9 +347,6 @@ $(document).ready(function () {
                   </div>
                   <div class="col-1">
                     <b>Opening Date</b>
-                  </div>
-                  <div class="col-1">
-                    <b>S.No. Name</b>
                   </div>
                   <div class="col-2">
                     <b>Transport</b>
@@ -287,6 +418,7 @@ $(document).ready(function () {
       });
 
     })
+
   });
 
 
