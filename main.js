@@ -132,6 +132,32 @@ ipcMain.on('editProductCategory', function (event, productCategory) {
   })
 });
 
+ipcMain.on('deleteProductCategoryById', function (event, productCategory) {
+  models.ProductCategory.destroy({
+    where: {
+      id: productCategory.id
+    }
+  }).then(function (result) {
+    if (result > 0) {
+      event.sender.send('deletedProductCategoryById', {
+        success: true,
+      })
+    } else {
+      event.sender.send('deletedProductCategoryById', {
+        success: false,
+        error: "Incorrect ID"
+      })
+    }
+  }).catch(function (err) {
+    console.log(err)
+    event.sender.send('editedProductCategory', {
+      success: false,
+      error: err
+    });
+  })
+});
+
+
 ipcMain.on('viewProducts', function (event) {
   models.Product.findAll({
     include: [models.ProductCategory]
