@@ -58,10 +58,10 @@ $(document).ready(function () {
           </div>
         </div>
         <div class="row">
-          <div class="col-4" id="marka">
+          <div class="col-2" id="marka">
             Marka:    
           </div>
-          <div class="col-4">
+          <div class="col-3">
             <div class="form-group row">
               <label for="cases" class="col-2 col-form-label">Cases</label>
               <div class="col-4">
@@ -69,10 +69,20 @@ $(document).ready(function () {
               </div>
             </div>
           </div>
-          <div class="col-4" id="transport">
+          <div class="col-3" id="transport">
             Transport:    
           </div>
-        </div>
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="productCategoriesList" class="col-4 col-form-label">Product Category: </label>
+              <div class="col-8">
+                <select id="productCategoriesList" class="custom-select">
+                  <option name="productCategoriesList" value="0">None</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>  
         <div class="row">
           <div class="col-3">
             <div class="form-group row">
@@ -107,12 +117,44 @@ $(document).ready(function () {
             </div>    
           </div>
         </div>
+        <ul class="list-group text-center">
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col-1">
+                <b>S.No.</b>
+              </div>
+              <div class="col-5">
+                <b>Description of Goods</b>
+              </div>
+              <div class="col-1">
+                <b>Qty</b>
+              </div>
+              <div class="col-1">
+                <b>Rate</b>
+              </div>
+              <div class="col-1">
+                <b>Per</b>
+              </div>
+              <div class="col-1">
+                <b>Dis%</b>
+              </div>
+              <div class="col-1">
+                <b>SDis%</b>
+              </div>
+              <div class="col-1">
+                <b>Amt</b>
+              </div>
+            </div>
+          </li>
+        
+        
       `);
 
 
       let $partyMasterList = $('#partyMasterList');
-      let partyMasterRowObj = {};
+      let partyMasterRowObj = {};                    // All data with S.no. as key
 
+      // Get data in party Master Dropdown
       ipcRenderer.send('viewPartyMaster');
       ipcRenderer.once('getPartyMaster', function (event, data) {
         if (data.success) {
@@ -146,10 +188,14 @@ $(document).ready(function () {
 
       });
 
+      //Get Data in Product Categories DropDown
+      getDataProductCategories();
+
       let $marka = $('#marka');
       let $cases = $('#cases');
       let $transport = $('#transport');
 
+      // On change for party master list
       $partyMasterList.change(function () {
         if ($partyMasterList.val() === 0)
           return;
@@ -161,14 +207,15 @@ $(document).ready(function () {
 
         $transport.empty();
         $transport.append(`Transport: ` + selectedRow.transport);
-
-
       });
+
+
 
     });
 
 
   });
+
   $partyMasterButton.click(function () {
     $subHeader.empty();
     $mainContent.empty();
@@ -428,6 +475,7 @@ $(document).ready(function () {
     })
 
   });
+
   $productButton.click(function () {
     $subHeader.empty();
     $mainContent.empty();
@@ -747,4 +795,29 @@ $(document).ready(function () {
       })
     }
   })
+
+
+  function getDataProductCategories() {
+    ipcRenderer.send('viewProductCategories');
+    ipcRenderer.once('getProductCategories', function (event, data) {
+      if (data.success) {
+        let str = "";
+        if (data.productCategories.length === 0) {
+          $mainContent.empty();
+          $resultRow.empty();
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Add a Product Category First.");
+          return;
+        }
+        data.productCategories.forEach(function (productCategory) {
+          str += `<option name="productCategoriesList" value="${productCategory.id}">${productCategory.name}</option>`
+        });
+
+        $('#productCategoriesList').append(str);
+      } else {
+        $resultRow.removeClass('text-success').addClass('text-danger');
+        $resultRow.text("Product Categories Could Not Be Viewed Because " + data.error);
+      }
+    });
+  }
 });
