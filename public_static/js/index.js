@@ -117,7 +117,8 @@ $(document).ready(function () {
             </div>    
           </div>
         </div>
-        <ul class="list-group text-center">
+        <input class="btn btn-primary" type="submit" value="Submit" id="addInvoiceItem">
+        <ul class="list-group text-center" id="invoiceList">
           <li class="list-group-item">
             <div class="row">
               <div class="col-1">
@@ -146,6 +147,7 @@ $(document).ready(function () {
               </div>
             </div>
           </li>
+        </ul>
         
         
       `);
@@ -216,8 +218,28 @@ $(document).ready(function () {
 
         let selectedRow = productCategoriesRowObj[$productCategoryList.val()];
 
+        ipcRenderer.send('viewProductByPCategoryId', selectedRow);
+        ipcRenderer.once('getProductByPCategoryId', function (event, productList) {
+
+          if(productList.product.length === 0 || !productList.success){
+            $mainContent.empty();
+            $resultRow.empty();
+            $resultRow.removeClass('text-success').addClass('text-danger');
+            $resultRow.text("No product or some error");
+            return;
+          }
+
+          productList.product.forEach(function (row) {
+            console.log(row.name)
+          })
+
+
+
+        });
 
       });
+
+
 
 
 
