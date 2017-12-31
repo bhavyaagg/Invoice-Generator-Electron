@@ -710,7 +710,26 @@ $(document).ready(function () {
           });
 
           $('.delete-product-category').click(function (e) {
-            console.log(e);
+            let productCategoryId = +(e.target.getAttribute("productCategoryId"));
+            let youSure = window.confirm('Are you sure want to delete this');
+
+            if (youSure) {
+              ipcRenderer.send('deleteProductCategoryById', {
+                id: productCategoryId
+              });
+              ipcRenderer.once('deletedProductCategoryById', function (event, data) {
+                if (data.success) {
+                  $('#viewProductCategoriesButton').click();
+                  $resultRow.removeClass('text-danger').addClass('text-success');
+                  $resultRow.text("Product Category Has Been Deleted");
+                } else {
+                  $resultRow.removeClass('text-success').addClass('text-danger');
+                  $resultRow.text("Product Category Could Not Be Deleted Because " + data.error);
+                }
+              })
+            }
+
+
           });
 
         } else {
