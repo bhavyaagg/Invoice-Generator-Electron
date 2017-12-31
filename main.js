@@ -133,21 +133,27 @@ ipcMain.on('editProductCategory', function (event, productCategory) {
 });
 
 ipcMain.on('deleteProductCategoryById', function (event, productCategory) {
-  models.ProductCategory.destroy({
+  models.Product.destroy({
     where: {
-      id: productCategory.id
+      productcategoryId: productCategory.id
     }
-  }).then(function (result) {
-    if (result > 0) {
-      event.sender.send('deletedProductCategoryById', {
-        success: true,
-      })
-    } else {
-      event.sender.send('deletedProductCategoryById', {
-        success: false,
-        error: "Incorrect ID"
-      })
-    }
+  }).then(function (rows) {
+    models.ProductCategory.destroy({
+      where: {
+        id: productCategory.id
+      }
+    }).then(function (result) {
+      if (result > 0) {
+        event.sender.send('deletedProductCategoryById', {
+          success: true,
+        })
+      } else {
+        event.sender.send('deletedProductCategoryById', {
+          success: false,
+          error: "Incorrect ID"
+        })
+      }
+    })
   }).catch(function (err) {
     console.log(err)
     event.sender.send('editedProductCategory', {
@@ -162,15 +168,25 @@ ipcMain.on('viewProducts', function (event) {
   models.Product.findAll({
     include: [models.ProductCategory]
   }).then(function (rows) {
-    event.sender.send('getProducts', {
-      success: true,
-      products: rows.map((v) => {
-        v = v.get();
-        v.productcategory = v.productcategory.get();
-        return v;
-      })
-    });
+    console.log(rows)
+    if (rows.length > 0) {
+      event.sender.send('getProducts', {
+        success: true,
+        products: rows.map((v) => {
+          v = v.get();
+          v.productcategory = v.productcategory.get();
+          return v;
+        })
+      });
+    } else {
+      event.sender.send('getProducts', {
+        success: false,
+        error: "No product exists"
+      });
+    }
   }).catch(function (err) {
+    console.log(111)
+    console.log(err)
     event.sender.send('getProducts', {
       success: false,
       error: err
