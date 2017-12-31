@@ -557,7 +557,7 @@ $(document).ready(function () {
           let str = `
             <ul class="list-group text-center">
               <li class="list-group-item">
-                <div class="row">
+                <div class="row align-items-center">
                   <div class="col-4">
                     <b>Product Name</b>
                   </div>
@@ -574,7 +574,7 @@ $(document).ready(function () {
           data.products.forEach(function (product) {
             str += `
             <li class="list-group-item">
-              <div class="row">
+              <div class="row align-items-center">
                 <div class="col-4">
                   ${product.name}
                 </div>
@@ -658,7 +658,7 @@ $(document).ready(function () {
           let str = `
             <ul class="list-group text-center">
               <li class="list-group-item">
-                <div class="row">
+                <div class="row align-items-center">
                   <div class="col-6">
                     <b>Product Category Name</b>
                   </div>
@@ -673,7 +673,7 @@ $(document).ready(function () {
           data.productCategories.forEach(function (productCategory) {
             str += `
             <li class="list-group-item">
-              <div class="row">
+              <div class="row align-items-center">
                 <div class="col-6">
                   ${productCategory.name}
                 </div>
