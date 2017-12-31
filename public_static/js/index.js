@@ -118,7 +118,7 @@ $(document).ready(function () {
           </div>
         </div>
         <input class="btn btn-primary" type="submit" value="Submit" id="addInvoiceItem">
-        <ul class="list-group text-center" id="invoiceList">
+        <ul class="list-group text-center" id="invoiceItemList">
           <li class="list-group-item">
             <div class="row">
               <div class="col-1">
@@ -157,6 +157,7 @@ $(document).ready(function () {
       let $productCategoryList = $('#productCategoriesList');
       let partyMasterRowObj = {};                    // All data with S.no. as key
 
+      let products;
       // Get data in party Master Dropdown
       ipcRenderer.send('viewPartyMaster');
       ipcRenderer.once('getPartyMaster', function (event, data) {
@@ -199,11 +200,12 @@ $(document).ready(function () {
       let $transport = $('#transport');
 
       // On change for party master list
+      let selectedRow;
       $partyMasterList.change(function () {
         if ($partyMasterList.val() == 0)   // Check for none in list
           return;
         console.log(partyMasterRowObj[$partyMasterList.val()]);
-        let selectedRow = partyMasterRowObj[$partyMasterList.val()];
+        selectedRow = partyMasterRowObj[$partyMasterList.val()];
 
         $marka.empty();
         $marka.append(`Marka: ${selectedRow.marka}`);
@@ -232,13 +234,73 @@ $(document).ready(function () {
           productList.product.forEach(function (row) {
             console.log(row.name)
           })
-
-
+          products = productList.product;
 
         });
 
       });
 
+      let listItemCount = 1;
+      $invoiceItemList = $('#invoiceItemList');
+      let productObj = {};
+      $('#addInvoiceItem').click(function () {
+        if(typeof selectedRow == 'undefined') {
+          return;
+        }
+        $invoiceItemList.append(`
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col-1">
+                ${listItemCount}
+              </div>
+              <div class="col-5">
+                <select id="productList" class="custom-select">
+                  <option name="productList" value="0">None</option>
+                </select>
+              </div>
+              <div class="col-1">
+                <input class="form-control" type="number" value="0" id="qty">
+              </div>
+              <div class="col-1" id="productPrice">
+                
+              </div>
+              <div class="col-1"> 
+                <select class="custom-select">
+                  <option name="type" value="0">Set</option>
+                  <option name="type" value="1">Piece</option>
+                </select>
+              </div>
+              <div class="col-1">
+                ${selectedRow.discount}
+              </div>
+              <div class="col-1">
+                ${selectedRow.splDiscount}
+              </div>
+              <div class="col-1" id=amt${listItemCount++}" >
+                
+              </div>
+            </div>
+          </li>
+          
+        
+        `)
+
+        let str = '';
+        console.log(products);
+        products.forEach(product=>{
+          productObj[product.id] = product;
+          str += `<option name="productList" value="${product.id}">${product.name}</option>`
+        });
+        let $productList = $('#productList');
+        $productList.append(str);
+
+        $productList.change(function () {
+          if($productList.val()==0)
+            return;
+          $('#productPrice').empty();
+          $('#productPrice').append(productObj[$productList.val()].price);
+        });
+      })
 
 
 
