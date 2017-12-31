@@ -152,6 +152,7 @@ $(document).ready(function () {
 
 
       let $partyMasterList = $('#partyMasterList');
+      let $productCategoryList = $('#productCategoriesList');
       let partyMasterRowObj = {};                    // All data with S.no. as key
 
       // Get data in party Master Dropdown
@@ -189,7 +190,7 @@ $(document).ready(function () {
       });
 
       //Get Data in Product Categories DropDown
-      getDataProductCategories();
+      let productCategoriesRowObj = getDataProductCategories(); // All product C with id as key
 
       let $marka = $('#marka');
       let $cases = $('#cases');
@@ -197,7 +198,7 @@ $(document).ready(function () {
 
       // On change for party master list
       $partyMasterList.change(function () {
-        if ($partyMasterList.val() === 0)
+        if ($partyMasterList.val() == 0)   // Check for none in list
           return;
         console.log(partyMasterRowObj[$partyMasterList.val()]);
         let selectedRow = partyMasterRowObj[$partyMasterList.val()];
@@ -207,6 +208,15 @@ $(document).ready(function () {
 
         $transport.empty();
         $transport.append(`Transport: ` + selectedRow.transport);
+      });
+
+      $productCategoryList.change(function () {
+        if($productCategoryList.val() == 0)
+          return;
+
+        let selectedRow = productCategoriesRowObj[$productCategoryList.val()];
+
+
       });
 
 
@@ -798,6 +808,7 @@ $(document).ready(function () {
 
 
   function getDataProductCategories() {
+    let productCategoriesRowObj = {};
     ipcRenderer.send('viewProductCategories');
     ipcRenderer.once('getProductCategories', function (event, data) {
       if (data.success) {
@@ -809,15 +820,20 @@ $(document).ready(function () {
           $resultRow.text("Add a Product Category First.");
           return;
         }
+
         data.productCategories.forEach(function (productCategory) {
+          productCategoriesRowObj[productCategory.id] = productCategory;
           str += `<option name="productCategoriesList" value="${productCategory.id}">${productCategory.name}</option>`
         });
 
         $('#productCategoriesList').append(str);
+
       } else {
         $resultRow.removeClass('text-success').addClass('text-danger');
         $resultRow.text("Product Categories Could Not Be Viewed Because " + data.error);
       }
     });
+
+    return productCategoriesRowObj ;
   }
 });
