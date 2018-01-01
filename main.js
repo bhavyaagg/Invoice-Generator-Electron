@@ -168,7 +168,6 @@ ipcMain.on('viewProducts', function (event) {
   models.Product.findAll({
     include: [models.ProductCategory]
   }).then(function (rows) {
-    console.log(rows)
     if (rows.length > 0) {
       event.sender.send('getProducts', {
         success: true,
@@ -185,7 +184,6 @@ ipcMain.on('viewProducts', function (event) {
       });
     }
   }).catch(function (err) {
-    console.log(111)
     console.log(err)
     event.sender.send('getProducts', {
       success: false,
