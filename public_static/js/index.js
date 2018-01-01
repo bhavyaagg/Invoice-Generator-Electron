@@ -771,7 +771,6 @@ $(document).ready(function () {
 
                     $editProductName.val(productData.product.name);
                     $editProductPrice.val(productData.product.price);
-                    console.log(productData.product.productcategoryId);
                     $editProductCategoryForProductList.val(productData.product.productcategoryId);
                     $editProductSubmit[0].setAttribute('productId', productId);
                     $resultRow.empty();
@@ -1000,7 +999,7 @@ $(document).ready(function () {
         productCategoryId: productCategoryId
       });
       ipcRenderer.once('editedProduct', function (event, data) {
-        $editProductCategoryModal.modal('hide');
+        $editProductModal.modal('hide');
         if (data.success) {
           $('#viewProductsButton').click();
           $resultRow.removeClass('text-danger').addClass('text-success');
