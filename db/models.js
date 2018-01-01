@@ -42,12 +42,27 @@ const PartyMaster = sequelize.define('partymaster', {
   name: Sequelize.DataTypes.STRING,
   destination: Sequelize.DataTypes.STRING,
   marka: Sequelize.DataTypes.STRING,
-  openingBalance: Sequelize.DataTypes.INTEGER,
-  openingBalanceDate: Sequelize.DataTypes.DATEONLY,
+  openingBalance: Sequelize.DataTypes.DECIMAL,
+  openingBalanceDate: Sequelize.DataTypes.DATE,
   transport: Sequelize.DataTypes.STRING,
-  discount: Sequelize.DataTypes.INTEGER,
-  splDiscount: Sequelize.DataTypes.INTEGER,
-  cd: Sequelize.DataTypes.INTEGER
+  discount: Sequelize.DataTypes.DECIMAL,
+  splDiscount: Sequelize.DataTypes.DECIMAL,
+  cd: Sequelize.DataTypes.DECIMAL
+});
+
+const Invoice = sequelize.define('invoice', {
+  id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  cases: Sequelize.DataTypes.DECIMAL,
+  dateOfInvoice: Sequelize.DataTypes.DATE
+});
+
+const Ledger = sequelize.define('ledger', {
+  id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  description: Sequelize.DataTypes.STRING,
+  dateOfTransaction: Sequelize.DataTypes.DATE,
+  debit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
+  credit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
+  balance: Sequelize.DataTypes.DECIMAL
 });
 
 sequelize.sync({force: false}).then(function () {
