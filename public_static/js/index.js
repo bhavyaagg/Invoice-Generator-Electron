@@ -122,8 +122,8 @@ $(document).ready(function () {
             </div>    
           </div>
         </div>
-        <input class="btn btn-primary" type="submit" value="Submit" id="addInvoiceItemBtn">
-        <input class="btn btn-primary" type="submit" value="Submit" id="addPackingChargesBtn">
+        <input class="btn btn-primary" type="submit" value="Add Invoice Item" id="addInvoiceItemBtn">
+        <input class="btn btn-primary" type="submit" value="Add Packing Charges" id="addPackingChargesBtn">
         
         <ul class="list-group text-center" id="invoiceItemList">
           <li class="list-group-item">
@@ -168,7 +168,9 @@ $(document).ready(function () {
       let $productCategoryList = $('#productCategoriesList');
       let partyMasterRowObj = {};                    // All data with S.no. as key
 
+      let grandTotal = 0;
       let products;
+      let cdDiscount ;
       // Get data in party Master Dropdown
       ipcRenderer.send('viewPartyMaster');
       ipcRenderer.once('getPartyMaster', function (event, data) {
@@ -318,10 +320,13 @@ $(document).ready(function () {
 
       $('#addPackingChargesSubmit').click(function () {
 
-        let pcharges = ('#packingCharges').val();
+        let pcharges = $('#packingCharges').val();
         if(pcharges == "")
           return;
+        let prevPackingCharges = packingCharges;
         packingCharges = pcharges;
+        grandTotal = (+grandTotal) + (+packingCharges) - (+prevPackingCharges);
+        updateAmtDiv();
         $('#addPackingChargesModal').modal('hide');
       });
 
@@ -343,7 +348,7 @@ $(document).ready(function () {
             <li class="list-group-item">
               <div class="row">
                 <div class="col-1">
-                  ${listItemCount}
+                  ${listItemCount++}
                 </div>
                 <div class="col-5">
                   ${selectedProduct.name}
@@ -370,21 +375,26 @@ $(document).ready(function () {
             </li>
           `)
         totalAmt += ((+qty) * (+selectedProduct.price));
-        $('#totalAmt').empty()
-        let cdDiscount = totalAmt * +(selectedPartyMaster.cd) /100;
 
+        cdDiscount = totalAmt * +(selectedPartyMaster.cd) /100;
+
+        grandTotal = totalAmt - (+cdDiscount) + +(packingCharges) ;
+        updateAmtDiv();
+        $('#addInvoiceItemModal').modal('hide');
+      });
+
+      function updateAmtDiv() {
+        $('#totalAmt').empty();
         $('#totalAmt').append(`
           <hr>
           <p class="text-right"><b>Amount:  ${totalAmt}</b></p>
           <p class="text-right"><b>CD:  ${cdDiscount}</b></p>
           <hr>
-          
-          
+          <p class="text-right"><b>Amount:  ${totalAmt - (+cdDiscount)}</b></p>
+          <p class="text-right"><b>Packing Charges:  ${packingCharges}</b></p>
+          <p class="text-right"><b>Grand Total:  ${grandTotal}</b></p>
         `)
-        $('#addInvoiceItemModal').modal('hide');
-      });
-
-
+      }
 
     });
 
