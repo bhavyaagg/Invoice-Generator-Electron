@@ -123,6 +123,8 @@ $(document).ready(function () {
           </div>
         </div>
         <input class="btn btn-primary" type="submit" value="Submit" id="addInvoiceItemBtn">
+        <input class="btn btn-primary" type="submit" value="Submit" id="addPackingChargesBtn">
+        
         <ul class="list-group text-center" id="invoiceItemList">
           <li class="list-group-item">
             <div class="row">
@@ -310,6 +312,19 @@ $(document).ready(function () {
 
       })
 
+      $('#addPackingChargesBtn').click(function () {
+        $('#addPackingChargesModal').modal('show');
+      });
+
+      $('#addPackingChargesSubmit').click(function () {
+
+        let pcharges = ('#packingCharges').val();
+        if(pcharges == "")
+          return;
+        packingCharges = pcharges;
+        $('#addPackingChargesModal').modal('hide');
+      });
+
       let $productList = $('#productList');
       let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
 
@@ -367,12 +382,9 @@ $(document).ready(function () {
           
         `)
         $('#addInvoiceItemModal').modal('hide');
-      })
+      });
 
 
-      function onProductChange(event) {
-
-      }
 
     });
 
