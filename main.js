@@ -139,6 +139,35 @@ ipcMain.on('editProductCategory', function (event, productCategory) {
   })
 });
 
+ipcMain.on('editProduct', function (event, product) {
+  models.Product.update({
+    name: product.name,
+    price: product.price,
+    productcategoryId: product.productCategoryId
+  }, {
+    where: {
+      id: product.id
+    }
+  }).then(function (result) {
+    if (result[0] > 0) {
+      event.sender.send('editedProduct', {
+        success: true,
+      })
+    } else {
+      event.sender.send('editedProduct', {
+        success: false,
+        error: "Incorrect ID"
+      })
+    }
+  }).catch(function (err) {
+    console.log(err)
+    event.sender.send('editedProduct', {
+      success: false,
+      error: err
+    });
+  })
+});
+
 ipcMain.on('deleteProductCategoryById', function (event, productCategory) {
   models.Product.destroy({
     where: {
@@ -264,7 +293,7 @@ ipcMain.on('viewProductByPCategoryId', function (event, productCategory) {
   }).then(function (product) {
     event.sender.send('getProductByPCategoryId', {
       success: true,
-      product: product.map(p=>p.get())
+      product: product.map(p => p.get())
     })
   }).catch(function (err) {
     event.sender.send('getProductByPCategoryId', {
