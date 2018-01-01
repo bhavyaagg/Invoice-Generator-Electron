@@ -845,4 +845,33 @@ $(document).ready(function () {
       })
     }
   })
+
+  $editProductSubmit.click(function (e) {
+    let productId = +(e.target.getAttribute("productId"));
+    let productName = $editProductName.val();
+    let productPrice = +($editProductPrice.val());
+    let productCategoryId = +($editProductCategoryForProductList.val());
+
+    if (!productName || !productPrice || productCategoryId === 0) {
+      $editProductError.text("Please Enter the All the Details");
+    } else {
+      ipcRenderer.send('editProduct', {
+        id: productId,
+        name: productName,
+        price: productPrice,
+        productCategoryId: productCategoryId
+      });
+      ipcRenderer.once('editedProduct', function (event, data) {
+        $editProductCategoryModal.modal('hide');
+        if (data.success) {
+          $('#viewProductsButton').click();
+          $resultRow.removeClass('text-danger').addClass('text-success');
+          $resultRow.text("Product Has Been Updated");
+        } else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Product Could Not Be Updated Because " + data.error);
+        }
+      })
+    }
+  })
 });
