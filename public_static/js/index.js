@@ -64,10 +64,10 @@ $(document).ready(function () {
           </div>
         </div>
         <div class="row">
-          <div class="col-4" id="marka">
+          <div class="col-2" id="marka">
             Marka:    
           </div>
-          <div class="col-4">
+          <div class="col-3">
             <div class="form-group row">
               <label for="cases" class="col-2 col-form-label">Cases</label>
               <div class="col-4">
@@ -75,10 +75,20 @@ $(document).ready(function () {
               </div>
             </div>
           </div>
-          <div class="col-4" id="transport">
+          <div class="col-3" id="transport">
             Transport:    
           </div>
-        </div>
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="productCategoriesList" class="col-4 col-form-label">Product Category: </label>
+              <div class="col-8">
+                <select id="productCategoriesList" class="custom-select">
+                  <option name="productCategoriesList" value="0">None</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>  
         <div class="row">
           <div class="col-3">
             <div class="form-group row">
@@ -113,12 +123,48 @@ $(document).ready(function () {
             </div>    
           </div>
         </div>
+        <input class="btn btn-primary" type="submit" value="Submit" id="addInvoiceItem">
+        <ul class="list-group text-center" id="invoiceItemList">
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col-1">
+                <b>S.No.</b>
+              </div>
+              <div class="col-5">
+                <b>Description of Goods</b>
+              </div>
+              <div class="col-1">
+                <b>Qty</b>
+              </div>
+              <div class="col-1">
+                <b>Rate</b>
+              </div>
+              <div class="col-1">
+                <b>Per</b>
+              </div>
+              <div class="col-1">
+                <b>Dis%</b>
+              </div>
+              <div class="col-1">
+                <b>SDis%</b>
+              </div>
+              <div class="col-1">
+                <b>Amt</b>
+              </div>
+            </div>
+          </li>
+        </ul>
+        
+        
       `);
 
 
       let $partyMasterList = $('#partyMasterList');
-      let partyMasterRowObj = {};
+      let $productCategoryList = $('#productCategoriesList');
+      let partyMasterRowObj = {};                    // All data with S.no. as key
 
+      let products;
+      // Get data in party Master Dropdown
       ipcRenderer.send('viewPartyMaster');
       ipcRenderer.once('getPartyMaster', function (event, data) {
         if (data.success) {
@@ -152,24 +198,116 @@ $(document).ready(function () {
 
       });
 
+      //Get Data in Product Categories DropDown
+      let productCategoriesRowObj = getDataProductCategories(); // All product C with id as key
+
       let $marka = $('#marka');
       let $cases = $('#cases');
       let $transport = $('#transport');
 
+      // On change for party master list
+      let selectedRow;
       $partyMasterList.change(function () {
-        if ($partyMasterList.val() === 0)
+        if ($partyMasterList.val() == 0)   // Check for none in list
           return;
         console.log(partyMasterRowObj[$partyMasterList.val()]);
-        let selectedRow = partyMasterRowObj[$partyMasterList.val()];
+        selectedRow = partyMasterRowObj[$partyMasterList.val()];
 
         $marka.empty();
         $marka.append(`Marka: ${selectedRow.marka}`);
 
         $transport.empty();
         $transport.append(`Transport: ` + selectedRow.transport);
+      });
 
+      $productCategoryList.change(function () {
+        if ($productCategoryList.val() == 0)
+          return;
+
+        let selectedRow = productCategoriesRowObj[$productCategoryList.val()];
+
+        ipcRenderer.send('viewProductByPCategoryId', selectedRow);
+        ipcRenderer.once('getProductByPCategoryId', function (event, productList) {
+
+          if (productList.product.length === 0 || !productList.success) {
+            $mainContent.empty();
+            $resultRow.empty();
+            $resultRow.removeClass('text-success').addClass('text-danger');
+            $resultRow.text("No product or some error");
+            return;
+          }
+
+          productList.product.forEach(function (row) {
+            console.log(row.name)
+          })
+          products = productList.product;
+
+        });
 
       });
+
+      let listItemCount = 1;
+      $invoiceItemList = $('#invoiceItemList');
+      let productObj = {};
+      $('#addInvoiceItem').click(function () {
+        if (typeof selectedRow == 'undefined') {
+          return;
+        }
+        $invoiceItemList.append(`
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col-1">
+                ${listItemCount}
+              </div>
+              <div class="col-5">
+                <select id="productList" class="custom-select">
+                  <option name="productList" value="0">None</option>
+                </select>
+              </div>
+              <div class="col-1">
+                <input class="form-control" type="number" value="0" id="qty">
+              </div>
+              <div class="col-1" id="productPrice">
+                
+              </div>
+              <div class="col-1"> 
+                <select class="custom-select">
+                  <option name="type" value="0">Set</option>
+                  <option name="type" value="1">Piece</option>
+                </select>
+              </div>
+              <div class="col-1">
+                ${selectedRow.discount}
+              </div>
+              <div class="col-1">
+                ${selectedRow.splDiscount}
+              </div>
+              <div class="col-1" id=amt${listItemCount++}" >
+                
+              </div>
+            </div>
+          </li>
+          
+        
+        `)
+
+        let str = '';
+        console.log(products);
+        products.forEach(product => {
+          productObj[product.id] = product;
+          str += `<option name="productList" value="${product.id}">${product.name}</option>`
+        });
+        let $productList = $('#productList');
+        $productList.append(str);
+
+        $productList.change(function () {
+          if ($productList.val() == 0)
+            return;
+          $('#productPrice').empty();
+          $('#productPrice').append(productObj[$productList.val()].price);
+        });
+      })
+
 
     });
 
@@ -874,4 +1012,34 @@ $(document).ready(function () {
       })
     }
   })
+
+  function getDataProductCategories() {
+    let productCategoriesRowObj = {};
+    ipcRenderer.send('viewProductCategories');
+    ipcRenderer.once('getProductCategories', function (event, data) {
+      if (data.success) {
+        let str = "";
+        if (data.productCategories.length === 0) {
+          $mainContent.empty();
+          $resultRow.empty();
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Add a Product Category First.");
+          return;
+        }
+
+        data.productCategories.forEach(function (productCategory) {
+          productCategoriesRowObj[productCategory.id] = productCategory;
+          str += `<option name="productCategoriesList" value="${productCategory.id}">${productCategory.name}</option>`
+        });
+
+        $('#productCategoriesList').append(str);
+
+      } else {
+        $resultRow.removeClass('text-success').addClass('text-danger');
+        $resultRow.text("Product Categories Could Not Be Viewed Because " + data.error);
+      }
+    });
+
+    return productCategoriesRowObj;
+  }
 });

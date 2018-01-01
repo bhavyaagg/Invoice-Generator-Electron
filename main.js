@@ -256,4 +256,20 @@ ipcMain.on('viewPartyMaster', function (event) {
     });
   })
 });
-
+ipcMain.on('viewProductByPCategoryId', function (event, productCategory) {
+  models.Product.findAll({
+    where: {
+      productcategoryId: productCategory.id
+    }
+  }).then(function (product) {
+    event.sender.send('getProductByPCategoryId', {
+      success: true,
+      product: product.map(p=>p.get())
+    })
+  }).catch(function (err) {
+    event.sender.send('getProductByPCategoryId', {
+      success: false,
+      error: err
+    });
+  })
+});
