@@ -192,7 +192,32 @@ ipcMain.on('deleteProductCategoryById', function (event, productCategory) {
     })
   }).catch(function (err) {
     console.log(err)
-    event.sender.send('editedProductCategory', {
+    event.sender.send('deletedProductCategoryById', {
+      success: false,
+      error: err
+    });
+  })
+});
+
+ipcMain.on('deleteProductById', function (event, product) {
+  models.Product.destroy({
+    where: {
+      id: product.id
+    }
+  }).then(function (rows) {
+    if (rows > 0) {
+      event.sender.send('deletedProductById', {
+        success: true,
+      })
+    } else {
+      event.sender.send('deletedProductById', {
+        success: false,
+        error: "Incorrect ID"
+      })
+    }
+  }).catch(function (err) {
+    console.log(err);
+    event.sender.send('deletedProductById', {
       success: false,
       error: err
     });
