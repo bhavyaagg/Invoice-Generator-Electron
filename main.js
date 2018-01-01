@@ -93,10 +93,17 @@ ipcMain.on('viewProductCategoryById', function (event, productCategory) {
       id: productCategory.id
     }
   }).then(function (productCategory) {
-    event.sender.send('getProductCategoryById', {
-      success: true,
-      productCategory: productCategory.get()
-    })
+    if (productCategory) {
+      event.sender.send('getProductCategoryById', {
+        success: true,
+        productCategory: productCategory.get()
+      })
+    } else {
+      event.sender.send('getProductCategoryById', {
+        success: false,
+        error: "Incorrect Product Category ID"
+      })
+    }
   }).catch(function (err) {
     event.sender.send('getProductCategoryById', {
       success: false,
@@ -186,6 +193,33 @@ ipcMain.on('viewProducts', function (event) {
   }).catch(function (err) {
     console.log(err)
     event.sender.send('getProducts', {
+      success: false,
+      error: err
+    });
+  })
+});
+
+
+ipcMain.on('viewProductById', function (event, product) {
+  models.Product.find({
+    where: {
+      id: product.id
+    }
+  }).then(function (product) {
+    if (product) {
+      event.sender.send('getProductById', {
+        success: true,
+        product: product.get()
+      })
+    }
+    else {
+      event.sender.send('getProductById', {
+        success: false,
+        error: "Incorrect Product Id"
+      })
+    }
+  }).catch(function (err) {
+    event.sender.send('getProductById', {
       success: false,
       error: err
     });
