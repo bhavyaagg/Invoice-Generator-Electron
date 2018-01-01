@@ -92,6 +92,52 @@
   </div>
 </div>
 
+<div class="modal fade" id="addInvoiceItemModal" tabindex="-1" role="dialog"
+     aria-labelledby="Add Invoice Item"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Invoice Item</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="form-group row">
+
+              <label for="productList" class="col-3 col-form-label">Product Name: </label>
+              <select class="custom-select" id="productList">
+                <option name="productList" value="0">None</option>
+              </select>
+
+          </div>
+          <div class="form-group row">
+            <label for="qty" class="col-3 col-form-label">Qty: </label>
+            <div class="col-9">
+              <input class="form-control" type="text" value="" id="qty">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="per" class="col-3 col-form-label">Per: </label>
+            <select class="custom-select" id="per">
+              <option name="type" value="0">Set</option>
+              <option name="type" value="1">Piece</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-danger" id="addItemInvoiceError"></p>
+      <div class="modal-footer">
+        <button id="addInvoiceItemSubmit" class=" btn btn-success">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div class="container-fluid">
   <div class="row" id="header">
