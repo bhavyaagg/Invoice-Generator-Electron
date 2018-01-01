@@ -652,7 +652,26 @@ $(document).ready(function () {
             });
           });
 
+          $('.delete-product').click(function (e) {
+            let productId = +(e.target.getAttribute("productId"));
+            let youSure = window.confirm('Are you sure want to delete this');
 
+            if (youSure) {
+              ipcRenderer.send('deleteProductById', {
+                id: productId
+              });
+              ipcRenderer.once('deletedProductById', function (event, data) {
+                if (data.success) {
+                  $viewProductsButton.click();
+                  $resultRow.removeClass('text-danger').addClass('text-success');
+                  $resultRow.text("Product Has Been Deleted");
+                } else {
+                  $resultRow.removeClass('text-success').addClass('text-danger');
+                  $resultRow.text("Product Could Not Be Deleted Because " + data.error);
+                }
+              })
+            }
+          });
         } else {
           $resultRow.removeClass('text-success').addClass('text-danger');
           $resultRow.text("Products Could Not Be Viewed Because " + data.error);
