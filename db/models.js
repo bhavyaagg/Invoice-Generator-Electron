@@ -50,6 +50,12 @@ const PartyMaster = sequelize.define('partymaster', {
   cd: Sequelize.DataTypes.DECIMAL
 });
 
+const Invoice = sequelize.define('invoice', {
+  id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  cases: Sequelize.DataTypes.DECIMAL,
+  dateOfInvoice: Sequelize.DataTypes.DATE
+});
+
 const Ledger = sequelize.define('ledger', {
   id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
   description: Sequelize.DataTypes.STRING,
