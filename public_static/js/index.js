@@ -800,7 +800,7 @@ $(document).ready(function () {
               });
               ipcRenderer.once('deletedProductCategoryById', function (event, data) {
                 if (data.success) {
-                  $('#viewProductCategoriesButton').click();
+                  $viewProductCategoriesButton.click();
                   $resultRow.removeClass('text-danger').addClass('text-success');
                   $resultRow.text("Product Category Has Been Deleted");
                 } else {
