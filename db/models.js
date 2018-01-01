@@ -50,6 +50,15 @@ const PartyMaster = sequelize.define('partymaster', {
   cd: Sequelize.DataTypes.INTEGER
 });
 
+const Ledger = sequelize.define('ledger', {
+  id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  description: Sequelize.DataTypes.STRING,
+  dateOfTransaction: Sequelize.DataTypes.STRING, // Using STRING although DATE would be better
+  debit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
+  credit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
+  balance: Sequelize.DataTypes.DECIMAL
+});
+
 sequelize.sync({force: false}).then(function () {
   console.log("Database Configured");
 });
