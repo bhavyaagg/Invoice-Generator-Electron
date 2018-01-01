@@ -153,7 +153,9 @@ $(document).ready(function () {
             </div>
           </li>
         </ul>
-        
+        <div class="row">
+          
+        </div>
         
       `);
 
@@ -220,7 +222,7 @@ $(document).ready(function () {
       });
 
       $productCategoryList.change(function () {
-        if ($productCategoryList.val() == 0)
+        if (+($productCategoryList.val()) === 0)
           return;
 
         let selectedProduct = productCategoriesRowObj[$productCategoryList.val()];
@@ -248,8 +250,10 @@ $(document).ready(function () {
       let listItemCount = 1;
       $invoiceItemList = $('#invoiceItemList');
       let productObj = {};
+
+
       $('#addInvoiceItemBtn').click(function () {
-        if (typeof selectedPartyMaster == 'undefined' || $productCategoryList.val() == 0) {
+        if (selectedPartyMaster === undefined || $productCategoryList.val() == 0) {
           return;
         }
         $('#addInvoiceItemModal').modal('show');
@@ -260,58 +264,18 @@ $(document).ready(function () {
 
 
         $('#productList').empty();
+
         products.forEach(product => {
           productObj[product.id] = product;
           str += `<option name="productList" value="${product.id}">${product.name}</option>`
         });
+
         $('#productList').append(str);
 
 
-        let $productList = $('#productList');
-        let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
+
         //$editProductCategoryModal.modal('hide');
-        $addInvoiceItemSubmit.click(function (e) {
 
-          let qty = $('#qty').val();
-          let selectedProduct = productObj[$productList.val()];
-          let per = $('#per').val();
-          per = $(`option[name="unitType"][value="${per}"]`).text();
-
-          if(qty==0 || typeof selectedProduct ==="undefined")
-            return;
-
-          $invoiceItemList.append(`
-            <li class="list-group-item">
-              <div class="row">
-                <div class="col-1">
-                  ${listItemCount}
-                </div>
-                <div class="col-5">
-                  ${selectedProduct.name}
-                </div>
-                <div class="col-1">
-                  ${qty}
-                </div>
-                <div class="col-1" id="productPrice">
-                  ${selectedProduct.price}
-                </div>
-                <div class="col-1"> 
-                  ${per}  
-                </div>
-                <div class="col-1">
-                  ${selectedPartyMaster.discount}
-                </div>
-                <div class="col-1">
-                  ${selectedPartyMaster.splDiscount}
-                </div>
-                <div class="col-1">
-                  ${((+qty)*(+selectedProduct.price))}
-                </div>
-              </div>
-            </li>
-          `)
-          $('#addInvoiceItemModal').modal('hide');
-        })
         /*
         let str = '';
         //console.log(products);
@@ -343,6 +307,56 @@ $(document).ready(function () {
 */
 
       })
+
+      let $productList = $('#productList');
+      let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
+
+      let totalAmt = 0 ;
+      $addInvoiceItemSubmit.click(function (e) {
+
+        let qty = $('#qty').val();
+        let selectedProduct = productObj[+($productList.val())];
+        let per = $('#per').val();
+        per = $(`option[name="unitType"][value="${per}"]`).text();
+
+        if (qty == 0 || typeof selectedProduct === "undefined")
+          return;
+
+        $invoiceItemList.append(`
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-1">
+                  ${listItemCount}
+                </div>
+                <div class="col-5">
+                  ${selectedProduct.name}
+                </div>
+                <div class="col-1">
+                  ${qty}
+                </div>
+                <div class="col-1" id="productPrice">
+                  ${selectedProduct.price}
+                </div>
+                <div class="col-1"> 
+                  ${per}  
+                </div>
+                <div class="col-1">
+                  ${selectedPartyMaster.discount}
+                </div>
+                <div class="col-1">
+                  ${selectedPartyMaster.splDiscount}
+                </div>
+                <div class="col-1">
+                  ${((+qty) * (+selectedProduct.price))}
+                </div>
+              </div>
+            </li>
+          `)
+        totalAmt += ((+qty) * (+selectedProduct.price));
+        $('#addInvoiceItemModal').modal('hide');
+      })
+
+
       function onProductChange(event) {
 
       }
@@ -960,6 +974,6 @@ $(document).ready(function () {
       }
     });
 
-    return productCategoriesRowObj ;
+    return productCategoriesRowObj;
   }
 });
