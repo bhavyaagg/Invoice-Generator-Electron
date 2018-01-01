@@ -154,7 +154,9 @@ $(document).ready(function () {
           </li>
         </ul>
         <div class="row">
-          
+          <div class="col-12" id="totalAmt">
+            
+          </div>  
         </div>
         
       `);
@@ -251,7 +253,7 @@ $(document).ready(function () {
       $invoiceItemList = $('#invoiceItemList');
       let productObj = {};
 
-
+      let packingCharges = 0;
       $('#addInvoiceItemBtn').click(function () {
         if (selectedPartyMaster === undefined || $productCategoryList.val() == 0) {
           return;
@@ -353,6 +355,17 @@ $(document).ready(function () {
             </li>
           `)
         totalAmt += ((+qty) * (+selectedProduct.price));
+        $('#totalAmt').empty()
+        let cdDiscount = totalAmt * +(selectedPartyMaster.cd) /100;
+
+        $('#totalAmt').append(`
+          <hr>
+          <p class="text-right"><b>Amount:  ${totalAmt}</b></p>
+          <p class="text-right"><b>CD:  ${cdDiscount}</b></p>
+          <hr>
+          
+          
+        `)
         $('#addInvoiceItemModal').modal('hide');
       })
 
