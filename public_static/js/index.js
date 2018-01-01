@@ -268,9 +268,9 @@ $(document).ready(function () {
 
 
         let $productList = $('#productList');
-        let $addInvoiceItemSumbit = $('#addInvoiceItemSubmit');
+        let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
         //$editProductCategoryModal.modal('hide');
-        $addInvoiceItemSumbit.click(function (e) {
+        $addInvoiceItemSubmit.click(function (e) {
 
           let qty = $('#qty').val();
           let selectedProduct = productObj[$productList.val()];
@@ -310,7 +310,7 @@ $(document).ready(function () {
               </div>
             </li>
           `)
-
+          $('#addInvoiceItemModal').modal('hide');
         })
         /*
         let str = '';
