@@ -101,11 +101,7 @@ function deleteInvoiceById(event, invoiceItemId) {
   }
 
   function editInvoice(event, invoiceItem) {
-    models.Invoice.update({
-      name: product.name,
-      price: product.price,
-      productcategoryId: product.productCategoryId
-    }, {
+    models.Invoice.update(invoiceItem, {
       where: {
         id: invoiceItem.id
       }
