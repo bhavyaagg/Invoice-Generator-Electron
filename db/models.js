@@ -90,7 +90,7 @@ const Ledger = sequelize.define('ledger', {
   balance: Sequelize.DataTypes.DECIMAL
 });
 
-sequelize.sync({force: false, alter: true}).then(function () {
+sequelize.sync({force: false}).then(function () {
   console.log("Database Configured");
 });
 

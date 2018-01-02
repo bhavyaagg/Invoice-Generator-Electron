@@ -43,6 +43,8 @@ $(document).ready(function () {
 
 
       $mainContent.empty();
+      $resultRow.empty();
+
       $mainContent.append(`
         <div class="row">
           <div class="col text-center">
@@ -480,9 +482,9 @@ $(document).ready(function () {
         partymasterId:1
         productcategoryId:1
          */
-        let invoiceItem = data.invoiceItems;
+        let invoiceItems = data.invoiceItems;
 
-
+        console.log(invoiceItems);
 
 
       });
@@ -522,7 +524,7 @@ $(document).ready(function () {
             </div>
           </li>
         </ul>
-        `;
+      `;
 
       $mainContent.append(str);
 
