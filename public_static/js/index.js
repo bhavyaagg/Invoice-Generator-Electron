@@ -186,7 +186,7 @@ $(document).ready(function () {
 
       let grandTotal = 0;
       let products;
-      let cdDiscount ;
+      let cdDiscount;
       // Get data in party Master Dropdown
       ipcRenderer.send('viewPartyMaster');
       ipcRenderer.once('getPartyMaster', function (event, data) {
@@ -221,18 +221,18 @@ $(document).ready(function () {
 
       });
 
-      let slipNumber  = 1;
+      let slipNumber = 1;
       let $slipNumber = $('#slipNo');
 
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
-        if(!data.success || typeof data.invoiceItems === "undefined") {
+        if (!data.success || typeof data.invoiceItems === "undefined") {
           slipNumber = 1;
           return;
         }
 
         slipNumber = data.invoiceItems.length + 1;
-        $slipNumber.append( slipNumber);
+        $slipNumber.append(slipNumber);
 
       });
 
@@ -253,7 +253,7 @@ $(document).ready(function () {
 
       // On change for party master list
       let selectedPartyMaster;
-      let selectedProductCategory ;
+      let selectedProductCategory;
 
       $partyMasterList.change(function () {
         if ($partyMasterList.val() == 0)   // Check for none in list
@@ -279,7 +279,7 @@ $(document).ready(function () {
 
           console.log('productList' + productList.success);
 
-          if ( !productList.success || productList.product.length === 0 ) {
+          if (!productList.success || productList.product.length === 0) {
             $mainContent.empty();
             $resultRow.empty();
             $resultRow.removeClass('text-success').addClass('text-danger');
@@ -316,7 +316,7 @@ $(document).ready(function () {
       let $productList = $('#productList');
       let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
 
-      let totalAmt = 0 ;
+      let totalAmt = 0;
 
       $('#addInvoiceItemBtn').click(function () {
         if (selectedPartyMaster === undefined || $productCategoryList.val() === 0) {
@@ -330,8 +330,6 @@ $(document).ready(function () {
         $('#addInvoiceItemModal').modal('show');
 
 
-
-
       })
 
       $('#addPackingChargesBtn').click(function () {
@@ -341,7 +339,7 @@ $(document).ready(function () {
       $('#addPackingChargesSubmit').click(function () {
 
         let pcharges = $('#packingCharges').val();
-        if(pcharges == "")
+        if (pcharges == "")
           return;
         let prevPackingCharges = packingCharges;
         packingCharges = pcharges;
@@ -397,18 +395,18 @@ $(document).ready(function () {
           `)
         totalAmt += ((+qty) * (+selectedProduct.price));
 
-        cdDiscount = totalAmt * +(selectedPartyMaster.cd) /100;
+        cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
 
-        grandTotal = totalAmt - (+cdDiscount) + +(packingCharges) ;
+        grandTotal = totalAmt - (+cdDiscount) + +(packingCharges);
         updateAmtDiv();
         $('#addInvoiceItemModal').modal('hide');
       });
 
       $('#submitInvoice').click(function () {
-        if(listItemCount===1)
+        if (listItemCount === 1)
           return;
 
-        ipcRenderer.send('submitInvoice',{
+        ipcRenderer.send('submitInvoice', {
           cases: $cases.val(),
           dateOfInvoice: $invoiceDate.val(),
           bilityNo: $bilityNumber.val(),
@@ -453,17 +451,17 @@ $(document).ready(function () {
       }
 
     });
-    
+
     $('#viewInvoicesButton').click(function () {
 
       $mainContent.empty();
       $resultRow.empty();
 
 
-
+      let invoiceItems = [];
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
-        if(!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length===0) {
+        if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
 
           $mainContent.empty();
           $resultRow.empty();
@@ -471,18 +469,8 @@ $(document).ready(function () {
           $resultRow.text("Add a invoice item First.");
           return;
         }
-        /*
-        bilityNo:"0"
-        biltyDate:null
-        cases:0
-        chalanDate:"2017-08-19"
-        chalanNo:"0"
-        dateOfInvoice:"2018-01-02"
-        id:3
-        partymasterId:1
-        productcategoryId:1
-         */
-        let invoiceItems = data.invoiceItems;
+
+        invoiceItems = data.invoiceItems;
 
         console.log(invoiceItems);
 
@@ -506,6 +494,9 @@ $(document).ready(function () {
                 <b>Cases</b>
               </div>
               <div class="col-1">
+                <b>Invoice Date</b>
+              </div>
+              <div class="col-1">
                 <b>Bility No.</b>
               </div>
               <div class="col-1">
@@ -523,11 +514,65 @@ $(document).ready(function () {
               
             </div>
           </li>
-        </ul>
       `;
 
       $mainContent.append(str);
+      /*
+      bilityNo:"0"
+      biltyDate:null
+      cases:0
+      chalanDate:"2017-08-19"
+      chalanNo:"0"
+      dateOfInvoice:"2018-01-02"
+      id:3
+      partymasterId:1
+      productcategoryId:1
+       */
+      str = '';
+      invoiceItems.forEach(invoiceItem => {
+        str += `
+          <li class="list-group-item">
+            <div class="row">
+              
+              <div class="col-1">
+                ${invoiceItem.id}
+              </div>
+              <div class="col-2">
+                Party Name
+              </div>
+              <div class="col-2">
+                Product Category
+              </div>
+              <div class="col-1">
+                ${invoiceItem.cases}
+              </div>
+              <div class="col-1">
+                ${invoiceItem.dateOfInvoice}
+              </div>
+              <div class="col-1">
+                ${invoiceItem.bilityNo}
+              </div>
+              <div class="col-1">
+                ${invoiceItem.bilityDate}
+              </div>
+              <div class="col-1">
+                ${invoiceItem.chalanNo}
+              </div>
+              <div class="col-1">
+                ${invoiceItem.chalanDate}
+              </div>
+              <div class="col-1">
+                ${invoiceItem.grandTotal}
+              </div> 
+              
+            </div>
+          </li>  
+        `;
+      });
 
+      str += '</ul>';
+
+      $mainContent.append(str);
     })
 
 
@@ -1146,18 +1191,18 @@ $(document).ready(function () {
   function getCurrentDate() {
     let today = new Date();
     let dd = today.getDate();
-    let mm = today.getMonth()+1; //January is 0!
+    let mm = today.getMonth() + 1; //January is 0!
     let yyyy = today.getFullYear();
 
-    if(dd<10) {
-      dd = '0'+dd
+    if (dd < 10) {
+      dd = '0' + dd
     }
 
-    if(mm<10) {
-      mm = '0'+mm
+    if (mm < 10) {
+      mm = '0' + mm
     }
 
-    today =    yyyy + '-' + mm + '-'  + dd;
+    today = yyyy + '-' + mm + '-' + dd;
     return today;
   }
 });
