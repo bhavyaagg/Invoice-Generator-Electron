@@ -101,6 +101,9 @@ const Ledger = sequelize.define('ledger', {
   invoiceId: {type: Sequelize.DataTypes.INTEGER, allowNull: true}
 });
 
+Ledger.belongsTo(PartyMaster);
+PartyMaster.hasMany(Ledger);
+
 sequelize.sync({force: false}).then(function () {
   console.log("Database Configured");
 });
