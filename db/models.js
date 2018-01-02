@@ -57,7 +57,8 @@ const Invoice = sequelize.define('invoice', {
   bilityNo: Sequelize.DataTypes.STRING,
   biltyDate: Sequelize.DataTypes.DATEONLY,
   chalanNo: Sequelize.DataTypes.STRING,
-  chalanDate: Sequelize.DataTypes.DATEONLY
+  chalanDate: Sequelize.DataTypes.DATEONLY,
+  grandTotal: Sequelize.DataTypes.INTEGER
 });
 
 
@@ -89,7 +90,7 @@ const Ledger = sequelize.define('ledger', {
   balance: Sequelize.DataTypes.DECIMAL
 });
 
-sequelize.sync({force: false}).then(function () {
+sequelize.sync({force: false, alter: true}).then(function () {
   console.log("Database Configured");
 });
 
