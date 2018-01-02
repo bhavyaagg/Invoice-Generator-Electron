@@ -235,7 +235,7 @@ $(document).ready(function () {
           return;
         }
 
-        slipNumber = data.invoiceItems.length + 1;
+        slipNumber = data.invoiceItems[data.invoiceItems.length-1].id + 1;
         $slipNumber.append(slipNumber);
 
       });
@@ -455,8 +455,8 @@ $(document).ready(function () {
       }
 
     });
-
-    $('#viewInvoicesButton').click(function () {
+    let $viewInvoicesButton = $('#viewInvoicesButton');
+    $viewInvoicesButton.click(function () {
 
       $mainContent.empty();
       $resultRow.empty();
@@ -568,10 +568,10 @@ $(document).ready(function () {
               </div> 
               <div class="col-1 row">
                 <div class="col-6">
-                  <button class="btn btn-success edit-product-category" invoiceItemId=${invoiceItem.id}>EDIT</button>
+                  <button class="btn btn-success edit-invoice-item" invoiceItemId=${invoiceItem.id}>EDIT</button>
                 </div>
                 <div class="col-6">
-                  <button class="btn btn-danger delete-product-category" invoiceItemId=${invoiceItem.id}>DELETE</button>
+                  <button class="btn btn-danger delete-invoice-item" invoiceItemId=${invoiceItem.id}>DELETE</button>
                 </div>
               </div>
             </div>
@@ -584,6 +584,26 @@ $(document).ready(function () {
 
         $mainContent.append(str);
 
+        $('.delete-invoice-item').click(function (e) {
+          let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
+          let youSure = window.confirm('Are you sure want to delete this');
+
+          if (youSure) {
+            ipcRenderer.send('deleteInvoiceItemById', {
+              id: invoiceItemId
+            });
+            ipcRenderer.once('deletedInvoiceItemById', function (event, data) {
+              if (data.success) {
+                $viewInvoicesButton.click();
+                $resultRow.removeClass('text-danger').addClass('text-success');
+                $resultRow.text("Invoice Item Has Been Deleted");
+              } else {
+                $resultRow.removeClass('text-success').addClass('text-danger');
+                $resultRow.text("Item Could Not Be Deleted Because " + data.error);
+              }
+            })
+          }
+        });
 
 
       });

@@ -53,40 +53,40 @@ function viewInvoiceItems(event) {
     });
 }
 
-function deleteInvoiceById(event, invoiceItemId) {
+function deleteInvoiceItemById(event, invoiceItemId) {
   models.Invoice.destroy({
     where: {
-      id: invoiceItemId
+      id: invoiceItemId.id
     }
   }).then(function (rows) {
     if (rows > 0) {
       /**/
       models.InvoiceDetail.destroy({
         where: {
-          invoiceId: invoiceItemId
+          invoiceId: null
         }
       }).then(function (rows) {
-        if (row > 0) {
-          event.sender.send('deletedInvoiceById', {
+        if (rows > 0) {
+          event.sender.send('deletedInvoiceItemById', {
             success: true,
           })
         }
         else {
-          event.sender.send('deletedInvoiceById', {
+          event.sender.send('deletedInvoiceItemById', {
             success: false,
             error: "Incorrect ID"
           })
         }
       }).catch(function (err) {
         console.log(err);
-        event.sender.send('deletedInvoiceById', {
+        event.sender.send('deletedInvoiceItemById', {
           success: false,
           error: err
         })
       })
     }
     else {
-      event.sender.send('deletedInvoiceById', {
+      event.sender.send('deletedInvoiceItemById', {
         success: false,
         error: "Incorrect ID"
       })
@@ -129,5 +129,6 @@ function editInvoice(event, invoiceItem) {
 module.exports = exports = {
   submitInvoice,
   submitInvoiceDetail,
-  viewInvoiceItems
+  viewInvoiceItems,
+  deleteInvoiceItemById
 };
