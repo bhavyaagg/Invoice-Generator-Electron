@@ -331,7 +331,7 @@ $(document).ready(function () {
         updateAmtDiv();
         $('#addPackingChargesModal').modal('hide');
       });
-      let listItemsObj = [];
+      let invoiceListItems = [];
       $addInvoiceItemSubmit.click(function (e) {
 
         let qty = $('#qty').val();
@@ -341,7 +341,7 @@ $(document).ready(function () {
 
         if (qty <= 0 || typeof selectedProduct === "undefined")
           return;
-        listItemsObj.push({
+        invoiceListItems.push({
           itemNumber: listItemCount,
           qty: qty,
           productId: selectedProduct.id,
@@ -415,7 +415,7 @@ $(document).ready(function () {
         });
         ipcRenderer.send('submitInvoiceDetail', {
           invoiceId: slipNumber,
-          listItems: listItemsObj
+          listItems: invoiceListItems
         })
 
 

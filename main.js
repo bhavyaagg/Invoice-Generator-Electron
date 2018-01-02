@@ -344,3 +344,23 @@ ipcMain.on('submitInvoice', function (event, invoiceItem) {
     });
   })
 });
+
+ipcMain.on('submitInvoiceDetail', function (event, invoiceDetail) {
+
+});
+
+ipcMain.on('viewInvoiceItems', function (event) {
+  models.Invoice.findAll({})
+    .then(function (invoiceItems) {
+      event.sender.send('getInvoiceItems', {
+        success: true,
+        invoiceItems: invoiceItems.map(invoiceItem => invoiceItem.get())
+      })
+    })
+    .catch(err => {
+      event.sender.send('getInvoiceItems', {
+        success: false,
+        error: err
+      });
+    });
+});
