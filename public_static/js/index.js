@@ -259,7 +259,9 @@ $(document).ready(function () {
         ipcRenderer.send('viewProductByPCategoryId', selectedProductCategory);
         ipcRenderer.once('getProductByPCategoryId', function (event, productList) {
 
-          if (productList.product.length === 0 || !productList.success) {
+          console.log('productList' + productList.success);
+
+          if ( !productList.success || productList.product.length === 0 ) {
             $mainContent.empty();
             $resultRow.empty();
             $resultRow.removeClass('text-success').addClass('text-danger');
@@ -384,7 +386,7 @@ $(document).ready(function () {
         $('#addInvoiceItemModal').modal('hide');
       });
 
-      $('submitInvoice').click(function () {
+      $('#submitInvoice').click(function () {
         if(listItemCount===1)
           return;
 
@@ -395,13 +397,22 @@ $(document).ready(function () {
           bilityDate: $bilityDate.val(),
           chalanNo: $chalanNumber.val(),
           chalanDate: $chalanDate.val(),
-          partyMasterId: selectedPartyMaster.id,
-          productCategoryId: selectedProductCategory.id
+          partymasterId: selectedPartyMaster.id,
+          productcategoryId: selectedProductCategory.id
         });
 
         let slipNumber;
 
-        ipcRenderer.once('');
+        ipcRenderer.once('getSubmitInvoice', function (event, data) {
+          if (data.success) {
+            $resultRow.removeClass('text-danger').addClass('text-success');
+            $resultRow.text("Invoice Has Been Added");
+            $mainContent.empty();
+          } else {
+            $resultRow.removeClass('text-success').addClass('text-danger');
+            $resultRow.text("Invoice Could Not Be Added Because " + data.error);
+          }
+        });
         ipcRenderer.send('submitInvoiceDetail', {
           invoiceId: slipNumber,
           listItems: listItemsObj
@@ -929,7 +940,6 @@ $(document).ready(function () {
                 </div>
               </li>
           `;
-
           data.productCategories.forEach(function (productCategory) {
             str += `
             <li class="list-group-item">

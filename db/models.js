@@ -43,7 +43,7 @@ const PartyMaster = sequelize.define('partymaster', {
   destination: Sequelize.DataTypes.STRING,
   marka: Sequelize.DataTypes.STRING,
   openingBalance: Sequelize.DataTypes.DECIMAL,
-  openingBalanceDate: Sequelize.DataTypes.DATE,
+  openingBalanceDate: Sequelize.DataTypes.DATEONLY,
   transport: Sequelize.DataTypes.STRING,
   discount: Sequelize.DataTypes.DECIMAL,
   splDiscount: Sequelize.DataTypes.DECIMAL,
@@ -60,9 +60,12 @@ const Invoice = sequelize.define('invoice', {
   chalanDate: Sequelize.DataTypes.DATEONLY
 });
 
+
 Invoice.belongsTo(PartyMaster);
 PartyMaster.hasMany(Invoice);
 
+Invoice.belongsTo(ProductCategory);
+ProductCategory.hasMany(Invoice);
 
 const InvoiceDetail = sequelize.define('invoicedetail', {
   id: {type:Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
@@ -73,9 +76,9 @@ const InvoiceDetail = sequelize.define('invoicedetail', {
 InvoiceDetail.belongsTo(Invoice);
 Invoice.hasMany(InvoiceDetail);
 
-Product.belongsTo(InvoiceDetail);
-InvoiceDetail.hasMany(Product);
 
+InvoiceDetail.belongsTo(Product);
+Product.hasMany(InvoiceDetail);
 
 const Ledger = sequelize.define('ledger', {
   id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
@@ -93,5 +96,7 @@ sequelize.sync({force: false}).then(function () {
 module.exports = {
   ProductCategory,
   Product,
-  PartyMaster
+  PartyMaster,
+  Invoice,
+  InvoiceDetail
 };

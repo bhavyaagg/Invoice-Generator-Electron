@@ -310,7 +310,9 @@ ipcMain.on('viewPartyMaster', function (event) {
     });
   })
 });
+
 ipcMain.on('viewProductByPCategoryId', function (event, productCategory) {
+  console.log(productCategory);
   models.Product.findAll({
     where: {
       productcategoryId: productCategory.id
@@ -322,6 +324,21 @@ ipcMain.on('viewProductByPCategoryId', function (event, productCategory) {
     })
   }).catch(function (err) {
     event.sender.send('getProductByPCategoryId', {
+      success: false,
+      error: err
+    });
+  })
+});
+
+ipcMain.on('submitInvoice', function (event, invoiceItem) {
+  models.Invoice.create(invoiceItem)
+    .then(invoiceItem => {
+      event.sender.send('getSubmitInvoice', {
+        success: true,
+        data: invoiceItem
+      })
+    }).catch(err => {
+    event.sender.send('getSubmitInvoice', {
       success: false,
       error: err
     });
