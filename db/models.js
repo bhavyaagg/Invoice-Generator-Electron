@@ -50,6 +50,17 @@ const PartyMaster = sequelize.define('partymaster', {
   cd: Sequelize.DataTypes.DECIMAL
 });
 
+const PartyMasterProductCategoryDiscount = sequelize.define('partymasterproductcategorydiscount', {
+  id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  discount: Sequelize.DataTypes.DECIMAL
+});
+
+PartyMasterProductCategoryDiscount.belongsTo(PartyMaster);
+PartyMaster.hasMany(PartyMasterProductCategoryDiscount);
+
+PartyMasterProductCategoryDiscount.belongsTo(ProductCategory);
+ProductCategory.hasMany(PartyMasterProductCategoryDiscount);
+
 const Invoice = sequelize.define('invoice', {
   id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
   cases: Sequelize.DataTypes.INTEGER,
