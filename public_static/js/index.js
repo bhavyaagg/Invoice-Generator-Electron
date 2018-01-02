@@ -57,7 +57,7 @@ $(document).ready(function () {
               <option name="partyMasterList" value="0">None</option>
             </select>
           </div>
-          <div class="col-4" >
+          <div class="col-4" id="slipNo" >
             Slip No.:   
           </div>
           <div class="col-4">
@@ -219,6 +219,17 @@ $(document).ready(function () {
 
       });
 
+      let slipNumber;
+      ipcRenderer.send('viewInvoiceItems');
+      ipcRenderer.once('getInvoiceItems', function (event, data) {
+        if(!data.success || typeof data.invoiceItems === "undefined") {
+          slipNumber = 1;
+          return;
+        }
+
+        slipNumber = data.invoiceItems.length + 1;
+      });
+
       //Get Data in Product Categories DropDown
       let productCategoriesRowObj = getDataProductCategories(); // All product Categories with id as key
 
@@ -230,8 +241,10 @@ $(document).ready(function () {
       let $bilityDate = $('#bilityDate');
       let $chalanNumber = $('#chalanNumber');
       let $chalanDate = $('#chalanDate');
+      let $slipNumber = $('#slipNo');
 
       $invoiceDate.val(getCurrentDate());
+      $slipNumber.val(slipNumber);
 
       // On change for party master list
       let selectedPartyMaster;
@@ -401,7 +414,6 @@ $(document).ready(function () {
           productcategoryId: selectedProductCategory.id
         });
 
-        let slipNumber;
 
         ipcRenderer.once('getSubmitInvoice', function (event, data) {
           if (data.success) {

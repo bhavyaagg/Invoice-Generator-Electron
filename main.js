@@ -345,8 +345,24 @@ ipcMain.on('submitInvoice', function (event, invoiceItem) {
   })
 });
 
-ipcMain.on('submitInvoiceDetail', function (event, invoiceDetail) {
+/*
+invoiceListItems.push({
+          itemNumber: listItemCount,
+          qty: qty,
+          productId: selectedProduct.id,
+          per: per
+        });
+*/
 
+ipcMain.on('submitInvoiceDetail', function (event, invoiceDetail) {
+  invoiceDetail.listItems.forEach(invoiceItem=>{
+    models.InvoiceDetail.create({
+      qty: invoiceItem.qty,
+      unitType: invoiceItem.per,
+      invoiceId: invoiceDetail.invoiceId,
+      productId: invoiceItem.productId
+    });
+  });
 });
 
 ipcMain.on('viewInvoiceItems', function (event) {
