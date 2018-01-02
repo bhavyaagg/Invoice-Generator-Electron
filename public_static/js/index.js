@@ -219,7 +219,9 @@ $(document).ready(function () {
 
       });
 
-      let slipNumber;
+      let slipNumber  = 1;
+      let $slipNumber = $('#slipNo');
+
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
         if(!data.success || typeof data.invoiceItems === "undefined") {
@@ -228,6 +230,8 @@ $(document).ready(function () {
         }
 
         slipNumber = data.invoiceItems.length + 1;
+        $slipNumber.append( slipNumber);
+
       });
 
       //Get Data in Product Categories DropDown
@@ -241,10 +245,9 @@ $(document).ready(function () {
       let $bilityDate = $('#bilityDate');
       let $chalanNumber = $('#chalanNumber');
       let $chalanDate = $('#chalanDate');
-      let $slipNumber = $('#slipNo');
+
 
       $invoiceDate.val(getCurrentDate());
-      $slipNumber.val(slipNumber);
 
       // On change for party master list
       let selectedPartyMaster;
@@ -447,6 +450,22 @@ $(document).ready(function () {
       }
 
     });
+    
+    $('#viewInvoicesButton').click(function () {
+
+      ipcRenderer.send('viewInvoiceItems');
+      ipcRenderer.once('getInvoiceItems', function (event, data) {
+        if(!data.success || typeof data.invoiceItems === "undefined") {
+          return;
+        }
+
+        let invoiceItem = data.invoiceItems;
+
+
+      });
+
+
+    })
 
 
   });

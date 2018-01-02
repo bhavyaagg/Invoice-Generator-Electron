@@ -355,15 +355,22 @@ invoiceListItems.push({
 */
 
 ipcMain.on('submitInvoiceDetail', function (event, invoiceDetail) {
-  invoiceDetail.listItems.forEach(invoiceItem=>{
+  invoiceDetail.listItems.forEach(invoiceItem => {
     models.InvoiceDetail.create({
       qty: invoiceItem.qty,
       unitType: invoiceItem.per,
       invoiceId: invoiceDetail.invoiceId,
       productId: invoiceItem.productId
+    }).then(function (item) {
+
+    }).catch(function (err) {
+      event.sender.send('getSubmitInvoice', {
+        success: false,
+        error: err
+      });
     });
   });
-});
+})
 
 ipcMain.on('viewInvoiceItems', function (event) {
   models.Invoice.findAll({})
