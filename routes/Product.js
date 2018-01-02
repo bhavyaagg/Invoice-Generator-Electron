@@ -160,11 +160,31 @@ function viewProductById(event, product) {
   })
 }
 
+function viewProductByPCategoryId(event, productCategory) {
+  console.log(productCategory);
+  models.Product.findAll({
+    where: {
+      productcategoryId: productCategory.id
+    }
+  }).then(function (product) {
+    event.sender.send('getProductByPCategoryId', {
+      success: true,
+      product: product.map(p => p.get())
+    })
+  }).catch(function (err) {
+    event.sender.send('getProductByPCategoryId', {
+      success: false,
+      error: err
+    });
+  })
+}
+
 module.exports = exports = {
   addProduct,
   editProduct,
   deleteProductById,
   deleteProductCategoryById,
   viewProductById,
-  viewProducts
+  viewProducts,
+  viewProductByPCategoryId
 };
