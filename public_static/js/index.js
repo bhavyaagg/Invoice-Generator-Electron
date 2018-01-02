@@ -9,6 +9,7 @@ $(document).ready(function () {
   const $invoicesButton = $('#invoicesButton')
     , $partyMasterButton = $('#partyMasterButton')
     , $productButton = $('#productButton')
+    , $ledgerButton = $('#ledgerButton')
     , $subHeader = $('#subHeader')
     , $mainContent = $('#mainContent')
     , $resultRow = $('#resultRow');
@@ -458,7 +459,6 @@ $(document).ready(function () {
       $resultRow.empty();
 
 
-
       let invoiceItems = [];
       let str = `
         <ul class="list-group text-center">
@@ -506,8 +506,6 @@ $(document).ready(function () {
             </div>
           </li>
       `;
-
-
 
 
       ipcRenderer.send('viewInvoiceItems');
@@ -579,7 +577,6 @@ $(document).ready(function () {
         //let productCategoryId = +(e.target.getAttribute("productCategoryId"));
 
         $mainContent.append(str);
-
 
 
       });
@@ -1245,6 +1242,50 @@ $(document).ready(function () {
 
   });
 
+  $ledgerButton.click(function () {
+    $subHeader.empty();
+    $mainContent.empty();
+    $resultRow.empty();
+    $subHeader.append(`
+      <div class="col text-center">
+        <label for="partyMastersList" class="col-form-label">Party Master Name: &nbsp;&nbsp;</label>
+        <select id="partyMastersList" class="custom-select">
+          <option name="partyMastersList" value="0">None</option>
+        </select>
+      </div>
+      <div class="col text-center">
+        <button id="viewLedger" class="btn btn-primary">View Ledger</button>
+      </div>
+      <div class="col text-center">
+        <button id="addPayment" class="btn btn-primary">Add Payment</button>
+      </div>
+    `);
+
+    ipcRenderer.send('viewPartyMaster');
+    ipcRenderer.once('getPartyMaster', function (event, data) {
+      if (data.success) {
+        let str = "";
+        if (data.partyMasterRows.length === 0) {
+          $mainContent.empty();
+          $resultRow.empty();
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Add a Party Master First.");
+          return;
+        }
+        data.partyMasterRows.forEach(function (partyMaster) {
+          str += `<option name="partyMastersList" value="${partyMaster.id}">${partyMaster.name}</option>`
+        });
+
+        $('#partyMastersList').append(str);
+      } else {
+        $resultRow.removeClass('text-success').addClass('text-danger');
+        $resultRow.text("Party Masters Could Not Be Viewed Because " + data.error);
+      }
+    });
+
+
+  });
+
   $editProductCategorySubmit.click(function (e) {
     let productCategoryId = +(e.target.getAttribute("productCategoryId"));
     let productCategoryName = $editProductCategoryName.val();
@@ -1298,7 +1339,6 @@ $(document).ready(function () {
       })
     }
   })
-
 
   function getDataProductCategories() {
     let productCategoriesRowObj = {};
