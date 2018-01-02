@@ -3,5 +3,8 @@
  */
 
 module.exports = exports = {
-  productCategory: require('./ProductCategory')
+  productCategory: require('./ProductCategory'),
+  product: require('./Product'),
+  partyMaster: require('./PartyMaster'),
+  invoice: require('./Invoice')
 };
