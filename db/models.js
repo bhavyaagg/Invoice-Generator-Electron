@@ -59,9 +59,8 @@ const Invoice = sequelize.define('invoice', {
   chalanNo: Sequelize.DataTypes.STRING
 });
 
-Invoice.belongsTo(ProductCategory);
-ProductCategory.hasMany(Invoice);
-
+Invoice.belongsTo(PartyMaster);
+PartyMaster.hasMany(Invoice);
 
 
 const InvoiceDetail = sequelize.define('invoicedetail', {

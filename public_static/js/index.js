@@ -161,6 +161,12 @@ $(document).ready(function () {
           </div>  
         </div>
         
+        <div class="row" id="submitBtnDiv">
+          <div class="col-6"></div>
+          <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
+          <div class="col-6"></div>
+        </div>
+        
       `);
 
 
@@ -214,6 +220,7 @@ $(document).ready(function () {
 
       // On change for party master list
       let selectedPartyMaster;
+
       $partyMasterList.change(function () {
         if ($partyMasterList.val() == 0)   // Check for none in list
           return;
@@ -254,10 +261,15 @@ $(document).ready(function () {
       });
 
       let listItemCount = 1;
-      $invoiceItemList = $('#invoiceItemList');
+      let $invoiceItemList = $('#invoiceItemList');
       let productObj = {};
 
       let packingCharges = 0;
+      let $productList = $('#productList');
+      let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
+
+      let totalAmt = 0 ;
+
       $('#addInvoiceItemBtn').click(function () {
         if (selectedPartyMaster === undefined || $productCategoryList.val() == 0) {
           return;
@@ -330,10 +342,6 @@ $(document).ready(function () {
         $('#addPackingChargesModal').modal('hide');
       });
 
-      let $productList = $('#productList');
-      let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
-
-      let totalAmt = 0 ;
       $addInvoiceItemSubmit.click(function (e) {
 
         let qty = $('#qty').val();
