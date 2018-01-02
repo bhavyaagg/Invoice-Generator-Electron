@@ -457,6 +457,8 @@ $(document).ready(function () {
       $mainContent.empty();
       $resultRow.empty();
 
+
+
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
         if(!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length===0) {
@@ -480,61 +482,49 @@ $(document).ready(function () {
          */
         let invoiceItem = data.invoiceItems;
 
-        let str = `
-            <ul class="list-group text-center">
-              <li class="list-group-item">
-                <div class="row">
-                  <div class="col-1">
-                    <b>Slip No.</b>
-                  </div>
-                  <div class="col-2">
-                    <b>Party Name</b>
-                  </div>
-                  <div class="col-1">
-                    <b>Product Category</b>
-                  </div>
-                  <div class="col-1">
-                    <b>Cases</b>
-                  </div>
-                  <div class="col-1">
-                    <b>Bility No.</b>
-                  </div>
-                  <div class="col-1">
-                    <b>Bility Date</b>
-                  </div>
-                  <div class="col-1">
-                    <b>Chalan No.</b>
-                  </div>
-                  <div class="col-1">
-                    <b>Chalan Date</b>
-                  </div>
-                  <div class="col-1">
-                    <b>Grand Total</b>
-                  </div> 
-                </div>
-              </li>
-            </ul>
-          `;
-
-        /*
 
 
-      ipcRenderer.send('viewPartyMaster');
-      ipcRenderer.once('getPartyMaster', function (event, data) {
-        if (data.success) {
-
-          if (data.partyMasterRows.length === 0) {
-
-            return;
-          }
-
-
-
-
-         */
 
       });
+      let str = `
+        <ul class="list-group text-center">
+          <li class="list-group-item">
+            <div class="row">
+              
+              <div class="col-1">
+                <b>Slip No.</b>
+              </div>
+              <div class="col-2">
+                <b>Party Name</b>
+              </div>
+              <div class="col-2">
+                <b>Product Category</b>
+              </div>
+              <div class="col-1">
+                <b>Cases</b>
+              </div>
+              <div class="col-1">
+                <b>Bility No.</b>
+              </div>
+              <div class="col-1">
+                <b>Bility Date</b>
+              </div>
+              <div class="col-1">
+                <b>Chalan No.</b>
+              </div>
+              <div class="col-1">
+                <b>Chalan Date</b>
+              </div>
+              <div class="col-1">
+                <b>Grand Total</b>
+              </div> 
+              
+            </div>
+          </li>
+        </ul>
+        `;
 
+      $mainContent.append(str);
 
     })
 
