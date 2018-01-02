@@ -61,7 +61,6 @@ const Invoice = sequelize.define('invoice', {
   grandTotal: Sequelize.DataTypes.INTEGER
 });
 
-
 Invoice.belongsTo(PartyMaster);
 PartyMaster.hasMany(Invoice);
 
@@ -77,7 +76,6 @@ const InvoiceDetail = sequelize.define('invoicedetail', {
 InvoiceDetail.belongsTo(Invoice);
 Invoice.hasMany(InvoiceDetail);
 
-
 InvoiceDetail.belongsTo(Product);
 Product.hasMany(InvoiceDetail);
 
@@ -88,7 +86,8 @@ const Ledger = sequelize.define('ledger', {
   debit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
   credit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
   balance: Sequelize.DataTypes.DECIMAL,
-  productCategoryName: Sequelize.DataTypes.STRING
+  productCategoryName: Sequelize.DataTypes.STRING,
+  invoiceId: {type: Sequelize.DataTypes.INTEGER, allowNull: true}
 });
 
 sequelize.sync({force: false}).then(function () {
