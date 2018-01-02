@@ -458,7 +458,9 @@ $(document).ready(function () {
       $resultRow.empty();
 
 
+
       let invoiceItems = [];
+
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
         if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
@@ -472,7 +474,9 @@ $(document).ready(function () {
 
         invoiceItems = data.invoiceItems;
 
+
         console.log(invoiceItems);
+
 
 
       });
@@ -925,7 +929,7 @@ $(document).ready(function () {
 
       $submitProduct.click(function () {
         let productName = $('#productName').val();
-        let productPrice = $('#productPrice').val();
+        let productPrice = +($('#productPrice').val());
         let productCategoryId = +($('#productCategoriesList').val());
 
         if (!productName || !productPrice || productCategoryId === 0) {
@@ -967,14 +971,14 @@ $(document).ready(function () {
           let str = `
             <ul class="list-group text-center">
               <li class="list-group-item">
-                <div class="row">
-                  <div class="col-4">
+                <div class="row align-items-center">
+                  <div class="col-3">
                     <b>Product Name</b>
                   </div>
-                  <div class="col-4">
+                  <div class="col-3">
                     <b>Product Price</b>
                   </div>
-                  <div class="col-4">
+                  <div class="col-3">
                     <b>Product Category</b>
                   </div>
                 </div>
@@ -984,15 +988,21 @@ $(document).ready(function () {
           data.products.forEach(function (product) {
             str += `
             <li class="list-group-item">
-              <div class="row">
-                <div class="col-4">
+              <div class="row align-items-center">
+                <div class="col-3">
                   ${product.name}
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                   ${product.price}
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                   ${product.productcategory.name}
+                </div>
+                <div class="col">
+                    <button class="btn btn-success edit-product" productId=${product.id}>EDIT</button>
+                </div>
+                <div class="col">
+                  <button class="btn btn-danger delete-product" productId=${product.id}>DELETE</button>
                 </div>
               </div>
             </li>
@@ -1001,6 +1011,73 @@ $(document).ready(function () {
           str += "</ul>"
 
           $mainContent.append(str);
+
+          $('.edit-product').click(function (e) {
+            let productId = +(e.target.getAttribute("productId"));
+            ipcRenderer.send('viewProductById', {
+              id: productId
+            });
+
+
+            ipcRenderer.once('getProductById', function (event, productData) {
+              if (data.success) {
+
+                ipcRenderer.send('viewProductCategories');
+
+                ipcRenderer.once('getProductCategories', function (event, data) {
+                  if (data.success) {
+                    $editProductCategoryForProductList.empty();
+                    let str = "";
+                    if (data.productCategories.length === 0) {
+                      $editProductError.text('No product Categories Exists');
+                      return;
+                    }
+                    data.productCategories.forEach(function (productCategory) {
+                      str += `<option name="editProductCategoryForProductList" value="${productCategory.id}">${productCategory.name}</option>`
+                    });
+
+                    $editProductCategoryForProductList.append(str);
+
+                    $editProductName.val(productData.product.name);
+                    $editProductPrice.val(productData.product.price);
+                    $editProductCategoryForProductList.val(productData.product.productcategoryId);
+                    $editProductSubmit[0].setAttribute('productId', productId);
+                    $resultRow.empty();
+                    $editProductModal.modal('show');
+
+                  } else {
+                    $resultRow.removeClass('text-success').addClass('text-danger');
+                    $resultRow.text("Product Categories Could Not Be Viewed Because " + data.error);
+                  }
+                });
+
+              } else {
+                $resultRow.removeClass('text-success').addClass('text-danger');
+                $resultRow.text("Product Could Not Be Edited Because " + data.error);
+              }
+            });
+          });
+
+          $('.delete-product').click(function (e) {
+            let productId = +(e.target.getAttribute("productId"));
+            let youSure = window.confirm('Are you sure want to delete this');
+
+            if (youSure) {
+              ipcRenderer.send('deleteProductById', {
+                id: productId
+              });
+              ipcRenderer.once('deletedProductById', function (event, data) {
+                if (data.success) {
+                  $viewProductsButton.click();
+                  $resultRow.removeClass('text-danger').addClass('text-success');
+                  $resultRow.text("Product Has Been Deleted");
+                } else {
+                  $resultRow.removeClass('text-success').addClass('text-danger');
+                  $resultRow.text("Product Could Not Be Deleted Because " + data.error);
+                }
+              })
+            }
+          });
         } else {
           $resultRow.removeClass('text-success').addClass('text-danger');
           $resultRow.text("Products Could Not Be Viewed Because " + data.error);
@@ -1068,7 +1145,7 @@ $(document).ready(function () {
           let str = `
             <ul class="list-group text-center">
               <li class="list-group-item">
-                <div class="row">
+                <div class="row align-items-center">
                   <div class="col-6">
                     <b>Product Category Name</b>
                   </div>
@@ -1079,10 +1156,11 @@ $(document).ready(function () {
                 </div>
               </li>
           `;
+
           data.productCategories.forEach(function (productCategory) {
             str += `
             <li class="list-group-item">
-              <div class="row">
+              <div class="row align-items-center">
                 <div class="col-6">
                   ${productCategory.name}
                 </div>
@@ -1119,7 +1197,24 @@ $(document).ready(function () {
           });
 
           $('.delete-product-category').click(function (e) {
-            console.log(e);
+            let productCategoryId = +(e.target.getAttribute("productCategoryId"));
+            let youSure = window.confirm('Are you sure want to delete this');
+
+            if (youSure) {
+              ipcRenderer.send('deleteProductCategoryById', {
+                id: productCategoryId
+              });
+              ipcRenderer.once('deletedProductCategoryById', function (event, data) {
+                if (data.success) {
+                  $viewProductCategoriesButton.click();
+                  $resultRow.removeClass('text-danger').addClass('text-success');
+                  $resultRow.text("Product Category Has Been Deleted");
+                } else {
+                  $resultRow.removeClass('text-success').addClass('text-danger');
+                  $resultRow.text("Product Category Could Not Be Deleted Because " + data.error);
+                }
+              })
+            }
           });
 
         } else {
@@ -1130,7 +1225,6 @@ $(document).ready(function () {
     })
 
   });
-
 
   $editProductCategorySubmit.click(function (e) {
     let productCategoryId = +(e.target.getAttribute("productCategoryId"));
@@ -1152,6 +1246,35 @@ $(document).ready(function () {
         } else {
           $resultRow.removeClass('text-success').addClass('text-danger');
           $resultRow.text("Product Category Could Not Be Updated Because " + data.error);
+        }
+      })
+    }
+  })
+
+  $editProductSubmit.click(function (e) {
+    let productId = +(e.target.getAttribute("productId"));
+    let productName = $editProductName.val();
+    let productPrice = +($editProductPrice.val());
+    let productCategoryId = +($editProductCategoryForProductList.val());
+
+    if (!productName || !productPrice || productCategoryId === 0) {
+      $editProductError.text("Please Enter the All the Details");
+    } else {
+      ipcRenderer.send('editProduct', {
+        id: productId,
+        name: productName,
+        price: productPrice,
+        productCategoryId: productCategoryId
+      });
+      ipcRenderer.once('editedProduct', function (event, data) {
+        $editProductModal.modal('hide');
+        if (data.success) {
+          $('#viewProductsButton').click();
+          $resultRow.removeClass('text-danger').addClass('text-success');
+          $resultRow.text("Product Has Been Updated");
+        } else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Product Could Not Be Updated Because " + data.error);
         }
       })
     }
