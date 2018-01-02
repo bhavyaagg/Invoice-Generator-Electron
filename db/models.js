@@ -52,9 +52,30 @@ const PartyMaster = sequelize.define('partymaster', {
 
 const Invoice = sequelize.define('invoice', {
   id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  cases: Sequelize.DataTypes.DECIMAL,
-  dateOfInvoice: Sequelize.DataTypes.DATE
+  cases: Sequelize.DataTypes.INTEGER,
+  dateOfInvoice: Sequelize.DataTypes.DATEONLY,
+  bilityNo: Sequelize.DataTypes.STRING,
+  biltyDate: Sequelize.DataTypes.DATEONLY,
+  chalanNo: Sequelize.DataTypes.STRING
 });
+
+Invoice.belongsTo(ProductCategory);
+ProductCategory.hasMany(Invoice);
+
+
+
+const InvoiceDetail = sequelize.define('invoicedetail', {
+  id: {type:Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  qty: Sequelize.DataTypes.DECIMAL,
+  unitType: Sequelize.DataTypes.STRING
+});
+
+InvoiceDetail.belongsTo(Invoice);
+Invoice.hasMany(InvoiceDetail);
+
+Product.belongsTo(InvoiceDetail);
+InvoiceDetail.hasMany(Product);
+
 
 const Ledger = sequelize.define('ledger', {
   id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
