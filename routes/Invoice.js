@@ -100,8 +100,33 @@ function deleteInvoiceItemById(event, invoiceItemId) {
     });
   })
 }
+function viewInvoiceItemById(event, invoiceItemId) {
+  models.Invoice.findAll({
+    where:{
+      id: invoiceItemId.id
+    }
+  }).then(function (invoiceItem) {
+    if(invoiceItem ){
+      event.sender.send('getInvoiceItemById', {
+        success: true,
+        invoiceItem: invoiceItem.get()
+      })
+    }
+    else {
+      event.sender.send('getInvoiceItemById', {
+        success: true,
+        error: "Not Found"
+      })
+    }
+  }).catch(function (err) {
+    event.sender.send('getInvoiceItemById', {
+      success: true,
+      error: err
+    })
+  })
+}
 
-function editInvoice(event, invoiceItem) {
+function editInvoiceById(event, invoiceItem) {
   models.Invoice.update(invoiceItem, {
     where: {
       id: invoiceItem.id
@@ -109,7 +134,7 @@ function editInvoice(event, invoiceItem) {
   }).then(function (result) {
     if (result[0] > 0) {
       event.sender.send('editedInvoiceItem', {
-        success: true,
+        success: true
       })
     } else {
       event.sender.send('editedInvoiceItem', {
@@ -130,5 +155,6 @@ module.exports = exports = {
   submitInvoice,
   submitInvoiceDetail,
   viewInvoiceItems,
-  deleteInvoiceItemById
+  deleteInvoiceItemById,
+  viewInvoiceItemById
 };

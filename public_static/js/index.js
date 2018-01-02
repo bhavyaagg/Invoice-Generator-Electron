@@ -605,6 +605,11 @@ $(document).ready(function () {
           }
         });
 
+        $('.edit-invoice-item').click(function (e) {
+          let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
+
+          ipcRenderer.send('viewInvoiceItemById')
+        })
 
       });
 
