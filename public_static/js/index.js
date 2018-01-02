@@ -460,26 +460,6 @@ $(document).ready(function () {
 
 
       let invoiceItems = [];
-
-      ipcRenderer.send('viewInvoiceItems');
-      ipcRenderer.once('getInvoiceItems', function (event, data) {
-        if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
-
-          $mainContent.empty();
-          $resultRow.empty();
-          $resultRow.removeClass('text-success').addClass('text-danger');
-          $resultRow.text("Add a invoice item First.");
-          return;
-        }
-
-        invoiceItems = data.invoiceItems;
-
-
-        console.log(invoiceItems);
-
-
-
-      });
       let str = `
         <ul class="list-group text-center">
           <li class="list-group-item">
@@ -488,7 +468,7 @@ $(document).ready(function () {
               <div class="col-1">
                 <b>Slip No.</b>
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 <b>Party Name</b>
               </div>
               <div class="col-2">
@@ -515,33 +495,47 @@ $(document).ready(function () {
               <div class="col-1">
                 <b>Grand Total</b>
               </div> 
-              
+              <div class="col-1 row">
+                <div class="col-6">
+                  
+                </div>
+                <div class="col-6">
+                  
+                </div>
+              </div>
             </div>
           </li>
       `;
 
-      $mainContent.append(str);
-      /*
-      bilityNo:"0"
-      biltyDate:null
-      cases:0
-      chalanDate:"2017-08-19"
-      chalanNo:"0"
-      dateOfInvoice:"2018-01-02"
-      id:3
-      partymasterId:1
-      productcategoryId:1
-       */
-      str = '';
-      invoiceItems.forEach(invoiceItem => {
-        str += `
+
+
+
+      ipcRenderer.send('viewInvoiceItems');
+      ipcRenderer.once('getInvoiceItems', function (event, data) {
+        if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
+
+          $mainContent.empty();
+          $resultRow.empty();
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Add a invoice item First.");
+          return;
+        }
+
+        invoiceItems = data.invoiceItems;
+
+
+        console.log(invoiceItems);
+
+
+        console.log('invoice items' + invoiceItems);
+        invoiceItems.forEach(invoiceItem => {
+          str += `
           <li class="list-group-item">
             <div class="row">
-              
               <div class="col-1">
                 ${invoiceItem.id}
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 Party Name
               </div>
               <div class="col-2">
@@ -568,15 +562,40 @@ $(document).ready(function () {
               <div class="col-1">
                 ${invoiceItem.grandTotal}
               </div> 
-              
+              <div class="col-1 row">
+                <div class="col-6">
+                  <button class="btn btn-success edit-product-category" invoiceItemId=${invoiceItem.id}>EDIT</button>
+                </div>
+                <div class="col-6">
+                  <button class="btn btn-danger delete-product-category" invoiceItemId=${invoiceItem.id}>DELETE</button>
+                </div>
+              </div>
             </div>
           </li>  
         `;
+        });
+
+        str += '</ul>';
+        //let productCategoryId = +(e.target.getAttribute("productCategoryId"));
+
+        $mainContent.append(str);
+
+
+
       });
 
-      str += '</ul>';
+      /*
+      bilityNo:"0"
+      biltyDate:null
+      cases:0
+      chalanDate:"2017-08-19"
+      chalanNo:"0"
+      dateOfInvoice:"2018-01-02"
+      id:3
+      partymasterId:1
+      productcategoryId:1
+       */
 
-      $mainContent.append(str);
     })
 
 
