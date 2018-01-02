@@ -40,6 +40,8 @@ $(document).ready(function () {
     `);
 
     $('#addInvoiceButton').click(function () {
+
+
       $mainContent.empty();
       $mainContent.append(`
         <div class="row">
@@ -59,7 +61,12 @@ $(document).ready(function () {
             Slip No.:   
           </div>
           <div class="col-4">
-            DATE: 
+            <div class="form-group row">
+              <label for="bilityDate" class="col-4 col-form-label">Date</label>
+              <div class="col-8">
+                <input class="form-control" type="date" value="2017-08-19" id="invoiceDate">
+              </div>  
+            </div> 
           </div>
         </div>
         <div class="row">
@@ -174,6 +181,7 @@ $(document).ready(function () {
       let $productCategoryList = $('#productCategoriesList');
       let partyMasterRowObj = {};                    // All data with S.no. as key
 
+
       let grandTotal = 0;
       let products;
       let cdDiscount ;
@@ -217,6 +225,9 @@ $(document).ready(function () {
       let $marka = $('#marka');
       let $cases = $('#cases');
       let $transport = $('#transport');
+      let $invoiceDate = $('#invoiceDate');
+
+      $invoiceDate.val(getCurrentDate());
 
       // On change for party master list
       let selectedPartyMaster;
@@ -389,6 +400,17 @@ $(document).ready(function () {
         grandTotal = totalAmt - (+cdDiscount) + +(packingCharges) ;
         updateAmtDiv();
         $('#addInvoiceItemModal').modal('hide');
+      });
+
+      $('submitInvoice').click(function () {
+        if(listItemCount===1)
+          return;
+        ipcRenderer.send('submitInvoice',{
+          cases: $cases.val()/*,
+          dateOfInvoice: ,*/
+
+        });
+
       });
 
       function updateAmtDiv() {
@@ -1019,4 +1041,24 @@ $(document).ready(function () {
 
     return productCategoriesRowObj;
   }
+
+  function getCurrentDate() {
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth()+1; //January is 0!
+    let yyyy = today.getFullYear();
+
+    if(dd<10) {
+      dd = '0'+dd
+    }
+
+    if(mm<10) {
+      mm = '0'+mm
+    }
+
+    today =    yyyy + '-' + mm + '-'  + dd;
+    return today;
+  }
 });
+
+
