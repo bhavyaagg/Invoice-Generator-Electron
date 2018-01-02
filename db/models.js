@@ -87,7 +87,8 @@ const Ledger = sequelize.define('ledger', {
   dateOfTransaction: Sequelize.DataTypes.DATE,
   debit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
   credit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
-  balance: Sequelize.DataTypes.DECIMAL
+  balance: Sequelize.DataTypes.DECIMAL,
+  productCategoryName: Sequelize.DataTypes.STRING
 });
 
 sequelize.sync({force: false}).then(function () {
@@ -99,5 +100,6 @@ module.exports = {
   Product,
   PartyMaster,
   Invoice,
-  InvoiceDetail
+  InvoiceDetail,
+  Ledger
 };
