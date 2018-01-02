@@ -56,7 +56,8 @@ const Invoice = sequelize.define('invoice', {
   dateOfInvoice: Sequelize.DataTypes.DATEONLY,
   bilityNo: Sequelize.DataTypes.STRING,
   biltyDate: Sequelize.DataTypes.DATEONLY,
-  chalanNo: Sequelize.DataTypes.STRING
+  chalanNo: Sequelize.DataTypes.STRING,
+  chalanDate: Sequelize.DataTypes.DATEONLY
 });
 
 Invoice.belongsTo(PartyMaster);

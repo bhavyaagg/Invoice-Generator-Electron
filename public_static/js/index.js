@@ -122,9 +122,9 @@ $(document).ready(function () {
           </div>
           <div class="col-3">
             <div class="form-group row">
-              <label for="bilityDate" class="col-4 col-form-label">Date</label>
+              <label for="chalanDate" class="col-4 col-form-label">Chalan Date</label>
               <div class="col-8">
-                <input class="form-control" type="date" value="2017-08-19" id="bilityDate">
+                <input class="form-control" type="date" value="2017-08-19" id="chalanDate">
               </div>  
             </div>    
           </div>
@@ -226,11 +226,16 @@ $(document).ready(function () {
       let $cases = $('#cases');
       let $transport = $('#transport');
       let $invoiceDate = $('#invoiceDate');
+      let $bilityNumber = $('#bilityNumber');
+      let $bilityDate = $('#bilityDate');
+      let $chalanNumber = $('#chalanNumber');
+      let $chalanDate = $('#chalanDate');
 
       $invoiceDate.val(getCurrentDate());
 
       // On change for party master list
       let selectedPartyMaster;
+      let selectedProductCategory ;
 
       $partyMasterList.change(function () {
         if ($partyMasterList.val() == 0)   // Check for none in list
@@ -249,9 +254,9 @@ $(document).ready(function () {
         if (+($productCategoryList.val()) === 0)
           return;
 
-        let selectedProduct = productCategoriesRowObj[$productCategoryList.val()];
+        selectedProductCategory = productCategoriesRowObj[$productCategoryList.val()];
 
-        ipcRenderer.send('viewProductByPCategoryId', selectedProduct);
+        ipcRenderer.send('viewProductByPCategoryId', selectedProductCategory);
         ipcRenderer.once('getProductByPCategoryId', function (event, productList) {
 
           if (productList.product.length === 0 || !productList.success) {
@@ -267,6 +272,18 @@ $(document).ready(function () {
           })
           products = productList.product;
 
+          let str = '';
+          //console.log(products);
+
+
+          $('#productList').empty();
+
+          products.forEach(product => {
+            productObj[product.id] = product;
+            str += `<option name="productList" value="${product.id}">${product.name}</option>`
+          });
+
+          $('#productList').append(str);
         });
 
       });
@@ -282,58 +299,18 @@ $(document).ready(function () {
       let totalAmt = 0 ;
 
       $('#addInvoiceItemBtn').click(function () {
-        if (selectedPartyMaster === undefined || $productCategoryList.val() == 0) {
+        if (selectedPartyMaster === undefined || $productCategoryList.val() === 0) {
+
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Select Part Master and/OR product Category");
           return;
         }
+
+        $resultRow.empty();
         $('#addInvoiceItemModal').modal('show');
 
 
-        let str = '';
-        //console.log(products);
 
-
-        $('#productList').empty();
-
-        products.forEach(product => {
-          productObj[product.id] = product;
-          str += `<option name="productList" value="${product.id}">${product.name}</option>`
-        });
-
-        $('#productList').append(str);
-
-
-
-        //$editProductCategoryModal.modal('hide');
-
-        /*
-        let str = '';
-        //console.log(products);
-        products.forEach(product => {
-          productObj[product.id] = product;
-          str += `<option name="productList" value="${product.id}">${product.name}</option>`
-        });
-        let $productList = $('#productList');
-        $productList.append(str);
-
-        $productList.change(function (e) {
-          if ($productList.val() == 0)
-            return;
-          $('#productPrice').empty();
-          $('#productPrice').append(productObj[$productList.val()].price);
-        });
-      })
-
-
-        $qty.change(function () {
-          if ($qty.val() <= 0 || $productList == 0 || $productList.val() == 0)
-            return;
-          let str = '#amt' + listItemCount - 1;
-          console.log("amt${listItemCount++}");
-          console.log('#amt'+String(listItemCount-1));
-          $('#amt'+String(listItemCount-1)).empty();
-          $('#amt'+String(listItemCount-1)).append((+($qty.val())) * (+(productObj[$productList.val()].price)));
-        });
-*/
 
       })
 
@@ -360,7 +337,7 @@ $(document).ready(function () {
         let per = $('#per').val();
         per = $(`option[name="unitType"][value="${per}"]`).text();
 
-        if (qty == 0 || typeof selectedProduct === "undefined")
+        if (qty <= 0 || typeof selectedProduct === "undefined")
           return;
 
         $invoiceItemList.append(`
@@ -406,9 +383,14 @@ $(document).ready(function () {
         if(listItemCount===1)
           return;
         ipcRenderer.send('submitInvoice',{
-          cases: $cases.val()/*,
-          dateOfInvoice: ,*/
-
+          cases: $cases.val(),
+          dateOfInvoice: $invoiceDate.val(),
+          bilityNo: $bilityNumber.val(),
+          bilityDate: $bilityDate.val(),
+          chalanNo: $chalanNumber.val(),
+          chalanDate: $chalanDate.val(),
+          partyMasterId: selectedPartyMaster.id,
+          productCategory: selectedProductCategory.id
         });
 
       });
