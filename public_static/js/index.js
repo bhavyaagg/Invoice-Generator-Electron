@@ -184,7 +184,7 @@ $(document).ready(function () {
 
       let grandTotal = 0;
       let products;
-      let cdDiscount ;
+      let cdDiscount;
       // Get data in party Master Dropdown
       ipcRenderer.send('viewPartyMaster');
       ipcRenderer.once('getPartyMaster', function (event, data) {
@@ -219,18 +219,18 @@ $(document).ready(function () {
 
       });
 
-      let slipNumber  = 1;
+      let slipNumber = 1;
       let $slipNumber = $('#slipNo');
 
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
-        if(!data.success || typeof data.invoiceItems === "undefined") {
+        if (!data.success || typeof data.invoiceItems === "undefined") {
           slipNumber = 1;
           return;
         }
 
         slipNumber = data.invoiceItems.length + 1;
-        $slipNumber.append( slipNumber);
+        $slipNumber.append(slipNumber);
 
       });
 
@@ -251,7 +251,7 @@ $(document).ready(function () {
 
       // On change for party master list
       let selectedPartyMaster;
-      let selectedProductCategory ;
+      let selectedProductCategory;
 
       $partyMasterList.change(function () {
         if ($partyMasterList.val() == 0)   // Check for none in list
@@ -277,7 +277,7 @@ $(document).ready(function () {
 
           console.log('productList' + productList.success);
 
-          if ( !productList.success || productList.product.length === 0 ) {
+          if (!productList.success || productList.product.length === 0) {
             $mainContent.empty();
             $resultRow.empty();
             $resultRow.removeClass('text-success').addClass('text-danger');
@@ -314,7 +314,7 @@ $(document).ready(function () {
       let $productList = $('#productList');
       let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
 
-      let totalAmt = 0 ;
+      let totalAmt = 0;
 
       $('#addInvoiceItemBtn').click(function () {
         if (selectedPartyMaster === undefined || $productCategoryList.val() === 0) {
@@ -328,8 +328,6 @@ $(document).ready(function () {
         $('#addInvoiceItemModal').modal('show');
 
 
-
-
       })
 
       $('#addPackingChargesBtn').click(function () {
@@ -339,7 +337,7 @@ $(document).ready(function () {
       $('#addPackingChargesSubmit').click(function () {
 
         let pcharges = $('#packingCharges').val();
-        if(pcharges == "")
+        if (pcharges == "")
           return;
         let prevPackingCharges = packingCharges;
         packingCharges = pcharges;
@@ -395,18 +393,18 @@ $(document).ready(function () {
           `)
         totalAmt += ((+qty) * (+selectedProduct.price));
 
-        cdDiscount = totalAmt * +(selectedPartyMaster.cd) /100;
+        cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
 
-        grandTotal = totalAmt - (+cdDiscount) + +(packingCharges) ;
+        grandTotal = totalAmt - (+cdDiscount) + +(packingCharges);
         updateAmtDiv();
         $('#addInvoiceItemModal').modal('hide');
       });
 
       $('#submitInvoice').click(function () {
-        if(listItemCount===1)
+        if (listItemCount === 1)
           return;
 
-        ipcRenderer.send('submitInvoice',{
+        ipcRenderer.send('submitInvoice', {
           cases: $cases.val(),
           dateOfInvoice: $invoiceDate.val(),
           bilityNo: $bilityNumber.val(),
@@ -451,17 +449,16 @@ $(document).ready(function () {
       }
 
     });
-    
+
     $('#viewInvoicesButton').click(function () {
 
       $mainContent.empty();
       $resultRow.empty();
 
 
-
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
-        if(!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length===0) {
+        if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
 
           $mainContent.empty();
           $resultRow.empty();
@@ -481,8 +478,6 @@ $(document).ready(function () {
         productcategoryId:1
          */
         let invoiceItem = data.invoiceItems;
-
-
 
 
       });
@@ -878,7 +873,7 @@ $(document).ready(function () {
 
       $submitProduct.click(function () {
         let productName = $('#productName').val();
-        let productPrice = $('#productPrice').val();
+        let productPrice = +($('#productPrice').val());
         let productCategoryId = +($('#productCategoriesList').val());
 
         if (!productName || !productPrice || productCategoryId === 0) {
@@ -920,14 +915,14 @@ $(document).ready(function () {
           let str = `
             <ul class="list-group text-center">
               <li class="list-group-item">
-                <div class="row">
-                  <div class="col-4">
+                <div class="row align-items-center">
+                  <div class="col-3">
                     <b>Product Name</b>
                   </div>
-                  <div class="col-4">
+                  <div class="col-3">
                     <b>Product Price</b>
                   </div>
-                  <div class="col-4">
+                  <div class="col-3">
                     <b>Product Category</b>
                   </div>
                 </div>
@@ -937,15 +932,21 @@ $(document).ready(function () {
           data.products.forEach(function (product) {
             str += `
             <li class="list-group-item">
-              <div class="row">
-                <div class="col-4">
+              <div class="row align-items-center">
+                <div class="col-3">
                   ${product.name}
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                   ${product.price}
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                   ${product.productcategory.name}
+                </div>
+                <div class="col">
+                    <button class="btn btn-success edit-product" productId=${product.id}>EDIT</button>
+                </div>
+                <div class="col">
+                  <button class="btn btn-danger delete-product" productId=${product.id}>DELETE</button>
                 </div>
               </div>
             </li>
@@ -954,6 +955,73 @@ $(document).ready(function () {
           str += "</ul>"
 
           $mainContent.append(str);
+
+          $('.edit-product').click(function (e) {
+            let productId = +(e.target.getAttribute("productId"));
+            ipcRenderer.send('viewProductById', {
+              id: productId
+            });
+
+
+            ipcRenderer.once('getProductById', function (event, productData) {
+              if (data.success) {
+
+                ipcRenderer.send('viewProductCategories');
+
+                ipcRenderer.once('getProductCategories', function (event, data) {
+                  if (data.success) {
+                    $editProductCategoryForProductList.empty();
+                    let str = "";
+                    if (data.productCategories.length === 0) {
+                      $editProductError.text('No product Categories Exists');
+                      return;
+                    }
+                    data.productCategories.forEach(function (productCategory) {
+                      str += `<option name="editProductCategoryForProductList" value="${productCategory.id}">${productCategory.name}</option>`
+                    });
+
+                    $editProductCategoryForProductList.append(str);
+
+                    $editProductName.val(productData.product.name);
+                    $editProductPrice.val(productData.product.price);
+                    $editProductCategoryForProductList.val(productData.product.productcategoryId);
+                    $editProductSubmit[0].setAttribute('productId', productId);
+                    $resultRow.empty();
+                    $editProductModal.modal('show');
+
+                  } else {
+                    $resultRow.removeClass('text-success').addClass('text-danger');
+                    $resultRow.text("Product Categories Could Not Be Viewed Because " + data.error);
+                  }
+                });
+
+              } else {
+                $resultRow.removeClass('text-success').addClass('text-danger');
+                $resultRow.text("Product Could Not Be Edited Because " + data.error);
+              }
+            });
+          });
+
+          $('.delete-product').click(function (e) {
+            let productId = +(e.target.getAttribute("productId"));
+            let youSure = window.confirm('Are you sure want to delete this');
+
+            if (youSure) {
+              ipcRenderer.send('deleteProductById', {
+                id: productId
+              });
+              ipcRenderer.once('deletedProductById', function (event, data) {
+                if (data.success) {
+                  $viewProductsButton.click();
+                  $resultRow.removeClass('text-danger').addClass('text-success');
+                  $resultRow.text("Product Has Been Deleted");
+                } else {
+                  $resultRow.removeClass('text-success').addClass('text-danger');
+                  $resultRow.text("Product Could Not Be Deleted Because " + data.error);
+                }
+              })
+            }
+          });
         } else {
           $resultRow.removeClass('text-success').addClass('text-danger');
           $resultRow.text("Products Could Not Be Viewed Because " + data.error);
@@ -1021,7 +1089,7 @@ $(document).ready(function () {
           let str = `
             <ul class="list-group text-center">
               <li class="list-group-item">
-                <div class="row">
+                <div class="row align-items-center">
                   <div class="col-6">
                     <b>Product Category Name</b>
                   </div>
@@ -1032,10 +1100,11 @@ $(document).ready(function () {
                 </div>
               </li>
           `;
+
           data.productCategories.forEach(function (productCategory) {
             str += `
             <li class="list-group-item">
-              <div class="row">
+              <div class="row align-items-center">
                 <div class="col-6">
                   ${productCategory.name}
                 </div>
@@ -1072,7 +1141,24 @@ $(document).ready(function () {
           });
 
           $('.delete-product-category').click(function (e) {
-            console.log(e);
+            let productCategoryId = +(e.target.getAttribute("productCategoryId"));
+            let youSure = window.confirm('Are you sure want to delete this');
+
+            if (youSure) {
+              ipcRenderer.send('deleteProductCategoryById', {
+                id: productCategoryId
+              });
+              ipcRenderer.once('deletedProductCategoryById', function (event, data) {
+                if (data.success) {
+                  $viewProductCategoriesButton.click();
+                  $resultRow.removeClass('text-danger').addClass('text-success');
+                  $resultRow.text("Product Category Has Been Deleted");
+                } else {
+                  $resultRow.removeClass('text-success').addClass('text-danger');
+                  $resultRow.text("Product Category Could Not Be Deleted Because " + data.error);
+                }
+              })
+            }
           });
 
         } else {
@@ -1083,7 +1169,6 @@ $(document).ready(function () {
     })
 
   });
-
 
   $editProductCategorySubmit.click(function (e) {
     let productCategoryId = +(e.target.getAttribute("productCategoryId"));
@@ -1105,6 +1190,35 @@ $(document).ready(function () {
         } else {
           $resultRow.removeClass('text-success').addClass('text-danger');
           $resultRow.text("Product Category Could Not Be Updated Because " + data.error);
+        }
+      })
+    }
+  })
+
+  $editProductSubmit.click(function (e) {
+    let productId = +(e.target.getAttribute("productId"));
+    let productName = $editProductName.val();
+    let productPrice = +($editProductPrice.val());
+    let productCategoryId = +($editProductCategoryForProductList.val());
+
+    if (!productName || !productPrice || productCategoryId === 0) {
+      $editProductError.text("Please Enter the All the Details");
+    } else {
+      ipcRenderer.send('editProduct', {
+        id: productId,
+        name: productName,
+        price: productPrice,
+        productCategoryId: productCategoryId
+      });
+      ipcRenderer.once('editedProduct', function (event, data) {
+        $editProductModal.modal('hide');
+        if (data.success) {
+          $('#viewProductsButton').click();
+          $resultRow.removeClass('text-danger').addClass('text-success');
+          $resultRow.text("Product Has Been Updated");
+        } else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Product Could Not Be Updated Because " + data.error);
         }
       })
     }
@@ -1144,18 +1258,18 @@ $(document).ready(function () {
   function getCurrentDate() {
     let today = new Date();
     let dd = today.getDate();
-    let mm = today.getMonth()+1; //January is 0!
+    let mm = today.getMonth() + 1; //January is 0!
     let yyyy = today.getFullYear();
 
-    if(dd<10) {
-      dd = '0'+dd
+    if (dd < 10) {
+      dd = '0' + dd
     }
 
-    if(mm<10) {
-      mm = '0'+mm
+    if (mm < 10) {
+      mm = '0' + mm
     }
 
-    today =    yyyy + '-' + mm + '-'  + dd;
+    today = yyyy + '-' + mm + '-' + dd;
     return today;
   }
 });
