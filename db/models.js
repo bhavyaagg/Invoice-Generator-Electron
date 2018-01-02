@@ -69,7 +69,7 @@ Invoice.belongsTo(ProductCategory);
 ProductCategory.hasMany(Invoice);
 
 const InvoiceDetail = sequelize.define('invoicedetail', {
-  id: {type:Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
   qty: Sequelize.DataTypes.DECIMAL,
   unitType: Sequelize.DataTypes.STRING
 });
@@ -90,7 +90,7 @@ const Ledger = sequelize.define('ledger', {
   balance: Sequelize.DataTypes.DECIMAL
 });
 
-sequelize.sync({force: true}).then(function () {
+sequelize.sync({force: false}).then(function () {
   console.log("Database Configured");
 });
 
