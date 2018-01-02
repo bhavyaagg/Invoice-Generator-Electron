@@ -329,7 +329,7 @@ $(document).ready(function () {
         updateAmtDiv();
         $('#addPackingChargesModal').modal('hide');
       });
-
+      let listItemsObj = [];
       $addInvoiceItemSubmit.click(function (e) {
 
         let qty = $('#qty').val();
@@ -339,7 +339,12 @@ $(document).ready(function () {
 
         if (qty <= 0 || typeof selectedProduct === "undefined")
           return;
-
+        listItemsObj.push({
+          itemNumber: listItemCount,
+          qty: qty,
+          productId: selectedProduct.id,
+          per: per
+        });
         $invoiceItemList.append(`
             <li class="list-group-item">
               <div class="row">
@@ -382,6 +387,7 @@ $(document).ready(function () {
       $('submitInvoice').click(function () {
         if(listItemCount===1)
           return;
+
         ipcRenderer.send('submitInvoice',{
           cases: $cases.val(),
           dateOfInvoice: $invoiceDate.val(),
@@ -390,8 +396,17 @@ $(document).ready(function () {
           chalanNo: $chalanNumber.val(),
           chalanDate: $chalanDate.val(),
           partyMasterId: selectedPartyMaster.id,
-          productCategory: selectedProductCategory.id
+          productCategoryId: selectedProductCategory.id
         });
+
+        let slipNumber;
+
+        ipcRenderer.once('');
+        ipcRenderer.send('submitInvoiceDetail', {
+          invoiceId: slipNumber,
+          listItems: listItemsObj
+        })
+
 
       });
 
