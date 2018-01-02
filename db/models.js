@@ -55,7 +55,7 @@ const Invoice = sequelize.define('invoice', {
   cases: Sequelize.DataTypes.INTEGER,
   dateOfInvoice: Sequelize.DataTypes.DATEONLY,
   bilityNo: Sequelize.DataTypes.STRING,
-  biltyDate: Sequelize.DataTypes.DATEONLY,
+  bilityDate: Sequelize.DataTypes.DATEONLY,
   chalanNo: Sequelize.DataTypes.STRING,
   chalanDate: Sequelize.DataTypes.DATEONLY,
   grandTotal: Sequelize.DataTypes.INTEGER
