@@ -168,6 +168,74 @@
     </div>
   </div>
 </div>
+
+
+<div class="modal fade" id="editInvoiceItemModal" tabindex="-1" role="dialog"
+     aria-labelledby="Edit Invoice Item"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Invoice Item</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+
+          <div class="form-group row">
+            <label for="cases" class="col-3 col-form-label">Cases: </label>
+            <div class="col-9">
+              <input class="form-control" type="number" value="" id="cases">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="dateOfInvoice" class="col-3 col-form-label">Invoice Date: </label>
+            <div class="col-9">
+              <input class="form-control" type="date"  id="dateOfInvoice">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="bilityNo" class="col-3 col-form-label">Bility Number: </label>
+            <div class="col-9">
+              <input class="form-control" type="number" value="" id="bilityNo">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="bilityDate" class="col-3 col-form-label">Bility Date: </label>
+            <div class="col-9">
+              <input class="form-control" type="date"  id="bilityDate">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="chalanNo" class="col-3 col-form-label">Chalan No: </label>
+            <div class="col-9">
+              <input class="form-control" type="number" value="" id="chalanNo">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="chalanDate" class="col-3 col-form-label">Chalan Date: </label>
+            <div class="col-9">
+              <input class="form-control" type="date"  id="chalanDate">
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-danger" id="editItemInvoiceError"></p>
+      <div class="modal-footer">
+        <button id="editInvoiceSubmit" class=" btn btn-success">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="container-fluid">
   <div class="row" id="header">
     <div class="col text-center">

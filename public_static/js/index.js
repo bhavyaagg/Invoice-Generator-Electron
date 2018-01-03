@@ -230,8 +230,10 @@ $(document).ready(function () {
 
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
-        if (!data.success || typeof data.invoiceItems === "undefined") {
+        console.log(data.error);
+        if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length===0) {
           slipNumber = 1;
+          $slipNumber.append(slipNumber);
           return;
         }
 
@@ -607,8 +609,16 @@ $(document).ready(function () {
 
         $('.edit-invoice-item').click(function (e) {
           let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
+          console.log(invoiceItemId);
+          ipcRenderer.send('viewInvoiceItemById',{
+            id: invoiceItemId
+          });
 
-          ipcRenderer.send('viewInvoiceItemById')
+          ipcRenderer.once('getInvoiceItemById', function (event, invoiceItem) {
+
+            console.log(invoiceItem);
+            $('#editInvoiceItemModal').modal('show');
+          })
         })
 
       });

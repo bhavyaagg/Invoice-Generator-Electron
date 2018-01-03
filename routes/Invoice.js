@@ -40,10 +40,18 @@ function submitInvoiceDetail(event, invoiceDetail) {
 function viewInvoiceItems(event) {
   models.Invoice.findAll({})
     .then(function (invoiceItems) {
-      event.sender.send('getInvoiceItems', {
-        success: true,
-        invoiceItems: invoiceItems.map(invoiceItem => invoiceItem.get())
-      })
+      if(invoiceItems.length>0) {
+        event.sender.send('getInvoiceItems', {
+          success: true,
+          invoiceItems: invoiceItems.map(invoiceItem => invoiceItem.get())
+        })
+      }
+      else {
+        event.sender.send('getInvoiceItems', {
+          success: false,
+          error: "No Element Found"
+        })
+      }
     })
     .catch(err => {
       event.sender.send('getInvoiceItems', {
@@ -101,6 +109,7 @@ function deleteInvoiceItemById(event, invoiceItemId) {
   })
 }
 function viewInvoiceItemById(event, invoiceItemId) {
+  console.log(invoiceItemId);
   models.Invoice.findAll({
     where:{
       id: invoiceItemId.id

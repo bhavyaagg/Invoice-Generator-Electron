@@ -76,3 +76,5 @@ ipcMain.on('submitInvoiceDetail', routes.invoice.submitInvoiceDetail);
 ipcMain.on('viewInvoiceItems', routes.invoice.viewInvoiceItems);
 
 ipcMain.on('deleteInvoiceItemById', routes.invoice.deleteInvoiceItemById);
+
+ipcMain.on('viewInvoiceItemById', routes.invoice.viewInvoiceItemById);
