@@ -59,70 +59,70 @@ function deleteInvoiceById(event, invoiceItemId) {
       id: invoiceItemId
     }
   }).then(function (rows) {
-      if (rows > 0) {
-        models.InvoiceDetail.destroy({
-          where: {
-            invoiceId: invoiceItemId
-          }
-        }).then(function (rows) {
-          if (row > 0) {
-            event.sender.send('deletedInvoiceById', {
-              success: true,
-            })
-          }
-          else {
-            event.sender.send('deletedInvoiceById', {
-              success: false,
-              error: "Incorrect ID"
-            })
-          }
-        })
-      } else {
-        event.sender.send('deletedInvoiceById', {
-          success: false,
-          error: "Incorrect ID"
-        })
-      }
+    if (rows > 0) {
+      models.InvoiceDetail.destroy({
+        where: {
+          invoiceId: invoiceItemId
+        }
+      }).then(function (rows) {
+        if (row > 0) {
+          event.sender.send('deletedInvoiceById', {
+            success: true,
+          })
+        }
+        else {
+          event.sender.send('deletedInvoiceById', {
+            success: false,
+            error: "Incorrect ID"
+          })
+        }
+      })
+    } else {
+      event.sender.send('deletedInvoiceById', {
+        success: false,
+        error: "Incorrect ID"
+      })
     }
-  ).catch(function (err) {
+  }).catch(function (err) {
     console.log(err);
     event.sender.send('deletedInvoiceById', {
       success: false,
       error: err
     });
-  })
+  });
+}
 
-  function editInvoice(event, invoiceItem) {
-    models.Invoice.update({
-      name: product.name,
-      price: product.price,
-      productcategoryId: product.productCategoryId
-    }, {
-      where: {
-        id: invoiceItem.id
-      }
-    }).then(function (result) {
-      if (result[0] > 0) {
-        event.sender.send('editedInvoiceItem', {
-          success: true,
-        })
-      } else {
-        event.sender.send('editedInvoiceItem', {
-          success: false,
-          error: "Incorrect ID"
-        })
-      }
-    }).catch(function (err) {
-      console.log(err)
+function editInvoice(event, invoiceItem) {
+  models.Invoice.update({
+    name: product.name,
+    price: product.price,
+    productcategoryId: product.productCategoryId
+  }, {
+    where: {
+      id: invoiceItem.id
+    }
+  }).then(function (result) {
+    if (result[0] > 0) {
+      event.sender.send('editedInvoiceItem', {
+        success: true,
+      })
+    } else {
       event.sender.send('editedInvoiceItem', {
         success: false,
-        error: err
-      });
-    })
-  }
+        error: "Incorrect ID"
+      })
+    }
+  }).catch(function (err) {
+    console.log(err)
+    event.sender.send('editedInvoiceItem', {
+      success: false,
+      error: err
+    });
+  })
+}
 
-  module.exports = exports = {
-    submitInvoice,
-    submitInvoiceDetail,
-    viewInvoiceItems
-  };
+module.exports = exports = {
+  submitInvoice,
+  submitInvoiceDetail,
+  viewInvoiceItems
+};
