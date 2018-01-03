@@ -9,7 +9,8 @@ function addPartyMaster(event, data) {
     .then(partyMaster => {
 
       event.sender.send('addedPartyMaster', {
-        success: true
+        success: true,
+        partyMasterData: partyMaster
       });
     })
     .catch(function (err) {

@@ -784,7 +784,7 @@ $(document).ready(function () {
                 str += `
                   <ul class="list-group text-center">
                     <li class="list-group-item">
-                      <div class="row">
+                      <div class="row productCategoryDiscount" productCategoryId="${productCategory.id}">
                         <div class="col-4">
                           ${productCategory.name}
                         </div>
@@ -809,12 +809,46 @@ $(document).ready(function () {
                   <div class="col text-center">
                     <button id="submitPartyMasterAndDiscounts" class="btn btn-primary">Submit</button>
                   </div>  
-                  <div class="col text-center">
-                    <button id="resetPartyMaster" class="btn btn-danger">Reset</button>
-                  </div>  
                 </div>
               `;
               $mainContent.append(str);
+              
+              $('#submitPartyMasterAndDiscounts').click(function () {
+                let pg = $('.productCategoryDiscount');
+
+                let productCategoryDiscountsList = [];
+                ipcRenderer.send('addPartyMaster', partyMasterData);
+                ipcRenderer.once('addedPartyMaster', function (event, data) {
+                  if (data.success) {
+                    pg.each((row,item) => {
+                      console.log($(item));
+
+                      let productCategoryId = $(item).getAttribute('productCategoryId');
+                      let discount = $($(item)[0].children[1].children[0].children[0]).val();
+                      let splDiscount = $($(item)[0].children[2].children[0].children[0]).val();
+
+                      productCategoryDiscountsList.push({
+                        productcategoryId: productCategoryId,
+                        discount: discount,
+                        splDiscount: splDiscount,
+                        partymasterId: data.partyMasterData.id
+                      });
+
+
+                    })
+
+                    /*$resultRow.removeClass('text-danger').addClass('text-success');
+                    $resultRow.text("Party Has Been Added");*/
+                  } else {
+                    $resultRow.removeClass('text-success').addClass('text-danger');
+                    $resultRow.text("Party Could Not Be Added Because " + data.error);
+                  }
+                });
+
+
+
+
+              })
 
             }
             else {
@@ -825,22 +859,7 @@ $(document).ready(function () {
 
 
 
-          /* ipcRenderer.send('addPartyMaster', partyMasterData);
-          ipcRenderer.once('addedPartyMaster', function (event, data) {
-            if (data.success) {
-              //$resultRow.removeClass('text-danger').addClass('text-success');
-              //$resultRow.text("Party Has Been Added");
-              $mainContent.empty();
-              ipcRenderer.send('viewProductCategories');
-              ipcRenderer.once('getProductCategories', function (event, data) {
-
-              })
-
-            } else {
-              $resultRow.removeClass('text-success').addClass('text-danger');
-              $resultRow.text("Party Could Not Be Added Because " + data.error);
-            }
-          });*/
+          /* */
 
           //console.log("ho gya")
           /*$resultRow.removeClass('text-danger').addClass('text-success');
