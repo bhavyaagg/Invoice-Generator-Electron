@@ -6,13 +6,18 @@ const models = require('./../db/models');
 
 function viewLedgerByPartyMasterId(event, partyMaster) {
   models.Ledger.findAll({
-    partymasterId: partyMaster.id
+
+    where: {
+      partymasterId: partyMaster.id
+    },
+    include: [models.PartyMaster]
   }).then(function (rows) {
     if (rows.length > 0) {
       event.sender.send('getLedgerByPartyMasterId', {
         success: true,
         ledgerRows: rows.map((v) => {
           v = v.get();
+          v.partymaster = v.partymaster.get()
           return v;
         })
       });
