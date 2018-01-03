@@ -4,22 +4,18 @@
 
 const models = require('./../db/models');
 
-function addPartyMasterProductCategoryDiscount(event, data) {
-
-  models.PartyMasterProductCategoryDiscount
-    .create(data)
-    .then(result => {
-      event.sender.send('addedPartyMasterProductCategoryDiscount', {
-        success: true,
-        data: result
+function addPartyMasterProductCategoryDiscount(event, dataList) {
+  dataList.forEach(data => {
+    models.PartyMasterProductCategoryDiscount
+      .create(data)
+      .then()
+      .catch(err => {
+        event.sender.send('addedPartyMasterProductCategoryDiscount', {
+          success: false,
+          error: err
+        })
       })
-    })
-    .catch(err => {
-      event.sender.send('addedPartyMasterProductCategoryDiscount', {
-        success: false,
-        error: err
-      })
-    })
+  })
 }
 
 function viewDiscountByPartyMasterIdAndProductCategoryId(event, data) {

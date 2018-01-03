@@ -834,12 +834,14 @@ $(document).ready(function () {
                         partymasterId: data.partyMasterData.id
                       });
 
-
+                      ipcRenderer.send('addPartyMasterProductCategoryDiscount', productCategoryDiscountsList);
+                      //TODO MAKE IT SYNCHRONOUS
                     })
 
-                    /*$resultRow.removeClass('text-danger').addClass('text-success');
-                    $resultRow.text("Party Has Been Added");*/
-                  } else {
+                    $resultRow.removeClass('text-danger').addClass('text-success');
+                    $resultRow.text("Party Has Been Added");
+                  }
+                  else {
                     $resultRow.removeClass('text-success').addClass('text-danger');
                     $resultRow.text("Party Could Not Be Added Because " + data.error);
                   }
