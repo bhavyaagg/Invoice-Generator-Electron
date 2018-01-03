@@ -413,11 +413,12 @@ $(document).ready(function () {
               </div>
             </li>
           `)
-        totalAmt += ((+qty) * (+selectedProduct.price));
+        totalAmt += (((+qty) * (+selectedProduct.price)) * (+selectedPartyMaster.discount) * (+selectedPartyMaster.splDiscount))/10000;
 
         cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
 
         grandTotal = totalAmt - (+cdDiscount) + +(packingCharges);
+        grandTotal = roundTo(grandTotal,2);
         updateAmtDiv();
         $('#addInvoiceItemModal').modal('hide');
       });
@@ -425,9 +426,9 @@ $(document).ready(function () {
       $('#submitInvoice').click(function () {
         if (listItemCount === 1)
           return;
-
+        console.log($bilityDate.val());
         ipcRenderer.send('submitInvoice', {
-          cases: $cases.val(),
+          cases: (+$cases.val()),
           dateOfInvoice: $invoiceDate.val(),
           bilityNo: $bilityNumber.val(),
           bilityDate: $bilityDate.val(),
@@ -1559,6 +1560,26 @@ $(document).ready(function () {
     today = yyyy + '-' + mm + '-' + dd;
     return today;
   }
+
+  function roundTo(n, digits) {
+    var negative = false;
+    if (digits === undefined) {
+      digits = 0;
+    }
+    if( n < 0) {
+      negative = true;
+      n = n * -1;
+    }
+    var multiplicator = Math.pow(10, digits);
+    n = parseFloat((n * multiplicator).toFixed(11));
+    n = (Math.round(n) / multiplicator).toFixed(2);
+    if( negative ) {
+      n = (n * -1).toFixed(2);
+    }
+    return n;
+  }
+
 });
+
 
 
