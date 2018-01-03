@@ -97,7 +97,7 @@ const Ledger = sequelize.define('ledger', {
   debit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
   credit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
   balance: Sequelize.DataTypes.DECIMAL,
-  productCategoryName: Sequelize.DataTypes.STRING,
+  productCategoryName: {type: Sequelize.DataTypes.STRING, allowNull: true},
   invoiceId: {type: Sequelize.DataTypes.INTEGER, allowNull: true}
 });
 
