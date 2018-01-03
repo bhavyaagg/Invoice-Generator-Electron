@@ -115,5 +115,6 @@ module.exports = {
   PartyMaster,
   Invoice,
   InvoiceDetail,
-  Ledger
+  Ledger,
+  PartyMasterProductCategoryDiscount
 };
