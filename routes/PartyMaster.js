@@ -1,5 +1,5 @@
 /**
- * Created by bhavyaagg on 02/01/18.
+ * Created by nimit on 02/01/18.
  */
 
 const models = require('./../db/models');

@@ -79,9 +79,9 @@ ipcMain.on('deleteInvoiceItemById', routes.invoice.deleteInvoiceItemById);
 
 ipcMain.on('viewInvoiceItemById', routes.invoice.viewInvoiceItemById);
 
-ipcMain.on('addPartyMasterProductCategoryDiscount', routes.PartyMasterProductCategoryDiscount.addPartyMasterProductCategoryDiscount)
+ipcMain.on('addPartyMasterProductCategoryDiscount', routes.partyMasterProductCategoryDiscount.addPartyMasterProductCategoryDiscount);
 
-ipcMain.on('viewDiscountByPartyMasterIdAndProductCategoryId', routes.PartyMasterProductCategoryDiscount.viewDiscountByPartyMasterIdAndProductCategoryId())
+ipcMain.on('viewDiscountByPartyMasterIdAndProductCategoryId', routes.partyMasterProductCategoryDiscount.viewDiscountByPartyMasterIdAndProductCategoryId);
 
 ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId);
 

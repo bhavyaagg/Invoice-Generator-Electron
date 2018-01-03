@@ -823,7 +823,7 @@ $(document).ready(function () {
                     pg.each((row,item) => {
                       console.log($(item));
 
-                      let productCategoryId = $(item).getAttribute('productCategoryId');
+                      let productCategoryId = $(item)[0].getAttribute('productCategoryId');
                       let discount = $($(item)[0].children[1].children[0].children[0]).val();
                       let splDiscount = $($(item)[0].children[2].children[0].children[0]).val();
 
@@ -831,7 +831,7 @@ $(document).ready(function () {
                         productcategoryId: productCategoryId,
                         discount: discount,
                         splDiscount: splDiscount,
-                        partymasterId: data.partyMasterData.id
+                        partyMasterId: data.partyMasterData.id
                       });
 
                       ipcRenderer.send('addPartyMasterProductCategoryDiscount', productCategoryDiscountsList);
