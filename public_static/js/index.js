@@ -1283,6 +1283,33 @@ $(document).ready(function () {
       }
     });
 
+    const $viewLedger = $('#viewLedger');
+    const $addPayment = $('#addPayment');
+
+    $viewLedger.click(function () {
+      let partyMasterId = +($('#partyMastersList').val());
+
+      if (partyMasterId === 0) {
+        $resultRow.removeClass('text-success').addClass('text-danger');
+        $resultRow.text("Please Select A Party Master");
+      } else {
+        ipcRenderer.send('viewLedgerByPartyMasterId', {
+          id: partyMasterId
+        });
+        ipcRenderer.once('getLedgerByPartyMasterId', function (event, data) {
+          if (data.success) {
+            console.log(data.ledgerRows);
+          } else {
+            $resultRow.removeClass('text-success').addClass('text-danger');
+            $resultRow.text("Ledger Could Not Be Viewed Because " + data.error);
+          }
+        })
+
+
+      }
+
+
+    })
 
   });
 
