@@ -147,19 +147,13 @@ $(document).ready(function () {
               <div class="col-1">
                 <b>Qty</b>
               </div>
-              <div class="col-1">
+              <div class="col-2">
                 <b>Rate</b>
               </div>
               <div class="col-1">
                 <b>Per</b>
               </div>
-              <div class="col-1">
-                <b>Dis%</b>
-              </div>
-              <div class="col-1">
-                <b>SDis%</b>
-              </div>
-              <div class="col-1">
+              <div class="col-2">
                 <b>Amt</b>
               </div>
             </div>
@@ -261,7 +255,7 @@ $(document).ready(function () {
       let selectedProductCategory;
 
       $partyMasterList.change(function () {
-        if ($partyMasterList.val() == 0)   // Check for none in list
+        if ($partyMasterList.val() === 0)   // Check for none in list
           return;
         console.log(partyMasterRowObj[$partyMasterList.val()]);
         selectedPartyMaster = partyMasterRowObj[$partyMasterList.val()];
@@ -384,7 +378,7 @@ $(document).ready(function () {
           per: per
         });
         $invoiceItemList.append(`
-            <li class="list-group-item">
+            <li class="list-group-item" id="amountCalcList" >
               <div class="row">
                 <div class="col-1">
                   ${listItemCount++}
@@ -395,25 +389,19 @@ $(document).ready(function () {
                 <div class="col-1">
                   ${qty}
                 </div>
-                <div class="col-1" id="productPrice">
+                <div class="col-2" id="productPrice">
                   ${selectedProduct.price}
                 </div>
                 <div class="col-1"> 
                   ${per}  
                 </div>
-                <div class="col-1">
-                  ${selectedPartyMaster.discount}
-                </div>
-                <div class="col-1">
-                  ${selectedPartyMaster.splDiscount}
-                </div>
-                <div class="col-1">
-                  ${((+qty) * (+selectedProduct.price))}
+                <div class="col-2">
+                  ${(((+qty) * (+selectedProduct.price)) * (100-(+selectedPartyMaster.discount)) * (100-selectedPartyMaster.splDiscount))/10000}
                 </div>
               </div>
             </li>
           `)
-        totalAmt += (((+qty) * (+selectedProduct.price)) * (+selectedPartyMaster.discount) * (+selectedPartyMaster.splDiscount))/10000;
+        totalAmt += (((+qty) * (+selectedProduct.price)) * (100-(+selectedPartyMaster.discount)) * (100-selectedPartyMaster.splDiscount))/10000;
 
         cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
 
@@ -461,13 +449,15 @@ $(document).ready(function () {
       function updateAmtDiv() {
         $('#totalAmt').empty();
         $('#totalAmt').append(`
-          <hr>
-          <p class="text-right"><b>Amount:  ${totalAmt}</b></p>
-          <p class="text-right"><b>CD:  ${cdDiscount}</b></p>
-          <hr>
-          <p class="text-right"><b>Amount:  ${totalAmt - (+cdDiscount)}</b></p>
-          <p class="text-right"><b>Packing Charges:  ${packingCharges}</b></p>
-          <p class="text-right"><b>Grand Total:  ${grandTotal}</b></p>
+          <div style="padding-right: 120px">
+            <hr>
+            <p class="text-right"><b>Amount:  ${totalAmt}</b></p>
+          
+            <hr>
+            <p class="text-right"><b>Amount:  ${totalAmt - (+cdDiscount)}</b></p>
+            <p class="text-right"><b>Packing Charges:  ${packingCharges}</b></p>
+            <p class="text-right"><b>Grand Total:  ${grandTotal}</b></p>
+          </div>
         `)
       }
 
