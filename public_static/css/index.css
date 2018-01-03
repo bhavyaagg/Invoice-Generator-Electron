@@ -29,9 +29,14 @@ button {
     margin-bottom: 20px;
 }
 
-.modal-dialog{
+#subHeader {
+    margin-top: 40px;
+}
+
+.modal-dialog {
     margin-top: 200px;
 }
+
 #submitBtnDiv {
     margin-top: 30px;
 }

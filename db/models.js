@@ -50,6 +50,17 @@ const PartyMaster = sequelize.define('partymaster', {
   cd: Sequelize.DataTypes.DECIMAL
 });
 
+const PartyMasterProductCategoryDiscount = sequelize.define('partymasterproductcategorydiscount', {
+  id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  discount: Sequelize.DataTypes.DECIMAL
+});
+
+PartyMasterProductCategoryDiscount.belongsTo(PartyMaster);
+PartyMaster.hasMany(PartyMasterProductCategoryDiscount);
+
+PartyMasterProductCategoryDiscount.belongsTo(ProductCategory);
+ProductCategory.hasMany(PartyMasterProductCategoryDiscount);
+
 const Invoice = sequelize.define('invoice', {
   id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
   cases: Sequelize.DataTypes.INTEGER,
@@ -60,7 +71,6 @@ const Invoice = sequelize.define('invoice', {
   chalanDate: Sequelize.DataTypes.DATEONLY,
   grandTotal: Sequelize.DataTypes.INTEGER
 });
-
 
 Invoice.belongsTo(PartyMaster);
 PartyMaster.hasMany(Invoice);
@@ -77,7 +87,6 @@ const InvoiceDetail = sequelize.define('invoicedetail', {
 InvoiceDetail.belongsTo(Invoice);
 Invoice.hasMany(InvoiceDetail);
 
-
 InvoiceDetail.belongsTo(Product);
 Product.hasMany(InvoiceDetail);
 
@@ -88,8 +97,12 @@ const Ledger = sequelize.define('ledger', {
   debit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
   credit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
   balance: Sequelize.DataTypes.DECIMAL,
-  productCategoryName: Sequelize.DataTypes.STRING
+  productCategoryName: Sequelize.DataTypes.STRING,
+  invoiceId: {type: Sequelize.DataTypes.INTEGER, allowNull: true}
 });
+
+Ledger.belongsTo(PartyMaster);
+PartyMaster.hasMany(Ledger);
 
 sequelize.sync({force: false}).then(function () {
   console.log("Database Configured");

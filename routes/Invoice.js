@@ -68,7 +68,6 @@ function deleteInvoiceItemById(event, invoiceItemId) {
     }
   }).then(function (rows) {
     if (rows > 0) {
-      /**/
       models.InvoiceDetail.destroy({
         where: {
           invoiceId: null
@@ -85,6 +84,7 @@ function deleteInvoiceItemById(event, invoiceItemId) {
             error: "Incorrect ID"
           })
         }
+
       }).catch(function (err) {
         console.log(err);
         event.sender.send('deletedInvoiceItemById', {
@@ -94,12 +94,11 @@ function deleteInvoiceItemById(event, invoiceItemId) {
       })
     }
     else {
-      event.sender.send('deletedInvoiceItemById', {
+      event.sender.send('deletedInvoiceById', {
         success: false,
         error: "Incorrect ID"
       })
     }
-
   }).catch(function (err) {
     console.log(err);
     event.sender.send('deletedInvoiceById', {
@@ -135,8 +134,13 @@ function viewInvoiceItemById(event, invoiceItemId) {
   })
 }
 
-function editInvoiceById(event, invoiceItem) {
-  models.Invoice.update(invoiceItem, {
+function editInvoice(event, invoiceItem) {
+  models.Invoice.update({
+    name: product.name,
+    price: product.price,
+    productcategoryId: product.productCategoryId
+  }, {
+
     where: {
       id: invoiceItem.id
     }

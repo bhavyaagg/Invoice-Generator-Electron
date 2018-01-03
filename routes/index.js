@@ -6,5 +6,6 @@ module.exports = exports = {
   productCategory: require('./ProductCategory'),
   product: require('./Product'),
   partyMaster: require('./PartyMaster'),
-  invoice: require('./Invoice')
+  invoice: require('./Invoice'),
+  ledger: require('./Ledger')
 };
