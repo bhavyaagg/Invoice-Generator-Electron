@@ -107,10 +107,10 @@
         <div class="container-fluid">
           <div class="form-group row">
 
-              <label for="productList" class="col-3 col-form-label">Product Name: </label>
-              <select class="custom-select" id="productList">
-                <option name="productList" value="0">None</option>
-              </select>
+            <label for="productList" class="col-3 col-form-label">Product Name: </label>
+            <select class="custom-select" id="productList">
+              <option name="productList" value="0">None</option>
+            </select>
 
           </div>
           <div class="form-group row">
@@ -168,6 +168,53 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="addPaymentModal" tabindex="-1" role="dialog"
+     aria-labelledby="Add Payment"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Payment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="form-group row">
+            <label for="addPaymentDescription" class="col-3 col-form-label">Payment Description: </label>
+            <div class="col-9">
+              <input id="addPaymentDescription" class="form-control" type="text"
+                     placeholder="Enter Payment Description">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="addPaymentDate" class="col-3 col-form-label">Payment Date: </label>
+            <div class="col-9">
+              <input id="addPaymentDate" class="form-control" type="date">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="addPaymentAmount" class="col-3 col-form-label">Payment Amount: </label>
+            <div class="col-9">
+              <input id="addPaymentAmount" class="form-control" type="number"
+                     placeholder="Enter Payment Amount">
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-danger" id="addPaymentError"></p>
+      <div class="modal-footer">
+        <button id="addPaymentSubmit" class="btn btn-success">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="container-fluid">
   <div class="row" id="header">
     <div class="col text-center">
