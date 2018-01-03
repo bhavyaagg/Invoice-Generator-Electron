@@ -752,19 +752,97 @@ $(document).ready(function () {
         }
 
         else {
-          ipcRenderer.send('addPartyMaster', partyMasterData);
+          $mainContent.empty();
+
+          let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-4">
+                    <b>Product Category</b>
+                  </div>
+                  <div class="col-4">
+                    <b>Discount</b>
+                  </div>
+                  <div class="col-4">
+                    <b>Spl Discount</b>
+                  </div>
+                </div>
+              </li>
+          `;
+          ipcRenderer.send('viewProductCategories');
+          ipcRenderer.once('getProductCategories', function (event, data) {
+            if (data.success) {
+              if (data.productCategories.length === 0) {
+                $mainContent.empty();
+                $resultRow.empty();
+                $resultRow.removeClass('text-success').addClass('text-danger');
+                $resultRow.text("Add a Product Category First.");
+                return;
+              }
+              data.productCategories.forEach(function (productCategory) {
+                str += `
+                  <ul class="list-group text-center">
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-4">
+                          ${productCategory.name}
+                        </div>
+                        <div class="col-4">
+                          <div class="col-8">
+                            <input class="form-control" type="number" value="${partyMasterData.discount}" id="discount">
+                          </div>
+                        </div>
+                        <div class="col-4">
+                          <div class="col-8">
+                            <input class="form-control" type="number" value="${partyMasterData.splDiscount}" id="splDiscount">
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                `
+              });
+
+              str+=`
+                </ul>
+                 <div class="row">
+                  <div class="col text-center">
+                    <button id="submitPartyMasterAndDiscounts" class="btn btn-primary">Submit</button>
+                  </div>  
+                  <div class="col text-center">
+                    <button id="resetPartyMaster" class="btn btn-danger">Reset</button>
+                  </div>  
+                </div>
+              `;
+              $mainContent.append(str);
+
+            }
+            else {
+              $resultRow.removeClass('text-success').addClass('text-danger');
+              $resultRow.text("Product Categories Could Not Be Viewed Because " + data.error);
+            }
+          });
+
+
+
+          /* ipcRenderer.send('addPartyMaster', partyMasterData);
           ipcRenderer.once('addedPartyMaster', function (event, data) {
             if (data.success) {
-              $resultRow.removeClass('text-danger').addClass('text-success');
-              $resultRow.text("Party Has Been Added");
+              //$resultRow.removeClass('text-danger').addClass('text-success');
+              //$resultRow.text("Party Has Been Added");
               $mainContent.empty();
+              ipcRenderer.send('viewProductCategories');
+              ipcRenderer.once('getProductCategories', function (event, data) {
+
+              })
+
             } else {
               $resultRow.removeClass('text-success').addClass('text-danger');
               $resultRow.text("Party Could Not Be Added Because " + data.error);
             }
-          });
+          });*/
 
-          console.log("ho gya")
+          //console.log("ho gya")
           /*$resultRow.removeClass('text-danger').addClass('text-success');
           $resultRow.text("Product Category Has Been Added");*/
         }
@@ -772,15 +850,7 @@ $(document).ready(function () {
 
       $('#resetPartyMaster').click(function () {
 
-        $('#partyName').val("");
-        $('#destination').val("");
-        $('#marka').val("");
-        $('#openingBalance').val("");
-        $('#openingBalanceDate').val("");
-        $('#transport').val("");
-        $('#discount').val("");
-        $('#splDiscount').val("");
-        $('#cd').val("");
+        $('#addPartyMaster').click()
 
       })
 
