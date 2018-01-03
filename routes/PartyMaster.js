@@ -7,10 +7,10 @@ const models = require('./../db/models');
 function addPartyMaster(event, data) {
   models.PartyMaster.create(data)
     .then(partyMaster => {
-
+      console.log(partyMaster.get());
       event.sender.send('addedPartyMaster', {
         success: true,
-        partyMasterData: partyMaster
+        partyMasterData: partyMaster.get()
       });
     })
     .catch(function (err) {

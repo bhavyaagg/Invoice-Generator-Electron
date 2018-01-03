@@ -8,7 +8,9 @@ function addPartyMasterProductCategoryDiscount(event, dataList) {
   dataList.forEach(data => {
     models.PartyMasterProductCategoryDiscount
       .create(data)
-      .then()
+      .then(result=>{
+
+      })
       .catch(err => {
         event.sender.send('addedPartyMasterProductCategoryDiscount', {
           success: false,

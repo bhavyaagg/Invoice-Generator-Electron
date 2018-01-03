@@ -41,8 +41,6 @@ $(document).ready(function () {
     `);
 
     $('#addInvoiceButton').click(function () {
-
-
       $mainContent.empty();
       $resultRow.empty();
 
@@ -827,13 +825,14 @@ $(document).ready(function () {
                       let discount = $($(item)[0].children[1].children[0].children[0]).val();
                       let splDiscount = $($(item)[0].children[2].children[0].children[0]).val();
 
+                      console.log('party master id' + data.partyMasterData.id);
                       productCategoryDiscountsList.push({
                         productcategoryId: productCategoryId,
                         discount: discount,
                         splDiscount: splDiscount,
-                        partyMasterId: data.partyMasterData.id
+                        partymasterId: +(data.partyMasterData.id)
                       });
-
+                      $mainContent.empty();
                       ipcRenderer.send('addPartyMasterProductCategoryDiscount', productCategoryDiscountsList);
                       //TODO MAKE IT SYNCHRONOUS
                     })
