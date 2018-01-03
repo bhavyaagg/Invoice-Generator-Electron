@@ -16,14 +16,19 @@ $(document).ready(function () {
 
   const $editProductCategoryModal = $('#editProductCategoryModal');
   const $editProductModal = $('#editProductModal');
+  const $addPaymentModal = $('#addPaymentModal');
 
   const $editProductCategorySubmit = $('#editProductCategorySubmit');
   const $editProductSubmit = $('#editProductSubmit');
+  const $addPaymentSubmit = $('#addPaymentSubmit');
 
   const $editProductCategoryName = $('#editProductCategoryName');
   const $editProductName = $('#editProductName');
   const $editProductPrice = $('#editProductPrice');
   const $editProductCategoryForProductList = $('#editProductCategoryForProductList');
+  const $addPaymentDescription = $('#addPaymentDescription');
+  const $addPaymentDate = $('#addPaymentDate');
+  const $addPaymentAmount = $('#addPaymentAmount');
 
   const $editProductCategoryError = $('#editProductCategoryError');
 
@@ -1308,12 +1313,16 @@ $(document).ready(function () {
             $resultRow.text("Ledger Could Not Be Viewed Because " + data.error);
           }
         })
-
-
       }
+    });
+
+    $addPayment.click(function () {
+      let partyMasterId = +($('#partyMastersList').val());
+      $addPaymentSubmit[0].setAttribute('partyMasterId', partyMasterId);
+      $addPaymentModal.modal('show');
+    });
 
 
-    })
 
   });
 
