@@ -55,7 +55,9 @@ $(document).ready(function () {
         </div>
         
         <div class="row">
+          
           <div class="col-4">
+            <label for="partyMasterList" class="col-4 col-form-label">Party Name: </label>
             <select id="partyMasterList" class="custom-select">
               <option name="partyMasterList" value="0">None</option>
             </select>
@@ -172,9 +174,11 @@ $(document).ready(function () {
         </div>
         
         <div class="row" id="submitBtnDiv">
-          <div class="col-6"></div>
-          <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
-          <div class="col-6"></div>
+          <div class="col-5"></div>
+          <div class="col-2">
+            <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
+          </div>
+          <div class="col-5"><b>Checker</b></div>
         </div>
         
       `);
