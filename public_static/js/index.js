@@ -172,11 +172,11 @@ $(document).ready(function () {
         </div>
         
         <div class="row" id="submitBtnDiv">
-          <div class="col-5"></div>
+          <div class="col-5"><b>Checker</b></div>
           <div class="col-2">
             <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
           </div>
-          <div class="col-5"><b>Checker</b></div>
+          <div class="col-5"></div>
         </div>
         
       `);
@@ -310,6 +310,21 @@ $(document).ready(function () {
 
           $('#productList').append(str);
         });
+
+        ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
+          partymasterId: +(selectedPartyMaster.id),
+          productcategoryId: +(selectedProductCategory.id)
+        });
+
+        ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, data) {
+          console.log(selectedPartyMaster.id + ' ' + selectedProductCategory.id);
+          console.log(data);
+          if(data && data.success) {
+            console.log(data.discountObj.discount + data.discountObj.splDiscount);
+            selectedPartyMaster.discount = data.discountObj.discount;
+            selectedPartyMaster.splDiscount = data.discountObj.splDiscount;
+          }
+        })
 
       });
 

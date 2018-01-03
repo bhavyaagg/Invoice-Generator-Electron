@@ -23,17 +23,17 @@ function addPartyMasterProductCategoryDiscount(event, dataList) {
 function viewDiscountByPartyMasterIdAndProductCategoryId(event, data) {
 
   models.PartyMasterProductCategoryDiscount
-    .findAll({
+    .find({
       where: {
-        partymasterId: data.partyMasterId,
-        productcategoryId: data.productCategoryId
+        partymasterId: data.partymasterId,
+        productcategoryId: data.productcategoryId
       }
     })
     .then(result => {
-      if (result && result.length !== 0) {
+      if (result ) {
         event.sender.send('getDiscountByPartyMasterIdAndProductCategoryId', {
           success: true,
-          discountObj: result
+          discountObj: result.get()
         })
       }
       else {
