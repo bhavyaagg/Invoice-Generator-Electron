@@ -1310,8 +1310,52 @@ $(document).ready(function () {
           id: partyMasterId
         });
         ipcRenderer.once('getLedgerByPartyMasterId', function (event, data) {
+          $mainContent.empty();
+          $resultRow.empty();
           if (data.success) {
-            console.log(data.ledgerRows);
+            let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col">
+                    Description
+                  </div>
+                  <div class="col">
+                    Date Of Transaction
+                  </div>
+                  <div class="col">
+                    Product Name
+                  </div>
+                  <div class="col">
+                    Debit
+                  </div>
+                  <div class="col">
+                    Credit
+                  </div>
+                  <div class="col">
+                    Balance
+                  </div>
+                </div>
+              </li>
+          `;
+
+            data.ledgerRows.forEach(function (ledgerRow) {
+              str += `
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col">${ledgerRow.description}</div>
+                  <div class="col">${ledgerRow.dateOfTransaction}</div>
+                  <div class="col">${ledgerRow.productCategoryName}</div>
+                  <div class="col">${ledgerRow.debit}</div>
+                  <div class="col">${ledgerRow.credit}</div>
+                  <div class="col">${ledgerRow.balance}</div>
+                </div>
+              </li>
+              `
+            });
+            str += "</ul>"
+
+            $mainContent.append(str);
           } else {
             $resultRow.removeClass('text-success').addClass('text-danger');
             $resultRow.text("Ledger Could Not Be Viewed Because " + data.error);
