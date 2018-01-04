@@ -265,6 +265,25 @@ $(document).ready(function () {
 
         $transport.empty();
         $transport.append(`Transport: ` + selectedPartyMaster.transport);
+        console.log($partyMasterList.val());
+        if($productCategoryList.val()!=0 && $partyMasterList.val()!=0) {
+          //console.log('in partMaster');
+          //console.log($productCategoryList.val() + ' '+ $partyMasterList.val());
+          ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
+            partymasterId: +(selectedPartyMaster.id),
+            productcategoryId: +(selectedProductCategory.id)
+          });
+
+          ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, data) {
+            console.log(selectedPartyMaster.id + ' ' + selectedProductCategory.id);
+            console.log(data);
+            if (data && data.success) {
+              console.log(data.discountObj.discount + data.discountObj.splDiscount);
+              selectedPartyMaster.discount = data.discountObj.discount;
+              selectedPartyMaster.splDiscount = data.discountObj.splDiscount;
+            }
+          })
+        }
       });
 
       $productCategoryList.change(function () {
@@ -305,20 +324,24 @@ $(document).ready(function () {
           $('#productList').append(str);
         });
 
-        ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
-          partymasterId: +(selectedPartyMaster.id),
-          productcategoryId: +(selectedProductCategory.id)
-        });
+        if($productCategoryList.val()!=0 && $partyMasterList.val()!=0) {
+          //console.log('in product category');
+          //console.log($productCategoryList.val() + ' '+ $partyMasterList.val());
+          ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
+            partymasterId: +(selectedPartyMaster.id),
+            productcategoryId: +(selectedProductCategory.id)
+          });
 
-        ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, data) {
-          console.log(selectedPartyMaster.id + ' ' + selectedProductCategory.id);
-          console.log(data);
-          if(data && data.success) {
-            console.log(data.discountObj.discount + data.discountObj.splDiscount);
-            selectedPartyMaster.discount = data.discountObj.discount;
-            selectedPartyMaster.splDiscount = data.discountObj.splDiscount;
-          }
-        })
+          ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, data) {
+            console.log(selectedPartyMaster.id + ' ' + selectedProductCategory.id);
+            console.log(data);
+            if (data && data.success) {
+              console.log(data.discountObj.discount + data.discountObj.splDiscount);
+              selectedPartyMaster.discount = data.discountObj.discount;
+              selectedPartyMaster.splDiscount = data.discountObj.splDiscount;
+            }
+          })
+        }
 
       });
 
