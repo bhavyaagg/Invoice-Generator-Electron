@@ -452,6 +452,8 @@ $(document).ready(function () {
       $('#submitInvoice').click(function () {
         console.log($cases);
         console.log($bilityDate.val());
+        console.log(selectedPartyMaster)
+        console.log(selectedProductCategory)
         if (listItemCount === 1)
           return;
         console.log($bilityDate.val());
@@ -464,13 +466,18 @@ $(document).ready(function () {
           chalanNo: $chalanNumber.val(),
           chalanDate: $chalanDate.val(),
           partymasterId: selectedPartyMaster.id,
+          partyMasterBalance: selectedPartyMaster.balance,
           productcategoryId: selectedProductCategory.id,
+          productCategoryName: selectedProductCategory.name,
           grandTotal: grandTotal
         });
 
 
         ipcRenderer.once('getSubmitInvoice', function (event, data) {
           if (data.success) {
+            ipcRenderer.send('printInvoice', {
+              id: slipNumber
+            })
             $resultRow.removeClass('text-danger').addClass('text-success');
             $resultRow.text("Invoice Has Been Added");
             $mainContent.empty();
