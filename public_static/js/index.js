@@ -80,7 +80,7 @@ $(document).ready(function () {
             <div class="form-group row">
               <label for="cases" class="col-2 col-form-label">Cases</label>
               <div class="col-4">
-                <input class="form-control" type="number" value="0" id="cases">
+                <input class="form-control" type="number" value="0" id="casesInp">
               </div>
             </div>
           </div>
@@ -175,6 +175,16 @@ $(document).ready(function () {
         
       `);
 
+      let $marka = $('#marka');
+      var $cases = $('#casesInp');
+      let $transport = $('#transport');
+      var $invoiceDate = $('#invoiceDate');
+      let $bilityNumber = $('#bilityNumber');
+      var $bilityDate = $('#bilityDate');
+      let $chalanNumber = $('#chalanNumber');
+      let $chalanDate = $('#chalanDate');
+
+
 
       let $partyMasterList = $('#partyMasterList');
       let $productCategoryList = $('#productCategoriesList');
@@ -238,14 +248,6 @@ $(document).ready(function () {
       //Get Data in Product Categories DropDown
       let productCategoriesRowObj = getDataProductCategories(); // All product Categories with id as key
 
-      let $marka = $('#marka');
-      let $cases = $('#cases');
-      let $transport = $('#transport');
-      let $invoiceDate = $('#invoiceDate');
-      let $bilityNumber = $('#bilityNumber');
-      let $bilityDate = $('#bilityDate');
-      let $chalanNumber = $('#chalanNumber');
-      let $chalanDate = $('#chalanDate');
 
 
       $invoiceDate.val(getCurrentDate());
@@ -435,16 +437,18 @@ $(document).ready(function () {
       });
 
       $('#submitInvoice').click(function () {
+        console.log($cases);
+        console.log($bilityDate.val());
         if (listItemCount === 1)
           return;
-        console.log($bilityDate.val());
+        console.log($cases.val());
         ipcRenderer.send('submitInvoice', {
-          cases: (+$cases.val()),
+          cases: String($cases.val()),
           dateOfInvoice: $invoiceDate.val(),
           bilityNo: $bilityNumber.val(),
-          bilityDate: $bilityDate.val(),
+          bilityDate: String($bilityDate.val()),
           chalanNo: $chalanNumber.val(),
-          chalanDate: $chalanDate.val(),
+          chalanDate: String($chalanDate.val()),
           partymasterId: selectedPartyMaster.id,
           productcategoryId: selectedProductCategory.id,
           grandTotal: grandTotal
