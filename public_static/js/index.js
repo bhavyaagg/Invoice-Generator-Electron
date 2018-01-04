@@ -178,7 +178,7 @@ $(document).ready(function () {
           <div class="col-5"><b>Checker</b></div>
           <div class="col-2">
             <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
-            <input class="btn btn-primary" type="submit" value="Submit Invoice" id="printInvoice">
+            <input class="btn btn-primary" type="submit" value="Print Invoice" id="printInvoice">
           </div>
           <div class="col-5"></div>
         </div>
@@ -605,10 +605,10 @@ $(document).ready(function () {
                 ${invoiceItem.id}
               </div>
               <div class="col">
-                Party Name
+                ${invoiceItem.partymaster.dataValues.name}
               </div>
               <div class="col">
-                Product Category
+                ${invoiceItem.productcategory.dataValues.name}
               </div>
               <div class="col">
                 ${invoiceItem.cases}
@@ -900,10 +900,13 @@ $(document).ready(function () {
                         splDiscount: splDiscount,
                         partymasterId: +(data.partyMasterData.id)
                       });
-                      $mainContent.empty();
-                      ipcRenderer.send('addPartyMasterProductCategoryDiscount', productCategoryDiscountsList);
+
+
+
                       //TODO MAKE IT SYNCHRONOUS
                     })
+                    $mainContent.empty();
+                    ipcRenderer.send('addPartyMasterProductCategoryDiscount', productCategoryDiscountsList);
 
                     $resultRow.removeClass('text-danger').addClass('text-success');
                     $resultRow.text("Party Has Been Added");
