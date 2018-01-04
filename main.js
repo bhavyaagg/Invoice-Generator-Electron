@@ -76,3 +76,5 @@ ipcMain.on('submitInvoiceDetail', routes.invoice.submitInvoiceDetail);
 ipcMain.on('viewInvoiceItems', routes.invoice.viewInvoiceItems);
 
 ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId);
+
+ipcMain.on('addPaymentForPartyMaster', routes.partyMaster.addPaymentForPartyMaster);
