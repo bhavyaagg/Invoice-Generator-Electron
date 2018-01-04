@@ -9,6 +9,7 @@ const models = require('./db/models');
 let mainWindow;
 
 const routes = require('./routes');
+const print = require('./print');
 
 function createWindow() {
   let mainScreenDimensions = require('electron').screen.getPrimaryDisplay().size;
@@ -82,6 +83,12 @@ ipcMain.on('viewInvoiceItemById', routes.invoice.viewInvoiceItemById);
 ipcMain.on('addPartyMasterProductCategoryDiscount', routes.partyMasterProductCategoryDiscount.addPartyMasterProductCategoryDiscount);
 
 ipcMain.on('viewDiscountByPartyMasterIdAndProductCategoryId', routes.partyMasterProductCategoryDiscount.viewDiscountByPartyMasterIdAndProductCategoryId);
+
+ipcMain.on('printInvoice', function (event, data) {
+  print.preparePrint();
+  print.savePDF(__dirname+ '/invoices/' + data.id);
+  print.print();
+});
 
 ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId);
 
