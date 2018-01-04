@@ -191,14 +191,12 @@ $(document).ready(function () {
       let $invoiceDate = $('#invoiceDate');
       let $bilityNumber = $('#bilityNumber');
       let $bilityDate = $('#bilityDate');
-      console.log($bilityDate.val())
       let $chalanNumber = $('#chalanNumber');
       let $chalanDate = $('#chalanDate');
 
       let currentDate = getCurrentDate();
-      // $invoiceDate.val(currentDate);
+      $invoiceDate.val(currentDate);
       $bilityDate.val(currentDate);
-      console.log($bilityDate.val())
       $chalanDate.val(currentDate);
       let $partyMasterList = $('#partyMasterList');
       let $productCategoryList = $('#productCategoriesList');
