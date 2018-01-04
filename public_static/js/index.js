@@ -445,6 +445,8 @@ $(document).ready(function () {
       });
 
       $('#printInvoice').click(function () {
+        let mainContent = $('#mainContent')[0];
+        $(document.body).empty().append(mainContent)
         ipcRenderer.send('printInvoice', {
           id: slipNumber
         })
@@ -475,12 +477,22 @@ $(document).ready(function () {
 
         ipcRenderer.once('getSubmitInvoice', function (event, data) {
           if (data.success) {
+            let mainContent = $('#mainContent')[0];
+            $(document.body).empty().append(mainContent);
             ipcRenderer.send('printInvoice', {
               id: slipNumber
+            });
+            ipcRenderer.once('printedInvoice', function (event, data) {
+              if (data.success) {
+                location.reload();
+              } else {
+                window.alert("Could not add invoice");
+                $('#resultRow').removeClass('text-success').addClass('text-danger');
+                $('#resultRow').text("Invoice Could Not Be Added");
+                $mainContent.empty();
+              }
             })
-            $resultRow.removeClass('text-danger').addClass('text-success');
-            $resultRow.text("Invoice Has Been Added");
-            $mainContent.empty();
+
           } else {
             $resultRow.removeClass('text-success').addClass('text-danger');
             $resultRow.text("Invoice Could Not Be Added Because " + data.error);
