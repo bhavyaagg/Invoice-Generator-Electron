@@ -38,7 +38,9 @@ function submitInvoiceDetail(event, invoiceDetail) {
 }
 
 function viewInvoiceItems(event) {
-  models.Invoice.findAll({})
+  models.Invoice.findAll({
+    include: [models.PartyMaster, models.ProductCategory]
+  })
     .then(function (invoiceItems) {
       if(invoiceItems.length>0) {
         event.sender.send('getInvoiceItems', {
