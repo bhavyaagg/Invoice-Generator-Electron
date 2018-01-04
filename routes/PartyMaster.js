@@ -46,6 +46,7 @@ function addPaymentForPartyMaster(event, data) {
       let partyMasterBalance = +(partymaster.get().balance);
       models.Ledger.create({
         description: data.description,
+        partymasterId: data.partyMasterId,
         dateOfTransaction: data.transactionDate,
         credit: 0,
         productCategoryName: "",

@@ -6,7 +6,6 @@ const models = require('./../db/models');
 
 function viewLedgerByPartyMasterId(event, partyMaster) {
   models.Ledger.findAll({
-
     where: {
       partymasterId: partyMaster.id
     },
