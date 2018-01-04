@@ -95,7 +95,7 @@ ipcMain.on('viewDiscountByPartyMasterIdAndProductCategoryId', routes.partyMaster
 ipcMain.on('printInvoice', function (event, data) {
   print.preparePrint(mainWindow);
   print.savePDF(__dirname + '/invoices/' + data.id+'.pdf');
-  print.print();
+  print.print(event);
 });
 
 ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId);

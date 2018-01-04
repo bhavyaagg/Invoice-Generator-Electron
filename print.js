@@ -16,9 +16,17 @@ function getPDFPrintSettings() {
   return option;
 }
 
-function print() {
-  if (print_win)
+function print(event) {
+  if (print_win) {
     print_win.webContents.print();
+    event.sender.send('printedInvoice', {
+      success: true
+    })
+  } else {
+    event.sender.send('printedInvoice', {
+      success: false
+    })
+  }
 }
 
 function savePDF(file_path) {
