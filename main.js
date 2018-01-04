@@ -14,7 +14,11 @@ const print = require('./print');
 function createWindow() {
   let mainScreenDimensions = require('electron').screen.getPrimaryDisplay().size;
 
-  mainWindow = new BrowserWindow({width: mainScreenDimensions.width, height: mainScreenDimensions.height});
+  mainWindow = new BrowserWindow({
+    width: mainScreenDimensions.width,
+    height: mainScreenDimensions.height,
+    defaultFontSize: 10
+  });
   console.log(process.versions.node)
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'public_static', 'index.html'),
@@ -85,7 +89,7 @@ ipcMain.on('addPartyMasterProductCategoryDiscount', routes.partyMasterProductCat
 ipcMain.on('viewDiscountByPartyMasterIdAndProductCategoryId', routes.partyMasterProductCategoryDiscount.viewDiscountByPartyMasterIdAndProductCategoryId);
 
 ipcMain.on('printInvoice', function (event, data) {
-  print.preparePrint();
+  print.preparePrint(mainWindow);
   print.savePDF(__dirname+ '/invoices/' + data.id);
   print.print();
 });

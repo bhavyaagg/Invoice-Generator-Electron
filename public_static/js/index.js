@@ -169,6 +169,7 @@ $(document).ready(function () {
           <div class="col-5"><b>Checker</b></div>
           <div class="col-2">
             <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
+            <input class="btn btn-primary" type="submit" value="Submit Invoice" id="printInvoice">
           </div>
           <div class="col-5"></div>
         </div>
@@ -436,6 +437,11 @@ $(document).ready(function () {
         $('#addInvoiceItemModal').modal('hide');
       });
 
+      $('#printInvoice').click(function () {
+        ipcRenderer.send('printInvoice', {
+          id: slipNumber
+        })
+      });
       $('#submitInvoice').click(function () {
         console.log($cases);
         console.log($bilityDate.val());
