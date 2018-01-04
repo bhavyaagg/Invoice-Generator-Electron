@@ -1344,7 +1344,7 @@ $(document).ready(function () {
               <li class="list-group-item">
                 <div class="row align-items-center">
                   <div class="col">${ledgerRow.description}</div>
-                  <div class="col">${ledgerRow.dateOfTransaction}</div>
+                  <div class="col">${ledgerRow.dateOfTransaction.split('-').reverse().join('-')}</div>
                   <div class="col">${ledgerRow.productCategoryName}</div>
                   <div class="col">${ledgerRow.debit}</div>
                   <div class="col">${ledgerRow.credit}</div>
