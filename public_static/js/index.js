@@ -1366,8 +1366,13 @@ $(document).ready(function () {
 
     $addPayment.click(function () {
       let partyMasterId = +($('#partyMastersList').val());
-      $addPaymentSubmit[0].setAttribute('partyMasterId', partyMasterId);
-      $addPaymentModal.modal('show');
+      if (partyMasterId === 0) {
+        $resultRow.removeClass('text-success').addClass('text-danger');
+        $resultRow.text("Please Select A Party Master");
+      } else {
+        $addPaymentSubmit[0].setAttribute('partyMasterId', partyMasterId);
+        $addPaymentModal.modal('show');
+      }
     });
 
     $addPaymentSubmit.click(function (e) {
