@@ -74,7 +74,7 @@ $(document).ready(function () {
             <div class="form-group row">
               <label for="bilityDate" class="col-4 col-form-label">Date</label>
               <div class="col-8">
-                <input class="form-control" type="date" value="2017-08-19" id="invoiceDate">
+                <input class="form-control" type="date" id="invoiceDate">
               </div>  
             </div> 
           </div>
@@ -118,7 +118,7 @@ $(document).ready(function () {
             <div class="form-group row">
               <label for="bilityDate" class="col-4 col-form-label">BiltyDate</label>
               <div class="col-8">
-                <input class="form-control" type="date" value="2017-08-19" id="bilityDate">
+                <input class="form-control" type="date" id="bilityDate">
               </div>  
             </div>    
           </div>
@@ -134,7 +134,7 @@ $(document).ready(function () {
             <div class="form-group row">
               <label for="chalanDate" class="col-4 col-form-label">Chalan Date</label>
               <div class="col-8">
-                <input class="form-control" type="date" value="2017-08-19" id="chalanDate">
+                <input class="form-control" type="date" id="chalanDate">
               </div>  
             </div>    
           </div>
@@ -184,14 +184,13 @@ $(document).ready(function () {
       `);
 
       let $marka = $('#marka');
-      var $cases = $('#casesInp');
+      let $cases = $('#casesInp');
       let $transport = $('#transport');
-      var $invoiceDate = $('#invoiceDate');
+      let $invoiceDate = $('#invoiceDate');
       let $bilityNumber = $('#bilityNumber');
-      var $bilityDate = $('#bilityDate');
+      let $bilityDate = $('#bilityDate');
       let $chalanNumber = $('#chalanNumber');
       let $chalanDate = $('#chalanDate');
-
 
 
       let $partyMasterList = $('#partyMasterList');
@@ -242,13 +241,13 @@ $(document).ready(function () {
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
         console.log(data.error);
-        if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length===0) {
+        if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
           slipNumber = 1;
           $slipNumber.append(slipNumber);
           return;
         }
 
-        slipNumber = data.invoiceItems[data.invoiceItems.length-1].id + 1;
+        slipNumber = data.invoiceItems[data.invoiceItems.length - 1].id + 1;
         $slipNumber.append(slipNumber);
 
       });
@@ -256,9 +255,10 @@ $(document).ready(function () {
       //Get Data in Product Categories DropDown
       let productCategoriesRowObj = getDataProductCategories(); // All product Categories with id as key
 
-
-
-      $invoiceDate.val(getCurrentDate());
+      let currentDate = getCurrentDate();
+      $invoiceDate.val(currentDate);
+      $bilityDate.val(currentDate);
+      $chalanDate.val(currentDate);
 
       // On change for party master list
       let selectedPartyMaster;
@@ -276,7 +276,7 @@ $(document).ready(function () {
         $transport.empty();
         $transport.append(`Transport: ` + selectedPartyMaster.transport);
         console.log($partyMasterList.val());
-        if($productCategoryList.val()!=0 && $partyMasterList.val()!=0) {
+        if ($productCategoryList.val() != 0 && $partyMasterList.val() != 0) {
           //console.log('in partMaster');
           //console.log($productCategoryList.val() + ' '+ $partyMasterList.val());
           ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
@@ -334,7 +334,7 @@ $(document).ready(function () {
           $('#productList').append(str);
         });
 
-        if($productCategoryList.val()!=0 && $partyMasterList.val()!=0) {
+        if ($productCategoryList.val() != 0 && $partyMasterList.val() != 0) {
           //console.log('in product category');
           //console.log($productCategoryList.val() + ' '+ $partyMasterList.val());
           ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
@@ -429,17 +429,17 @@ $(document).ready(function () {
                   ${per}  
                 </div>
                 <div class="col-2">
-                  ${(((+qty) * (+selectedProduct.price)) * (100-(+selectedPartyMaster.discount)) * (100-selectedPartyMaster.splDiscount))/10000}
+                  ${(((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000}
                 </div>
               </div>
             </li>
           `)
-        totalAmt += (((+qty) * (+selectedProduct.price)) * (100-(+selectedPartyMaster.discount)) * (100-selectedPartyMaster.splDiscount))/10000;
+        totalAmt += (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000;
 
         cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
 
         grandTotal = totalAmt - (+cdDiscount) + +(packingCharges);
-        grandTotal = roundTo(grandTotal,2);
+        grandTotal = roundTo(grandTotal, 2);
         updateAmtDiv();
         $('#addInvoiceItemModal').modal('hide');
       });
@@ -454,14 +454,15 @@ $(document).ready(function () {
         console.log($bilityDate.val());
         if (listItemCount === 1)
           return;
-        console.log($cases.val());
+        console.log($bilityDate.val());
+        console.log($chalanDate.val());
         ipcRenderer.send('submitInvoice', {
           cases: String($cases.val()),
           dateOfInvoice: $invoiceDate.val(),
           bilityNo: $bilityNumber.val(),
-          bilityDate: String($bilityDate.val()),
+          bilityDate: $bilityDate.val(),
           chalanNo: $chalanNumber.val(),
-          chalanDate: String($chalanDate.val()),
+          chalanDate: $chalanDate.val(),
           partymasterId: selectedPartyMaster.id,
           productcategoryId: selectedProductCategory.id,
           grandTotal: grandTotal
@@ -502,6 +503,7 @@ $(document).ready(function () {
       }
 
     });
+
     let $viewInvoicesButton = $('#viewInvoicesButton');
     $viewInvoicesButton.click(function () {
 
@@ -515,34 +517,34 @@ $(document).ready(function () {
           <li class="list-group-item">
             <div class="row">
               
-              <div class="col-1">
+              <div class="col">
                 <b>Slip No.</b>
               </div>
-              <div class="col-1">
+              <div class="col">
                 <b>Party Name</b>
               </div>
-              <div class="col-2">
+              <div class="col">
                 <b>Product Category</b>
               </div>
-              <div class="col-1">
+              <div class="col">
                 <b>Cases</b>
               </div>
               <div class="col-1">
                 <b>Invoice Date</b>
               </div>
-              <div class="col-1">
+              <div class="col">
                 <b>Bility No.</b>
               </div>
               <div class="col-1">
                 <b>Bility Date</b>
               </div>
-              <div class="col-1">
+              <div class="col">
                 <b>Chalan No.</b>
               </div>
               <div class="col-1">
                 <b>Chalan Date</b>
               </div>
-              <div class="col-1">
+              <div class="col-2">
                 <b>Grand Total</b>
               </div> 
               <div class="col-1 row">
@@ -580,34 +582,34 @@ $(document).ready(function () {
           str += `
           <li class="list-group-item">
             <div class="row">
-              <div class="col-1">
+              <div class="col">
                 ${invoiceItem.id}
               </div>
-              <div class="col-1">
+              <div class="col">
                 Party Name
               </div>
-              <div class="col-2">
+              <div class="col">
                 Product Category
               </div>
-              <div class="col-1">
+              <div class="col">
                 ${invoiceItem.cases}
               </div>
               <div class="col-1">
                 ${invoiceItem.dateOfInvoice}
               </div>
-              <div class="col-1">
+              <div class="col">
                 ${invoiceItem.bilityNo}
               </div>
               <div class="col-1">
                 ${invoiceItem.bilityDate}
               </div>
-              <div class="col-1">
+              <div class="col">
                 ${invoiceItem.chalanNo}
               </div>
               <div class="col-1">
                 ${invoiceItem.chalanDate}
               </div>
-              <div class="col-1">
+              <div class="col-2">
                 ${invoiceItem.grandTotal}
               </div> 
               <div class="col-1 row">
@@ -652,7 +654,7 @@ $(document).ready(function () {
         $('.edit-invoice-item').click(function (e) {
           let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
           console.log(invoiceItemId);
-          ipcRenderer.send('viewInvoiceItemById',{
+          ipcRenderer.send('viewInvoiceItemById', {
             id: invoiceItemId
           });
 
@@ -848,7 +850,7 @@ $(document).ready(function () {
                 `
               });
 
-              str+=`
+              str += `
                 </ul>
                  <div class="row">
                   <div class="col text-center">
@@ -857,7 +859,7 @@ $(document).ready(function () {
                 </div>
               `;
               $mainContent.append(str);
-              
+
               $('#submitPartyMasterAndDiscounts').click(function () {
                 let pg = $('.productCategoryDiscount');
 
@@ -865,7 +867,7 @@ $(document).ready(function () {
                 ipcRenderer.send('addPartyMaster', partyMasterData);
                 ipcRenderer.once('addedPartyMaster', function (event, data) {
                   if (data.success) {
-                    pg.each((row,item) => {
+                    pg.each((row, item) => {
                       console.log($(item));
 
                       let productCategoryId = $(item)[0].getAttribute('productCategoryId');
@@ -894,8 +896,6 @@ $(document).ready(function () {
                 });
 
 
-
-
               })
 
             }
@@ -904,7 +904,6 @@ $(document).ready(function () {
               $resultRow.text("Product Categories Could Not Be Viewed Because " + data.error);
             }
           });
-
 
 
           /* */
@@ -1658,20 +1657,23 @@ $(document).ready(function () {
 
   function getCurrentDate() {
     let today = new Date();
-    let dd = today.getDate();
-    let mm = today.getMonth() + 1; //January is 0!
-    let yyyy = today.getFullYear();
+    // console.log(today.toDateString('yyyy-'))
+    // let dd = today.getDate();
+    // let mm = today.getMonth() + 1; //January is 0!
+    // let yyyy = today.getFullYear();
+    //
+    // if (dd < 10) {
+    //   dd = '0' + dd
+    // }
+    //
+    // if (mm < 10) {
+    //   mm = '0' + mm
+    // }
+    //
+    // today = yyyy + '-' + mm + '-' + dd;
+    // console.log(today)
 
-    if (dd < 10) {
-      dd = '0' + dd
-    }
-
-    if (mm < 10) {
-      mm = '0' + mm
-    }
-
-    today = yyyy + '-' + mm + '-' + dd;
-    return today;
+    return today.toISOString().split('T')[0];
   }
 
   function roundTo(n, digits) {
@@ -1679,14 +1681,14 @@ $(document).ready(function () {
     if (digits === undefined) {
       digits = 0;
     }
-    if( n < 0) {
+    if (n < 0) {
       negative = true;
       n = n * -1;
     }
     var multiplicator = Math.pow(10, digits);
     n = parseFloat((n * multiplicator).toFixed(11));
     n = (Math.round(n) / multiplicator).toFixed(2);
-    if( negative ) {
+    if (negative) {
       n = (n * -1).toFixed(2);
     }
     return n;
