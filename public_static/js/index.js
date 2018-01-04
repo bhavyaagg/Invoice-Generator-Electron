@@ -62,31 +62,33 @@ $(document).ready(function () {
         <div class="row">
           
           <div class="col-4">
-            <label for="partyMasterList" class="col-4 col-form-label">Party Name: </label>
-            <select id="partyMasterList" class="custom-select">
-              <option name="partyMasterList" value="0">None</option>
-            </select>
+            <div class="form-group row">
+              <label for="partyMasterList" class="col-6 col-form-label">Party Name: </label>
+              <select id="partyMasterList" class="custom-select">
+                <option name="partyMasterList" value="0">None</option>
+              </select>
+            </div> 
           </div>
-          <div class="col-4" id="slipNo" >
+          <div class="col-4 text-center mt-2" id="slipNo" >
             Slip No.:   
           </div>
           <div class="col-4">
             <div class="form-group row">
-              <label for="bilityDate" class="col-4 col-form-label">Date</label>
+              <label for="invoiceDate" class="col col-form-label">Date</label>
               <div class="col-8">
                 <input class="form-control" type="date" id="invoiceDate">
               </div>  
             </div> 
           </div>
         </div>
-        <div class="row">
+        <div class="row align-items-center">
           <div class="col-2" id="marka">
             Marka:    
           </div>
           <div class="col-3">
-            <div class="form-group row">
-              <label for="cases" class="col-2 col-form-label">Cases</label>
-              <div class="col-4">
+            <div class="form-group row align-items-center">
+              <label for="cases" class="col col-form-label">Cases</label>
+              <div class="col">
                 <input class="form-control" type="number" value="0" id="casesInp">
               </div>
             </div>
@@ -95,9 +97,9 @@ $(document).ready(function () {
             Transport:    
           </div>
           <div class="col-4">
-            <div class="form-group row">
-              <label for="productCategoriesList" class="col-4 col-form-label">Product Category: </label>
-              <div class="col-8">
+            <div class="form-group row align-items-center">
+              <label for="productCategoriesList" class="col col-form-label">Product Category: </label>
+              <div class="col">
                 <select id="productCategoriesList" class="custom-select">
                   <option name="productCategoriesList" value="0">None</option>
                 </select>
@@ -105,35 +107,35 @@ $(document).ready(function () {
             </div>
           </div>
         </div>  
-        <div class="row">
-          <div class="col-3">
-            <div class="form-group row">
-              <label for="bilityNumber" class="col-4 col-form-label">Bilty No.</label>
-              <div class="col-8">
+        <div class="row align-items-center">
+          <div class="col-2">
+            <div class="form-group row align-items-center">
+              <label for="bilityNumber" class="col col-form-label">Bilty No.</label>
+              <div class="col">
                 <input class="form-control" type="number" value="0" id="bilityNumber">
               </div>
             </div>
           </div>
-          <div class="col-3">
-            <div class="form-group row">
-              <label for="bilityDate" class="col-4 col-form-label">BiltyDate</label>
-              <div class="col-8">
+          <div class="col-4">
+            <div class="form-group row align-items-center">
+              <label for="bilityDate" class="col col-form-label">BiltyDate</label>
+              <div class="col">
                 <input class="form-control" type="date" id="bilityDate">
               </div>  
             </div>    
           </div>
-          <div class="col-3">
-            <div class="form-group row">
-              <label for="chalanNumber" class="col-5 col-form-label text-right">Chalan No.</label>
-              <div class="col-7">
+          <div class="col-2">
+            <div class="form-group row align-items-center">
+              <label for="chalanNumber" class="col col-form-label text-right">Chalan No.</label>
+              <div class="col">
                 <input class="form-control" type="number" value="0" id="chalanNumber">
               </div>
             </div>
           </div>
-          <div class="col-3">
-            <div class="form-group row">
-              <label for="chalanDate" class="col-4 col-form-label">Chalan Date</label>
-              <div class="col-8">
+          <div class="col-4">
+            <div class="form-group row align-items-center">
+              <label for="chalanDate" class="col col-form-label">Chalan Date</label>
+              <div class="col">
                 <input class="form-control" type="date" id="chalanDate">
               </div>  
             </div>    
@@ -189,10 +191,15 @@ $(document).ready(function () {
       let $invoiceDate = $('#invoiceDate');
       let $bilityNumber = $('#bilityNumber');
       let $bilityDate = $('#bilityDate');
+      console.log($bilityDate.val())
       let $chalanNumber = $('#chalanNumber');
       let $chalanDate = $('#chalanDate');
 
-
+      let currentDate = getCurrentDate();
+      // $invoiceDate.val(currentDate);
+      $bilityDate.val(currentDate);
+      console.log($bilityDate.val())
+      $chalanDate.val(currentDate);
       let $partyMasterList = $('#partyMasterList');
       let $productCategoryList = $('#productCategoriesList');
       let partyMasterRowObj = {};                    // All data with S.no. as key
@@ -240,7 +247,6 @@ $(document).ready(function () {
 
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
-        console.log(data.error);
         if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
           slipNumber = 1;
           $slipNumber.append(slipNumber);
@@ -255,10 +261,6 @@ $(document).ready(function () {
       //Get Data in Product Categories DropDown
       let productCategoriesRowObj = getDataProductCategories(); // All product Categories with id as key
 
-      let currentDate = getCurrentDate();
-      $invoiceDate.val(currentDate);
-      $bilityDate.val(currentDate);
-      $chalanDate.val(currentDate);
 
       // On change for party master list
       let selectedPartyMaster;
