@@ -4,13 +4,33 @@
 
 const models = require('./../db/models');
 
-function submitInvoice(event, invoiceItem) {
-  models.Invoice.create(invoiceItem)
+function submitInvoice(event, invoiceItemData) {
+  models.Invoice.create(invoiceItemData)
     .then(invoiceItem => {
-      event.sender.send('getSubmitInvoice', {
-        success: true,
-        data: invoiceItem
+
+      models.Ledger.create({
+        description: "Invoice For " + invoiceItemData.productCategoryName + " Dated " + invoiceItemData.dateOfInvoice,
+        partymasterId: invoiceItemData.partymasterId,
+        dateOfTransaction: invoiceItemData.dateOfInvoice,
+        credit: invoiceItemData.grandTotal,
+        productCategoryName: invoiceItemData.productCategoryName,
+        debit: 0,
+        balance: invoiceItemData.partyMasterBalance + invoiceItemData.grandTotal
+      }).then(function (data) {
+        models.PartyMaster.update({
+          balance: invoiceItemData.partyMasterBalance + invoiceItemData.grandTotal
+        }, {
+          where: {
+            id: invoiceItemData.partymasterId
+          }
+        }).then(function () {
+          event.sender.send('getSubmitInvoice', {
+            success: true,
+            data: invoiceItem
+          })
+        })
       })
+
     }).catch(err => {
     event.sender.send('getSubmitInvoice', {
       success: false,
@@ -42,7 +62,7 @@ function viewInvoiceItems(event) {
     include: [models.PartyMaster, models.ProductCategory]
   })
     .then(function (invoiceItems) {
-      if(invoiceItems.length>0) {
+      if (invoiceItems.length > 0) {
         event.sender.send('getInvoiceItems', {
           success: true,
           invoiceItems: invoiceItems.map(invoiceItem => invoiceItem.get())
@@ -109,14 +129,15 @@ function deleteInvoiceItemById(event, invoiceItemId) {
     });
   })
 }
+
 function viewInvoiceItemById(event, invoiceItemId) {
   console.log(invoiceItemId);
   models.Invoice.findAll({
-    where:{
+    where: {
       id: invoiceItemId.id
     }
   }).then(function (invoiceItem) {
-    if(invoiceItem ){
+    if (invoiceItem) {
       event.sender.send('getInvoiceItemById', {
         success: true,
         invoiceItem: invoiceItem.get()
