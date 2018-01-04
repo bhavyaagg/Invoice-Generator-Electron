@@ -139,7 +139,7 @@ function viewProductById(event, product) {
     where: {
       id: product.id
     }
-  }).then(function (product) {
+  }).then(function (product) {product
     if (product) {
       event.sender.send('getProductById', {
         success: true,

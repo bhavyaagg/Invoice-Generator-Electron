@@ -9,11 +9,16 @@ const models = require('./db/models');
 let mainWindow;
 
 const routes = require('./routes');
+const print = require('./print');
 
 function createWindow() {
   let mainScreenDimensions = require('electron').screen.getPrimaryDisplay().size;
 
-  mainWindow = new BrowserWindow({width: mainScreenDimensions.width, height: mainScreenDimensions.height});
+  mainWindow = new BrowserWindow({
+    width: mainScreenDimensions.width,
+    height: mainScreenDimensions.height,
+    defaultFontSize: 10
+  });
   console.log(process.versions.node)
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'public_static', 'index.html'),
@@ -78,3 +83,19 @@ ipcMain.on('viewInvoiceItems', routes.invoice.viewInvoiceItems);
 ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId);
 
 ipcMain.on('addPaymentForPartyMaster', routes.partyMaster.addPaymentForPartyMaster);
+
+ipcMain.on('deleteInvoiceItemById', routes.invoice.deleteInvoiceItemById);
+
+ipcMain.on('viewInvoiceItemById', routes.invoice.viewInvoiceItemById);
+
+ipcMain.on('addPartyMasterProductCategoryDiscount', routes.partyMasterProductCategoryDiscount.addPartyMasterProductCategoryDiscount);
+
+ipcMain.on('viewDiscountByPartyMasterIdAndProductCategoryId', routes.partyMasterProductCategoryDiscount.viewDiscountByPartyMasterIdAndProductCategoryId);
+
+ipcMain.on('printInvoice', function (event, data) {
+  print.preparePrint(mainWindow);
+  print.savePDF(__dirname + '/invoices/' + data.id);
+  print.print();
+});
+
+ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId);

@@ -53,7 +53,8 @@ const PartyMaster = sequelize.define('partymaster', {
 
 const PartyMasterProductCategoryDiscount = sequelize.define('partymasterproductcategorydiscount', {
   id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  discount: Sequelize.DataTypes.DECIMAL
+  discount: Sequelize.DataTypes.DECIMAL,
+  splDiscount: Sequelize.DataTypes.DECIMAL
 });
 
 PartyMasterProductCategoryDiscount.belongsTo(PartyMaster);
@@ -70,7 +71,7 @@ const Invoice = sequelize.define('invoice', {
   bilityDate: Sequelize.DataTypes.DATEONLY,
   chalanNo: Sequelize.DataTypes.STRING,
   chalanDate: Sequelize.DataTypes.DATEONLY,
-  grandTotal: Sequelize.DataTypes.INTEGER
+  grandTotal: Sequelize.DataTypes.DECIMAL
 });
 
 Invoice.belongsTo(PartyMaster);
@@ -115,5 +116,6 @@ module.exports = {
   PartyMaster,
   Invoice,
   InvoiceDetail,
-  Ledger
+  Ledger,
+  PartyMasterProductCategoryDiscount
 };

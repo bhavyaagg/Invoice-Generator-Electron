@@ -1,5 +1,5 @@
 /**
- * Created by bhavyaagg on 02/01/18.
+ * Created by nimit on 02/01/18.
  */
 
 const models = require('./../db/models');
@@ -7,9 +7,10 @@ const models = require('./../db/models');
 function addPartyMaster(event, data) {
   models.PartyMaster.create(data)
     .then(partyMaster => {
-
+      console.log(partyMaster.get());
       event.sender.send('addedPartyMaster', {
-        success: true
+        success: true,
+        partyMasterData: partyMaster.get()
       });
     })
     .catch(function (err) {
