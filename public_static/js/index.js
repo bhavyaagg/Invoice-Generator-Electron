@@ -31,6 +31,8 @@ $(document).ready(function () {
   const $addPaymentAmount = $('#addPaymentAmount');
 
   const $editProductCategoryError = $('#editProductCategoryError');
+  const $editProductError = $('#editProductError');
+  const $addPaymentError = $('#addPaymentError');
 
   $invoicesButton.click(function () {
     $subHeader.empty();
@@ -703,11 +705,12 @@ $(document).ready(function () {
           name: $('#partyName').val(),
           destination: $('#destination').val(),
           marka: $('#marka').val(),
-          openingBalance: $('#openingBalance').val(),
+          openingBalance: +($('#openingBalance').val()),
           openingBalanceDate: $('#openingBalanceDate').val(),
           transport: $('#transport').val(),
           discount: $('#discount').val(),
           splDiscount: $('#splDiscount').val(),
+          balance: +($('#openingBalance').val()),
           cd: $('#cd').val()
         };
 
@@ -1288,6 +1291,7 @@ $(document).ready(function () {
         $('#partyMastersList').append(str);
       } else {
         $resultRow.removeClass('text-success').addClass('text-danger');
+        console.log(data.error)
         $resultRow.text("Party Masters Could Not Be Viewed Because " + data.error);
       }
     });
@@ -1322,7 +1326,35 @@ $(document).ready(function () {
       $addPaymentModal.modal('show');
     });
 
+    $addPaymentSubmit.click(function (e) {
+      let partyMasterId = +(e.target.getAttribute('partyMasterId'));
 
+      let paymentDescription = $addPaymentDescription.val();
+      let paymentDate = $addPaymentDate.val();
+      let paymentAmount = +($addPaymentAmount.val());
+
+      if (!paymentDescription || !paymentDate || paymentAmount === 0) {
+        $addPaymentError.text("Please Enter the All the Details");
+      } else {
+        ipcRenderer.send('addPaymentForPartyMaster', {
+          partyMasterId: partyMasterId,
+          description: paymentDescription,
+          transactionDate: paymentDate,
+          amount: paymentAmount
+        });
+        ipcRenderer.once('addedPaymentForPartyMaster', function (event, data) {
+          if (data.success) {
+            $addPaymentModal.modal('hide');
+            $ledgerButton.click();
+            $resultRow.removeClass('text-danger').addClass('text-success');
+            $resultRow.text("Payment Has Been Added");
+          } else {
+            $resultRow.removeClass('text-success').addClass('text-danger');
+            $resultRow.text("Payment Could Not Be Added Because " + data.error);
+          }
+        })
+      }
+    })
 
   });
 
