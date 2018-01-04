@@ -94,7 +94,7 @@ Product.hasMany(InvoiceDetail);
 const Ledger = sequelize.define('ledger', {
   id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
   description: Sequelize.DataTypes.STRING,
-  dateOfTransaction: Sequelize.DataTypes.DATE,
+  dateOfTransaction: Sequelize.DataTypes.DATEONLY,
   debit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
   credit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
   balance: Sequelize.DataTypes.DECIMAL,
