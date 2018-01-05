@@ -74,12 +74,15 @@ $(document).ready(function () {
           </div>
           
           <div class="col-5">
-            <div class="form-group row">
-              <div class="col-3 mt-2">Slip No./Date</div>
-              <div class="col-1 mt-2" id="slipNo"></div>
-              <div class="col-7">
+            <div class="form-group row align-items-center">
+              <div class="col-3">Slip No./Date</div>
+              <div class="col" style="padding:0.5rem 0.75rem;border:1px solid rgba(0, 0, 0, 0.15); border-radius: 0.25rem" id="slipNo"></div>
+              <div class="col-6">
                 <input class="form-control" type="date" id="invoiceDate">
               </div>  
+              <div class="col">
+              
+              </div>
             </div> 
           </div>
         </div>
