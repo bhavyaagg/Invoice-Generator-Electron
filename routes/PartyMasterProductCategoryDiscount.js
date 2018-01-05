@@ -115,5 +115,6 @@ function updateDiscountByPartyIdProductCategoryId(event, data) {
 module.exports = exports = {
   addPartyMasterProductCategoryDiscount,
   viewDiscountByPartyMasterIdAndProductCategoryId,
-  viewDiscountsByPartyId
+  viewDiscountsByPartyId,
+  updateDiscountByPartyIdProductCategoryId
 };
