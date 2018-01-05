@@ -509,7 +509,7 @@ $(document).ready(function () {
       function updateAmtDiv() {
         $('#totalAmt').empty();
         $('#totalAmt').append(`
-          <div style="padding-right: 120px">
+          <div>
             <hr>
             <p class="text-right"><b>Amount:  ${totalAmt}</b></p>
           
