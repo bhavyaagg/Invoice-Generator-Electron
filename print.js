@@ -8,7 +8,7 @@ let save_pdf_path;
 function getPDFPrintSettings() {
   var option = {
     landscape: false,
-    marginsType: 0,
+    marginsType: 1,
     printBackground: false,
     printSelectionOnly: false,
     pageSize: 'A4'

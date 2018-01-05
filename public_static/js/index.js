@@ -534,6 +534,8 @@ $(document).ready(function () {
       });
 
       function updateAmtDiv() {
+        let amtAfterCd = totalAmt - (+cdDiscount);
+        amtAfterCd = roundTo(amtAfterCd, 1)
         $('#totalAmt').empty();
         $('#totalAmt').append(`
           <div>
@@ -541,7 +543,7 @@ $(document).ready(function () {
             <p class="text-right"><b>Amount:  ${totalAmt}</b></p>
           
             <hr>
-            <p class="text-right"><b>Amount:  ${totalAmt - (+cdDiscount)}</b></p>
+            <p class="text-right"><b>Amount:  ${amtAfterCd}</b></p>
             <p class="text-right"><b>Packing Charges:  ${packingCharges}</b></p>
             <p class="text-right"><b>Grand Total:  ${grandTotal}</b></p>
           </div>
