@@ -51,7 +51,7 @@ function viewDiscountByPartyMasterIdAndProductCategoryId(event, data) {
     })
 }
 
-//TODO GET FROM LIST AND CHANGE IN INDEX JS
+//TODO USE GET FN FROM LIST AND CHANGE IN INDEX JS
 function viewDiscountsByPartyId(event, data) {
   models.PartyMasterProductCategoryDiscount
     .findAll({
@@ -81,8 +81,40 @@ function viewDiscountsByPartyId(event, data) {
       })
     })
 }
+
+
+function updateDiscountByPartyIdProductCategoryId(event, data) {
+  models.PartyMasterProductCategoryDiscount.update({
+    discount: data.discount,
+    splDiscount: data.splDiscount
+  }, {
+    where: {
+      partymasterId: data.partyMasterId,
+      productcategoryId: data.productCategoryId
+    }
+  }).then(function (result) {
+    if (result[0] > 0) {
+      event.sender.send('updatedPartyProductCategoryDiscount', {
+        success: true,
+      })
+    } else {
+      event.sender.send('updatedPartyProductCategoryDiscount', {
+        success: false,
+        error: "Incorrect ID"
+      })
+    }
+  }).catch(function (err) {
+    console.log(err)
+    event.sender.send('updatedPartyProductCategoryDiscount', {
+      success: false,
+      error: err
+    });
+  })
+}
+
 module.exports = exports = {
   addPartyMasterProductCategoryDiscount,
   viewDiscountByPartyMasterIdAndProductCategoryId,
-  viewDiscountsByPartyId
+  viewDiscountsByPartyId,
+  updateDiscountByPartyIdProductCategoryId
 };

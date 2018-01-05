@@ -1105,7 +1105,7 @@ $(document).ready(function () {
                           ${partyMasterDiscount.dataValues.splDiscount}
                         </div>
                         <div class="col-3">
-                          <button class="btn btn-primary" class=".editProductCategoryDiscount" productCategoryId="${partyMasterDiscount.dataValues.productcategoryId}">
+                          <button class="btn btn-primary editProductCategoryDiscount" productCategoryId="${partyMasterDiscount.dataValues.productcategoryId}">
                             EDIT
                           </button>
                         </div>
@@ -1114,14 +1114,50 @@ $(document).ready(function () {
                   `;
                 })
 
-                str += '</ul>'
-                console.log(str);
+                str+='</ul>'
+
                 $mainContent.append(str);
 
                 let $editProductCategoryDiscount = $('.editProductCategoryDiscount');
 
                 $editProductCategoryDiscount.click(function (e) {
+                  console.log('click');
+                  $('#editPartyProductCategoryDiscountModal').modal('show');
 
+                  let selectedProductCategoryId = e.target.getAttribute('productCategoryId');
+
+                  let $editProductCategoryDiscount = $('#editProductCategoryDiscount');
+                  let $editProductCategorySplDiscount = $('#editProductCategorySplDiscount');
+
+                  $editProductCategoryDiscount.val(0);
+                  $editProductCategorySplDiscount.val(0);
+
+                  $('#editProductCategoryDiscountSubmit').click(function (e) {
+                    console.log('modal submit click');
+                    if( !$editProductCategoryDiscount.val()  || !$editProductCategorySplDiscount.val()) {
+                     //console.log('this');
+                      return;
+                    }
+                    ipcRenderer.send('updatePartyProductCategoryDiscount',{
+                      productCategoryId: selectedProductCategoryId,
+                      partyMasterId: partyMasterId,
+                      discount: $editProductCategoryDiscount.val(),
+                      splDiscount: $editProductCategorySplDiscount.val()
+                    });
+
+
+                    ipcRenderer.once('updatedPartyProductCategoryDiscount', function (e, data) {
+                      $('#editPartyProductCategoryDiscountModal').modal('hide');
+
+                      if(data.success) {
+                        $('#viewPartyMaster').click()
+                      }
+                      else{
+                          $resultRow.removeClass('text-success').addClass('text-danger');
+                          $resultRow.text("Error is" + data.error);
+                      }
+                    });
+                  })
                 })
               }
               else {
