@@ -1001,8 +1001,8 @@ $(document).ready(function () {
           data.partyMasterRows.forEach(function (party) {
             str += `
             <ul class="list-group text-center">
-              <li class="list-group-item" partyId="${party.id}">
-                <div class="row">
+              <li class="list-group-item">
+                <div class="row" partyId="${party.id}">
                   <div class="col-1">
                     ${party.id}
                   </div>
@@ -1061,16 +1061,46 @@ $(document).ready(function () {
                 </li>
             `;
 
-            ipcRenderer.send('viewDiscountsByPartyId');
-            ipcRenderer.once('getDiscountByPartyId', function (event, data) {
+            let partyMasterId = +(event.target.parentNode.parentNode.getAttribute('partyId'));
+
+            console.log(partyMasterId);
+
+            ipcRenderer.send('viewDiscountsByPartyId', {
+              partyMasterId: partyMasterId
+            });
+            ipcRenderer.once('getDiscountsByPartyId', function (event, data) {
               if(data.success) {
-                if(data.partyMasterDiscounts.ledger===0) {
+                console.log(data);
+                if(data.partyMasterDiscounts.length===0) {
                   $resultRow.removeClass('text-success').addClass('text-danger');
                   $resultRow.text("Add party master and discount");
                   return;
                 }
+                console.log(data.partyMasterDiscounts);
+                data.partyMasterDiscounts.forEach(function (partyMasterDiscount) {
+                  str += `
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-3">
+                          ${partyMasterDiscount.productcategory.dataValues.name}
+                        </div>
+                        <div class="col-3">
+                          ${partyMasterDiscount.dataValues.discount}
+                        </div>
+                        <div class="col-3">
+                          ${partyMasterDiscount.dataValues.splDiscount}
+                        </div>
+                        <div class="col-3">
+                          <button class="btn btn-primary">EDIT</button>
+                        </div>
+                      </div>
+                    </li>
+                  `;
+                })
 
-
+                str+='</ul>'
+                console.log(str);
+                $mainContent.append(str);
               }
               else{
                 $resultRow.removeClass('text-success').addClass('text-danger');

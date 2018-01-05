@@ -51,13 +51,14 @@ function viewDiscountByPartyMasterIdAndProductCategoryId(event, data) {
     })
 }
 
+//TODO GET FROM LIST AND CHANGE IN INDEX JS
 function viewDiscountsByPartyId(event, data) {
   models.PartyMasterProductCategoryDiscount
-    .find({
+    .findAll({
       where:{
         partymasterId: data.partyMasterId
       },
-      include: [productcategory]
+      include: [models.ProductCategory]
     })
     .then(partyMasterDiscountList=>{
       if(partyMasterDiscountList.length>0) {
