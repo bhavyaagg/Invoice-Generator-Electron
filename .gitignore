@@ -4,3 +4,4 @@ node_modules/
 secrets.js
 dbData/
 invoices/
+InvoiceGenerator-darwin-x64/
