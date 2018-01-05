@@ -302,7 +302,7 @@ $(document).ready(function () {
         if (+($productCategoryList.val()) === 0)
           return;
 
-        selectedProductCategory = productCategoriesRowObj[$productCategoryList.val()];
+        selectedProductCategory = productCategoriesRowObj[(+$productCategoryList.val())];
 
         ipcRenderer.send('viewProductByPCategoryId', selectedProductCategory);
         ipcRenderer.once('getProductByPCategoryId', function (event, productList) {
@@ -317,9 +317,9 @@ $(document).ready(function () {
             return;
           }
 
-          productList.product.forEach(function (row) {
-            console.log(row.name)
-          })
+          // productList.product.forEach(function (row) {
+          //   console.log(row.name)
+          // })
           products = productList.product;
 
           let str = '';
@@ -485,8 +485,13 @@ $(document).ready(function () {
 
         ipcRenderer.once('getSubmitInvoice', function (event, data) {
           if (data.success) {
+            $('#submitInvoice').hide();
+            $('#addInvoiceItemBtn').hide();
+            $('#addPackingChargesBtn').hide();
+
             let mainContent = $('#mainContent')[0];
             $(document.body).empty().append(mainContent);
+
             ipcRenderer.send('printInvoice', {
               id: slipNumber
             });
@@ -603,7 +608,6 @@ $(document).ready(function () {
 
         console.log(invoiceItems);
 
-        k = invoiceItems;
         console.log('invoice items' + invoiceItems);
         invoiceItems.forEach(invoiceItem => {
           str += `
@@ -1073,9 +1077,9 @@ $(document).ready(function () {
               partyMasterId: partyMasterId
             });
             ipcRenderer.once('getDiscountsByPartyId', function (event, data) {
-              if(data.success) {
+              if (data.success) {
                 console.log(data);
-                if(data.partyMasterDiscounts.length===0) {
+                if (data.partyMasterDiscounts.length === 0) {
                   $resultRow.removeClass('text-success').addClass('text-danger');
                   $resultRow.text("Add party master and discount");
                   return;
@@ -1104,17 +1108,17 @@ $(document).ready(function () {
                   `;
                 })
 
-                str+='</ul>'
+                str += '</ul>'
                 console.log(str);
                 $mainContent.append(str);
-                
+
                 let $editProductCategoryDiscount = $('.editProductCategoryDiscount');
-                
+
                 $editProductCategoryDiscount.click(function (e) {
 
                 })
               }
-              else{
+              else {
                 $resultRow.removeClass('text-success').addClass('text-danger');
                 $resultRow.text("Error is" + data.error);
               }
