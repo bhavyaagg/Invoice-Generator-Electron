@@ -1106,7 +1106,7 @@ $(document).ready(function () {
                 let $editProductCategoryDiscount = $('.editProductCategoryDiscount');
                 
                 $editProductCategoryDiscount.click(function (e) {
-                  
+
                 })
               }
               else{
