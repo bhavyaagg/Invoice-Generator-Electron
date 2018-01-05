@@ -1118,17 +1118,22 @@ $(document).ready(function () {
                   $editProductCategorySplDiscount.val(0);
 
                   $('#editProductCategoryDiscountSubmit').click(function (e) {
-                    if( !$editProductCategoryDiscount.val()  || !$editProductCategorySplDiscount.val())
+                    console.log('modal submit click');
+                    if( !$editProductCategoryDiscount.val()  || !$editProductCategorySplDiscount.val()) {
+                     //console.log('this');
                       return;
-
+                    }
                     ipcRenderer.send('updatePartyProductCategoryDiscount',{
                       productCategoryId: selectedProductCategoryId,
                       partyMasterId: partyMasterId,
                       discount: $editProductCategoryDiscount.val(),
                       splDiscount: $editProductCategorySplDiscount.val()
-                    })
+                    });
+
 
                     ipcRenderer.once('updatedPartyProductCategoryDiscount', function (e, data) {
+                      $('#editPartyProductCategoryDiscountModal').modal('hide');
+
                       if(data.success) {
                         $('#viewPartyMaster').click()
                       }
