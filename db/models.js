@@ -48,7 +48,7 @@ const PartyMaster = sequelize.define('partymaster', {
   discount: Sequelize.DataTypes.DECIMAL,
   splDiscount: Sequelize.DataTypes.DECIMAL,
   cd: Sequelize.DataTypes.DECIMAL,
-  balance: {type: Sequelize.DataTypes.STRING, allowNull: true}
+  balance: {type: Sequelize.DataTypes.DECIMAL, allowNull: true}
 });
 
 const PartyMasterProductCategoryDiscount = sequelize.define('partymasterproductcategorydiscount', {
