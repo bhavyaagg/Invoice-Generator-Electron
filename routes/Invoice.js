@@ -14,6 +14,7 @@ function submitInvoice(event, invoiceItemData) {
         dateOfTransaction: invoiceItemData.dateOfInvoice,
         credit: invoiceItemData.grandTotal,
         productCategoryName: invoiceItemData.productCategoryName,
+        invoiceId: invoiceItem.get().id,
         debit: 0,
         balance: invoiceItemData.partyMasterBalance + invoiceItemData.grandTotal
       }).then(function (data) {
