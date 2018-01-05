@@ -1043,6 +1043,41 @@ $(document).ready(function () {
           viewPartyDiscounts.click(function (event) {
             $mainContent.empty();
 
+            let str = `
+              <ul class="list-group text-center">
+                <li class="list-group-item">
+                  <div class="row">
+                    <div class="col-3">
+                      <b>Product Category</b>
+                    </div>
+                    <div class="col-3">
+                      <b>Discount</b>
+                    </div>
+                    <div class="col-3">
+                      <b>Spl Discount</b>
+                    </div>
+                    <div class="col-3"></div>
+                  </div>
+                </li>
+            `;
+
+            ipcRenderer.send('viewDiscountsByPartyId');
+            ipcRenderer.once('getDiscountByPartyId', function (event, data) {
+              if(data.success) {
+                if(data.partyMasterDiscounts.ledger===0) {
+                  $resultRow.removeClass('text-success').addClass('text-danger');
+                  $resultRow.text("Add party master and discount");
+                  return;
+                }
+
+
+              }
+              else{
+                $resultRow.removeClass('text-success').addClass('text-danger');
+                $resultRow.text("Error is" + data.error);
+              }
+            })
+
           });
 
         }
