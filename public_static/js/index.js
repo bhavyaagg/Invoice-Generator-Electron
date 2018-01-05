@@ -495,7 +495,7 @@ $(document).ready(function () {
 
             let mainContent = $('#mainContent')[0];
             $(document.body).empty().append(mainContent);
-
+            $('input, select').css('border', 'none');
             ipcRenderer.send('printInvoice', {
               id: slipNumber
             });
