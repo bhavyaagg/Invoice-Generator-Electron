@@ -103,8 +103,13 @@ $(document).ready(function () {
               </div>
             </div>
           </div>
-          <div class="col-5 mt-2" id="transport">
-            Transport:    
+          <div class="col-5 mt-2">
+            <div class="form-group row">
+              <label for="transport" class="col-3">Transport: </label> 
+              <div class="col-6">
+                <input class="form-control" type="text" value="" id="transport">
+              </div>
+            </div>
           </div>
           
           
@@ -282,11 +287,11 @@ $(document).ready(function () {
         $marka.append(`Marka: ${selectedPartyMaster.marka}`);
 
         $transport.empty();
-        $transport.append(`Transport: ` + selectedPartyMaster.transport);
+        $transport.val(selectedPartyMaster.transport);
 
         $destination.empty().append('Destination: ' + selectedPartyMaster.destination)
         console.log($partyMasterList.val());
-        if ($productCategoryList.val() != 0 && $partyMasterList.val() != 0) {
+        if ($productCategoryList.val()!=0  && $partyMasterList.val()!=0 ) {
           //console.log('in partMaster');
           //console.log($productCategoryList.val() + ' '+ $partyMasterList.val());
           ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
