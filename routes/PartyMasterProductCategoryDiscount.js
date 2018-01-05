@@ -51,7 +51,38 @@ function viewDiscountByPartyMasterIdAndProductCategoryId(event, data) {
     })
 }
 
+//TODO GET FROM LIST AND CHANGE IN INDEX JS
+function viewDiscountsByPartyId(event, data) {
+  models.PartyMasterProductCategoryDiscount
+    .findAll({
+      where:{
+        partymasterId: data.partyMasterId
+      },
+      include: [models.ProductCategory]
+    })
+    .then(partyMasterDiscountList=>{
+      if(partyMasterDiscountList.length>0) {
+        event.sender.send('getDiscountsByPartyId', {
+          success: true,
+          partyMasterDiscounts: partyMasterDiscountList
+        })
+      }
+      else{
+        event.sender.send('getDiscountsByPartyId', {
+          success: false,
+          error: "No Object Found"
+        })
+      }
+    })
+    .catch(err=>{
+      event.sender.send('getDiscountsByPartyId',{
+        success: false,
+        error: err
+      })
+    })
+}
 module.exports = exports = {
   addPartyMasterProductCategoryDiscount,
-  viewDiscountByPartyMasterIdAndProductCategoryId
+  viewDiscountByPartyMasterIdAndProductCategoryId,
+  viewDiscountsByPartyId
 };

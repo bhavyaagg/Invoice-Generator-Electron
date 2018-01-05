@@ -54,7 +54,7 @@ $(document).ready(function () {
       $mainContent.append(`
         <div class="row">
           <div class="col text-center">
-            <h1>Company Name(XYZ)</h1>
+            <h3>XYZ Company</h3>
             <h6>Rough Estimate</h6>
           </div>
         </div>
@@ -141,8 +141,7 @@ $(document).ready(function () {
             </div>    
           </div>
         </div>
-        <input class="btn btn-primary" type="submit" value="Add Invoice Item" id="addInvoiceItemBtn">
-        <input class="btn btn-primary" type="submit" value="Add Packing Charges" id="addPackingChargesBtn">
+
         
         <ul class="list-group text-center" id="invoiceItemList">
           <li class="list-group-item">
@@ -178,9 +177,12 @@ $(document).ready(function () {
           <div class="col-5"><b>Checker</b></div>
           <div class="col-2">
             <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
-            <input class="btn btn-primary" type="submit" value="Print Invoice" id="printInvoice">
+          
           </div>
-          <div class="col-5"></div>
+          <div class="col-5">
+            <input class="btn btn-primary" type="submit" value="Add Invoice Item" id="addInvoiceItemBtn">
+            <input class="btn btn-primary" type="submit" value="Add Packing Charges" id="addPackingChargesBtn">
+          </div>
         </div>
         
       `);
@@ -515,7 +517,7 @@ $(document).ready(function () {
       function updateAmtDiv() {
         $('#totalAmt').empty();
         $('#totalAmt').append(`
-          <div style="padding-right: 120px">
+          <div>
             <hr>
             <p class="text-right"><b>Amount:  ${totalAmt}</b></p>
           
@@ -992,55 +994,47 @@ $(document).ready(function () {
                     <b>Transport</b>
                   </div>
                   <div class="col-1">
-                    <b>Discount</b>
-                  </div>
-                  <div class="col-1">
-                    <b>Spl. Discount</b>
-                  </div>
-                  <div class="col-1">
                     <b>CD</b>
                   </div>
-                  
+                  <div class="col-2">
+                   
+                  </div>
                 </div>
               </li>
           `;
 
-          data.partyMasterRows.forEach(function (row) {
+          data.partyMasterRows.forEach(function (party) {
             str += `
             <ul class="list-group text-center">
               <li class="list-group-item">
-                <div class="row">
+                <div class="row" partyId="${party.id}">
                   <div class="col-1">
-                    ${row.id}
+                    ${party.id}
                   </div>
                   <div class="col-2">
-                    ${row.name}
+                    ${party.name}
                   </div>
                   <div class="col-1">
-                    ${row.destination}
+                    ${party.destination}
                   </div>
                   <div class="col-1">
-                    ${row.marka}
+                    ${party.marka}
                   </div>
                   <div class="col-1">
-                    ${row.openingBalance}
+                    ${party.openingBalance}
                   </div>
                   <div class="col-1">
-                    ${row.openingBalanceDate}
+                    ${party.openingBalanceDate}
                   </div>
                   <div class="col-2">
-                    ${row.transport}
+                    ${party.transport}
                   </div>
                   <div class="col-1">
-                    ${row.discount}
+                    ${party.cd}
                   </div>
-                  <div class="col-1">
-                    ${row.splDiscount}
+                  <div class="col-2">
+                   <button id="viewPartyDiscount" class="btn btn-primary viewDiscounts">View Discount</button>
                   </div>
-                  <div class="col-1">
-                    ${row.cd}
-                  </div>
-                  
                 </div>
               </li>
           `;
@@ -1049,6 +1043,84 @@ $(document).ready(function () {
 
           $mainContent.append(str);
 
+          let viewPartyDiscounts = $('.viewDiscounts');
+
+          viewPartyDiscounts.click(function (event) {
+            $mainContent.empty();
+
+            let str = `
+              <ul class="list-group text-center">
+                <li class="list-group-item">
+                  <div class="row">
+                    <div class="col-3">
+                      <b>Product Category</b>
+                    </div>
+                    <div class="col-3">
+                      <b>Discount</b>
+                    </div>
+                    <div class="col-3">
+                      <b>Spl Discount</b>
+                    </div>
+                    <div class="col-3"></div>
+                  </div>
+                </li>
+            `;
+
+            let partyMasterId = +(event.target.parentNode.parentNode.getAttribute('partyId'));
+
+
+            ipcRenderer.send('viewDiscountsByPartyId', {
+              partyMasterId: partyMasterId
+            });
+            ipcRenderer.once('getDiscountsByPartyId', function (event, data) {
+              if(data.success) {
+                console.log(data);
+                if(data.partyMasterDiscounts.length===0) {
+                  $resultRow.removeClass('text-success').addClass('text-danger');
+                  $resultRow.text("Add party master and discount");
+                  return;
+                }
+
+                data.partyMasterDiscounts.forEach(function (partyMasterDiscount) {
+                  str += `
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-3">
+                          ${partyMasterDiscount.productcategory.dataValues.name}
+                        </div>
+                        <div class="col-3">
+                          ${partyMasterDiscount.dataValues.discount}
+                        </div>
+                        <div class="col-3">
+                          ${partyMasterDiscount.dataValues.splDiscount}
+                        </div>
+                        <div class="col-3">
+                          <button class="btn btn-primary" class=".editProductCategoryDiscount" productCategoryId="${partyMasterDiscount.dataValues.productcategoryId}">
+                            EDIT
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  `;
+                })
+
+                str+='</ul>'
+                console.log(str);
+                $mainContent.append(str);
+                
+                let $editProductCategoryDiscount = $('.editProductCategoryDiscount');
+                
+                $editProductCategoryDiscount.click(function (e) {
+
+                })
+              }
+              else{
+                $resultRow.removeClass('text-success').addClass('text-danger');
+                $resultRow.text("Error is" + data.error);
+              }
+            })
+
+          });
 
         }
         else {

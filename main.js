@@ -92,6 +92,8 @@ ipcMain.on('addPartyMasterProductCategoryDiscount', routes.partyMasterProductCat
 
 ipcMain.on('viewDiscountByPartyMasterIdAndProductCategoryId', routes.partyMasterProductCategoryDiscount.viewDiscountByPartyMasterIdAndProductCategoryId);
 
+ipcMain.on('viewDiscountsByPartyId', routes.partyMasterProductCategoryDiscount.viewDiscountsByPartyId);
+
 ipcMain.on('printInvoice', function (event, data) {
   print.preparePrint(mainWindow);
   print.savePDF(__dirname + '/invoices/' + data.id+'.pdf');
