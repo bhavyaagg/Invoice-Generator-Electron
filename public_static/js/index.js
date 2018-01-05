@@ -196,7 +196,7 @@ $(document).ready(function () {
 
       let currentDate = getCurrentDate();
       $invoiceDate.val(currentDate);
-      $bilityDate.val(currentDate);
+      // $bilityDate.val(currentDate);
       $chalanDate.val(currentDate);
       let $partyMasterList = $('#partyMasterList');
       let $productCategoryList = $('#productCategoriesList');
@@ -464,7 +464,7 @@ $(document).ready(function () {
           cases: String($cases.val()),
           dateOfInvoice: $invoiceDate.val(),
           bilityNo: $bilityNumber.val(),
-          bilityDate: $bilityDate.val(),
+          bilityDate: ($bilityDate.val() ? $bilityDate.val() : null),
           chalanNo: $chalanNumber.val(),
           chalanDate: $chalanDate.val(),
           partymasterId: selectedPartyMaster.id,
@@ -595,7 +595,7 @@ $(document).ready(function () {
 
         console.log(invoiceItems);
 
-
+        k = invoiceItems;
         console.log('invoice items' + invoiceItems);
         invoiceItems.forEach(invoiceItem => {
           str += `
@@ -620,7 +620,7 @@ $(document).ready(function () {
                 ${invoiceItem.bilityNo}
               </div>
               <div class="col-1">
-                ${invoiceItem.bilityDate}
+                ${(invoiceItem.bilityDate === null ? "" : invoiceItem.bilityDate)}
               </div>
               <div class="col">
                 ${invoiceItem.chalanNo}
@@ -900,7 +900,6 @@ $(document).ready(function () {
                         splDiscount: splDiscount,
                         partymasterId: +(data.partyMasterData.id)
                       });
-
 
 
                       //TODO MAKE IT SYNCHRONOUS
