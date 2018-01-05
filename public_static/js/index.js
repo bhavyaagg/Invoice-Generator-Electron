@@ -61,39 +61,39 @@ $(document).ready(function () {
         
         <div class="row">
           
-          <div class="col-4">
+          <div class="col-3">
             <div class="form-group row">
-              <label for="partyMasterList" class="col-6 col-form-label">Party Name: </label>
+              <label for="partyMasterList" class="col-4 col-form-label">Name: </label>
               <select id="partyMasterList" class="custom-select">
                 <option name="partyMasterList" value="0">None</option>
               </select>
             </div> 
           </div>
-          <div class="col-4 text-center mt-2" id="slipNo" >
+          <div class="col mt-2" id="slipNo" >
             Slip No.:   
+          </div>
+          <div class="col mt-2" id="marka">
+            Marka:    
           </div>
           <div class="col-4">
             <div class="form-group row">
-              <label for="invoiceDate" class="col col-form-label">Date</label>
+              <label for="invoiceDate" class="col-2 col-form-label">Date</label>
               <div class="col-8">
                 <input class="form-control" type="date" id="invoiceDate">
               </div>  
             </div> 
           </div>
         </div>
-        <div class="row align-items-center">
-          <div class="col-2" id="marka">
-            Marka:    
-          </div>
+        <div class="row">
           <div class="col-3">
-            <div class="form-group row align-items-center">
-              <label for="cases" class="col col-form-label">Cases</label>
-              <div class="col">
+            <div class="form-group row">
+              <label for="cases" class="col-3 col-form-label">Cases:</label>
+              <div class="col-6">
                 <input class="form-control" type="number" value="0" id="casesInp">
               </div>
             </div>
           </div>
-          <div class="col-3" id="transport">
+          <div class="col-5 mt-2" id="transport">
             Transport:    
           </div>
           <div class="col-4">
@@ -107,35 +107,35 @@ $(document).ready(function () {
             </div>
           </div>
         </div>  
-        <div class="row align-items-center">
+        <div class="row">
           <div class="col-2">
-            <div class="form-group row align-items-center">
-              <label for="bilityNumber" class="col col-form-label">Bilty No.</label>
-              <div class="col">
+            <div class="form-group row">
+              <label for="bilityNumber" class="col-5 col-form-label">Bilty No.</label>
+              <div class="col-6">
                 <input class="form-control" type="number" value="0" id="bilityNumber">
               </div>
             </div>
           </div>
-          <div class="col-4">
-            <div class="form-group row align-items-center">
-              <label for="bilityDate" class="col col-form-label">BiltyDate</label>
-              <div class="col">
+          <div class="col-3">
+            <div class="form-group row">
+              <label for="bilityDate" class="mt-1 col-4 col-form-label">Bilty Date:</label>
+              <div class="col-8">
                 <input class="form-control" type="date" id="bilityDate">
               </div>  
             </div>    
           </div>
           <div class="col-2">
-            <div class="form-group row align-items-center">
+            <div class="form-group row">
               <label for="chalanNumber" class="col col-form-label text-right">Chalan No.</label>
               <div class="col">
                 <input class="form-control" type="number" value="0" id="chalanNumber">
               </div>
             </div>
           </div>
-          <div class="col-4">
-            <div class="form-group row align-items-center">
-              <label for="chalanDate" class="col col-form-label">Chalan Date</label>
-              <div class="col">
+          <div class="col-3">
+            <div class="form-group row">
+              <label for="chalanDate" class="col-5 col-form-label">Chalan Date:</label>
+              <div class="col-7">
                 <input class="form-control" type="date" id="chalanDate">
               </div>  
             </div>    
