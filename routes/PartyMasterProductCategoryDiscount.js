@@ -59,6 +59,26 @@ function viewDiscountsByPartyId(event, data) {
       },
       include: [productcategory]
     })
+    .then(partyMasterDiscountList=>{
+      if(partyMasterDiscountList.length>0) {
+        event.sender.send('getDiscountsByPartyId', {
+          success: true,
+          partyMasterDiscounts: partyMasterDiscountList
+        })
+      }
+      else{
+        event.sender.send('getDiscountsByPartyId', {
+          success: false,
+          error: "No Object Found"
+        })
+      }
+    })
+    .catch(err=>{
+      event.sender.send('getDiscountsByPartyId',{
+        success: false,
+        error: err
+      })
+    })
 }
 module.exports = exports = {
   addPartyMasterProductCategoryDiscount,
