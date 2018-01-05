@@ -197,7 +197,7 @@ $(document).ready(function () {
       let currentDate = getCurrentDate();
       $invoiceDate.val(currentDate);
       // $bilityDate.val(currentDate);
-      $chalanDate.val(currentDate);
+      // $chalanDate.val(currentDate);
       let $partyMasterList = $('#partyMasterList');
       let $productCategoryList = $('#productCategoriesList');
       let partyMasterRowObj = {};                    // All data with S.no. as key
@@ -452,10 +452,9 @@ $(document).ready(function () {
         })
       });
       $('#submitInvoice').click(function () {
-        console.log($cases);
-        console.log($bilityDate.val());
-        console.log(selectedPartyMaster)
-        console.log(selectedProductCategory)
+        let bilityDate = ($bilityDate.val() ? $bilityDate.val() : null)
+        let chalanDate = $chalanDate.val();
+
         if (listItemCount === 1)
           return;
         console.log($bilityDate.val());
@@ -464,9 +463,9 @@ $(document).ready(function () {
           cases: String($cases.val()),
           dateOfInvoice: $invoiceDate.val(),
           bilityNo: $bilityNumber.val(),
-          bilityDate: ($bilityDate.val() ? $bilityDate.val() : null),
+          bilityDate: bilityDate,
           chalanNo: $chalanNumber.val(),
-          chalanDate: $chalanDate.val(),
+          chalanDate: chalanDate,
           partymasterId: selectedPartyMaster.id,
           partyMasterBalance: selectedPartyMaster.balance,
           productcategoryId: selectedProductCategory.id,
@@ -474,6 +473,13 @@ $(document).ready(function () {
           grandTotal: grandTotal
         });
 
+        if (!bilityDate) {
+          $bilityDate.hide();
+        }
+
+        if (!chalanDate) {
+          $chalanDate.hide();
+        }
 
         ipcRenderer.once('getSubmitInvoice', function (event, data) {
           if (data.success) {
