@@ -141,8 +141,7 @@ $(document).ready(function () {
             </div>    
           </div>
         </div>
-        <input class="btn btn-primary" type="submit" value="Add Invoice Item" id="addInvoiceItemBtn">
-        <input class="btn btn-primary" type="submit" value="Add Packing Charges" id="addPackingChargesBtn">
+
         
         <ul class="list-group text-center" id="invoiceItemList">
           <li class="list-group-item">
@@ -178,9 +177,12 @@ $(document).ready(function () {
           <div class="col-5"><b>Checker</b></div>
           <div class="col-2">
             <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
-            <input class="btn btn-primary" type="submit" value="Print Invoice" id="printInvoice">
+          
           </div>
-          <div class="col-5"></div>
+          <div class="col-5">
+            <input class="btn btn-primary" type="submit" value="Add Invoice Item" id="addInvoiceItemBtn">
+            <input class="btn btn-primary" type="submit" value="Add Packing Charges" id="addPackingChargesBtn">
+          </div>
         </div>
         
       `);
@@ -987,55 +989,47 @@ $(document).ready(function () {
                     <b>Transport</b>
                   </div>
                   <div class="col-1">
-                    <b>Discount</b>
-                  </div>
-                  <div class="col-1">
-                    <b>Spl. Discount</b>
-                  </div>
-                  <div class="col-1">
                     <b>CD</b>
                   </div>
-                  
+                  <div class="col-2">
+                   
+                  </div>
                 </div>
               </li>
           `;
 
-          data.partyMasterRows.forEach(function (row) {
+          data.partyMasterRows.forEach(function (party) {
             str += `
             <ul class="list-group text-center">
-              <li class="list-group-item">
+              <li class="list-group-item" partyId="${party.id}">
                 <div class="row">
                   <div class="col-1">
-                    ${row.id}
+                    ${party.id}
                   </div>
                   <div class="col-2">
-                    ${row.name}
+                    ${party.name}
                   </div>
                   <div class="col-1">
-                    ${row.destination}
+                    ${party.destination}
                   </div>
                   <div class="col-1">
-                    ${row.marka}
+                    ${party.marka}
                   </div>
                   <div class="col-1">
-                    ${row.openingBalance}
+                    ${party.openingBalance}
                   </div>
                   <div class="col-1">
-                    ${row.openingBalanceDate}
+                    ${party.openingBalanceDate}
                   </div>
                   <div class="col-2">
-                    ${row.transport}
+                    ${party.transport}
                   </div>
                   <div class="col-1">
-                    ${row.discount}
+                    ${party.cd}
                   </div>
-                  <div class="col-1">
-                    ${row.splDiscount}
+                  <div class="col-2">
+                   <button id="viewPartyDiscount" class="btn btn-primary viewDiscounts">View Discount</button>
                   </div>
-                  <div class="col-1">
-                    ${row.cd}
-                  </div>
-                  
                 </div>
               </li>
           `;
@@ -1044,6 +1038,12 @@ $(document).ready(function () {
 
           $mainContent.append(str);
 
+          let viewPartyDiscounts = $('.viewDiscounts');
+
+          viewPartyDiscounts.click(function (event) {
+            $mainContent.empty();
+
+          });
 
         }
         else {

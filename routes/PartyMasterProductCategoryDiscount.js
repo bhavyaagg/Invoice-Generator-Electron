@@ -51,7 +51,17 @@ function viewDiscountByPartyMasterIdAndProductCategoryId(event, data) {
     })
 }
 
+function viewDiscountsByPartyId(event, data) {
+  models.PartyMasterProductCategoryDiscount
+    .find({
+      where:{
+        partymasterId: data.partyMasterId
+      },
+      include: [productcategory]
+    })
+}
 module.exports = exports = {
   addPartyMasterProductCategoryDiscount,
-  viewDiscountByPartyMasterIdAndProductCategoryId
+  viewDiscountByPartyMasterIdAndProductCategoryId,
+  viewDiscountsByPartyId
 };
