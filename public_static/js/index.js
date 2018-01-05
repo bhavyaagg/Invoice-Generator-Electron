@@ -377,8 +377,6 @@ $(document).ready(function () {
 
         $resultRow.empty();
         $('#addInvoiceItemModal').modal('show');
-
-
       })
 
       $('#addPackingChargesBtn').click(function () {
@@ -403,7 +401,7 @@ $(document).ready(function () {
         let selectedProduct = productObj[+($productList.val())];
         let per = $('#per').val();
         per = $(`option[name="unitType"][value="${per}"]`).text();
-
+        console.log(2)
         if (qty <= 0 || typeof selectedProduct === "undefined")
           return;
         invoiceListItems.push({
@@ -440,7 +438,7 @@ $(document).ready(function () {
 
         cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
 
-        grandTotal = totalAmt - (+cdDiscount) + +(packingCharges);
+        grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
         grandTotal = roundTo(grandTotal, 2);
         updateAmtDiv();
         $('#addInvoiceItemModal').modal('hide');
