@@ -437,17 +437,18 @@ $(document).ready(function () {
                   ${per}  
                 </div>
                 <div class="col-2">
-                  ${(((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000}
+                  ${(+qty) * (+selectedProduct.price) }
                 </div>
               </div>
             </li>
           `)
         totalAmt += (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000;
 
+        totalAmt = roundTo(totalAmt,1)
         cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
 
         grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
-        grandTotal = roundTo(grandTotal, 2);
+        grandTotal = roundTo(grandTotal, 1);
         updateAmtDiv();
         $('#addInvoiceItemModal').modal('hide');
       });
