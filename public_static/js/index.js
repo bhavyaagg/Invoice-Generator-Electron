@@ -54,7 +54,7 @@ $(document).ready(function () {
       $mainContent.append(`
         <div class="row">
           <div class="col text-center">
-            <h1>Company Name(XYZ)</h1>
+            <h3>XYZ Company</h3>
             <h6>Rough Estimate</h6>
           </div>
         </div>
