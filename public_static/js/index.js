@@ -1589,9 +1589,6 @@ $(document).ready(function () {
               <li class="list-group-item">
                 <div class="row align-items-center">
                   <div class="col">
-                    Slip Number
-                  </div>
-                  <div class="col">
                     Description
                   </div>
                   <div class="col">
@@ -1617,9 +1614,8 @@ $(document).ready(function () {
               str += `
               <li class="list-group-item">
                 <div class="row align-items-center">
-                  <div class="col">${(ledgerRow.invoiceId ? ledgerRow.invoiceId : "")}</div>
                   <div class="col">${ledgerRow.description}</div>
-                  <div class="col">${ledgerRow.dateOfTransaction.split('-').reverse().join('-')}</div>
+                  <div class="col">${ledgerRow.dateOfTransaction.split('-').reverse().join('/')}</div>
                   <div class="col">${ledgerRow.productCategoryName}</div>
                   <div class="col">${ledgerRow.debit}</div>
                   <div class="col">${ledgerRow.credit}</div>
