@@ -1063,7 +1063,6 @@ $(document).ready(function () {
 
             let partyMasterId = +(event.target.parentNode.parentNode.getAttribute('partyId'));
 
-            console.log(partyMasterId);
 
             ipcRenderer.send('viewDiscountsByPartyId', {
               partyMasterId: partyMasterId
@@ -1076,7 +1075,7 @@ $(document).ready(function () {
                   $resultRow.text("Add party master and discount");
                   return;
                 }
-                console.log(data.partyMasterDiscounts);
+
                 data.partyMasterDiscounts.forEach(function (partyMasterDiscount) {
                   str += `
                     <li class="list-group-item">
@@ -1091,7 +1090,9 @@ $(document).ready(function () {
                           ${partyMasterDiscount.dataValues.splDiscount}
                         </div>
                         <div class="col-3">
-                          <button class="btn btn-primary">EDIT</button>
+                          <button class="btn btn-primary" class=".editProductCategoryDiscount" productCategoryId="${partyMasterDiscount.dataValues.productcategoryId}">
+                            EDIT
+                          </button>
                         </div>
                       </div>
                     </li>
@@ -1101,6 +1102,12 @@ $(document).ready(function () {
                 str+='</ul>'
                 console.log(str);
                 $mainContent.append(str);
+                
+                let $editProductCategoryDiscount = $('.editProductCategoryDiscount');
+                
+                $editProductCategoryDiscount.click(function (e) {
+                  
+                })
               }
               else{
                 $resultRow.removeClass('text-success').addClass('text-danger');
