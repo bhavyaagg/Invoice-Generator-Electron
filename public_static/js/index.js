@@ -449,8 +449,10 @@ $(document).ready(function () {
           `)
         totalAmt += (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000;
 
-        totalAmt = roundTo(totalAmt,1)
+        totalAmt = roundTo(totalAmt,1);
+
         cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
+        cdDiscount = roundTo(cdDiscount, 1);
 
         grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
         grandTotal = roundTo(grandTotal, 1);
