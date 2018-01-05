@@ -54,7 +54,7 @@ $(document).ready(function () {
       $mainContent.append(`
         <div class="row">
           <div class="col text-center">
-            <h3>XYZ Company</h3>
+            <h3>XYZ</h3>
             <h6>Rough Estimate</h6>
           </div>
         </div>
@@ -69,16 +69,17 @@ $(document).ready(function () {
               </select>
             </div> 
           </div>
-          <div class="col mt-2" id="slipNo" >
-            Slip No.:   
-          </div>
+          
           <div class="col mt-2" id="marka">
             Marka:    
           </div>
-          <div class="col-4">
+          
+          <div class="col-5">
             <div class="form-group row">
-              <label for="invoiceDate" class="col-2 col-form-label">Date</label>
-              <div class="col-8">
+              <label for="invoiceDate" class="col-3 col-form-label">Slip No./Date</label>
+              
+              <div class="col-9">
+                <span id="slipNo"></span>
                 <input class="form-control" type="date" id="invoiceDate">
               </div>  
             </div> 
@@ -96,6 +97,10 @@ $(document).ready(function () {
           <div class="col-5 mt-2" id="transport">
             Transport:    
           </div>
+          
+          
+          
+          
           <div class="col-4">
             <div class="form-group row align-items-center">
               <label for="productCategoriesList" class="col col-form-label">Product Category: </label>
@@ -106,6 +111,7 @@ $(document).ready(function () {
               </div>
             </div>
           </div>
+          
         </div>  
         <div class="row">
           <div class="col-2">
@@ -249,12 +255,12 @@ $(document).ready(function () {
       ipcRenderer.once('getInvoiceItems', function (event, data) {
         if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
           slipNumber = 1;
-          $slipNumber.append(slipNumber);
+          $slipNumber.text(slipNumber);
           return;
         }
 
         slipNumber = data.invoiceItems[data.invoiceItems.length - 1].id + 1;
-        $slipNumber.append(slipNumber);
+        $slipNumber.text(slipNumber);
 
       });
 
@@ -1606,7 +1612,7 @@ $(document).ready(function () {
                 </div>
               </li>
           `;
-
+            console.log(data.ledgerRows)
             data.ledgerRows.forEach(function (ledgerRow) {
               str += `
               <li class="list-group-item">
