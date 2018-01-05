@@ -68,11 +68,16 @@ $(document).ready(function () {
               </select>
             </div> 
           </div>
-          
-          <div class="col mt-2" id="marka">
-            Marka:    
+          <div class="col-4">
+            <div class="form-group row align-items-center">
+              <label for="productCategoriesList" class="col-4 col-form-label">Product Category: </label>
+              <div class="col-8">
+                <select id="productCategoriesList" class="custom-select">
+                  <option name="productCategoriesList" value="0">None</option>
+                </select>
+              </div>
+            </div>
           </div>
-          
           <div class="col-5">
             <div class="form-group row align-items-center">
               <div class="col-3">Slip No./Date</div>
@@ -87,6 +92,9 @@ $(document).ready(function () {
           </div>
         </div>
         <div class="row">
+          <div class="col-2 mt-2" id="marka">
+            Marka:    
+          </div>
           <div class="col-3">
             <div class="form-group row">
               <label for="cases" class="col-3 col-form-label">Cases:</label>
@@ -98,19 +106,13 @@ $(document).ready(function () {
           <div class="col-5 mt-2" id="transport">
             Transport:    
           </div>
-          <div class="col-4">
-            <div class="form-group row align-items-center">
-              <label for="productCategoriesList" class="col col-form-label">Product Category: </label>
-              <div class="col">
-                <select id="productCategoriesList" class="custom-select">
-                  <option name="productCategoriesList" value="0">None</option>
-                </select>
-              </div>
-            </div>
-          </div>
+          
           
         </div>  
         <div class="row">
+          <div class="col mt-2" id="destination">
+            Destination:    
+          </div>
           <div class="col-2">
             <div class="form-group row">
               <label for="bilityNumber" class="col-5 col-form-label">Bilty No.</label>
@@ -193,6 +195,7 @@ $(document).ready(function () {
       let $marka = $('#marka');
       let $cases = $('#casesInp');
       let $transport = $('#transport');
+      let $destination = $('#destination');
       let $invoiceDate = $('#invoiceDate');
       let $bilityNumber = $('#bilityNumber');
       let $bilityDate = $('#bilityDate');
@@ -280,6 +283,8 @@ $(document).ready(function () {
 
         $transport.empty();
         $transport.append(`Transport: ` + selectedPartyMaster.transport);
+
+        $destination.empty().append('Destination: ' + selectedPartyMaster.destination)
         console.log($partyMasterList.val());
         if ($productCategoryList.val() != 0 && $partyMasterList.val() != 0) {
           //console.log('in partMaster');
