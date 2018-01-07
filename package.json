@@ -7,7 +7,36 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node_modules/.bin/electron .",
-    "rebuild": "node_modules/.bin/electron-rebuild -f -w sqlite3"
+    "rebuild": "node_modules/.bin/electron-rebuild -f -w sqlite3",
+    "dist": "build"
+  },
+  "build": {
+    "appId": "com.nimitbhavya.InvoiceGerator",
+
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "squirrel",
+      "icon": "build/icon.ico"
+    }
   },
   "engines": {
     "node": "8",
@@ -28,6 +57,7 @@
   "homepage": "https://github.com/bhavyaagg/Invoice-Generator-Electron#readme",
   "devDependencies": {
     "electron": "^1.8.2-beta.3",
+    "electron-builder": "^19.52.1",
     "electron-rebuild": "^1.6.0"
   },
   "dependencies": {
