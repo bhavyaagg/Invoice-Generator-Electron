@@ -164,7 +164,7 @@ $(document).ready(function () {
             </div>
           </li>
         </ul>
-        <div class="row" style="padding-right: 70px;">
+        <div class="row" style="padding-right: 50px;">
           <div class="col-12" id="totalAmt">
             
           </div>  
@@ -244,10 +244,10 @@ $(document).ready(function () {
 
       });
 
-      let slipNumber = 1;
+      let slipNumber;
       let $slipNumber = $('#slipNo');
 
-      ipcRenderer.send('viewInvoiceItems');
+     /* ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
         if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
           slipNumber = 1;
@@ -259,7 +259,7 @@ $(document).ready(function () {
         $slipNumber.append(slipNumber);
 
       });
-
+*/
       //Get Data in Product Categories DropDown
       let productCategoriesRowObj = getDataProductCategories(); // All product Categories with id as key
 
@@ -505,7 +505,9 @@ $(document).ready(function () {
             $('#submitInvoice').hide();
             $('#addInvoiceItemBtn').hide();
             $('#addPackingChargesBtn').hide();
-
+            console.log(data);
+            $slipNumber.append(data.invoiceItem.id);
+            slipNumber = data.invoiceItem.id;
             let mainContent = $('#mainContent')[0];
 
             $(document.body).empty().append(mainContent);
@@ -558,8 +560,8 @@ $(document).ready(function () {
             
             <b>
               
-              Discounted Amount:  ${totalAmt} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-              After CD Amount:  ${amtAfterCd} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+              Discounted Amount:  ${totalAmt} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+              After CD Amount:  ${amtAfterCd} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
               Packing Charges:  ${packingCharges}
             
             </b>

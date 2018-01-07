@@ -27,7 +27,7 @@ function submitInvoice(event, invoiceItemData) {
         }).then(function () {
           event.sender.send('getSubmitInvoice', {
             success: true,
-            data: invoiceItem
+            invoiceItem: invoiceItem.get()
           })
         })
       })
