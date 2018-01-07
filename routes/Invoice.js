@@ -9,7 +9,7 @@ function submitInvoice(event, invoiceItemData) {
     .then(invoiceItem => {
 
       models.Ledger.create({
-        description: "Slip No. " + invoiceItem.get().id + " Dated " + invoiceItemData.dateOfInvoice,
+        description: "Slip No. " + invoiceItem.get().id,
         partymasterId: invoiceItemData.partymasterId,
         dateOfTransaction: invoiceItemData.dateOfInvoice,
         credit: invoiceItemData.grandTotal,
