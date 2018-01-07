@@ -103,8 +103,13 @@ $(document).ready(function () {
               </div>
             </div>
           </div>
-          <div class="col-5 mt-2" id="transport">
-            Transport:    
+          <div class="col-5 mt-2">
+            <div class="form-group row">
+              <label for="transport" class="col-3">Transport: </label> 
+              <div class="col-6">
+                <input class="form-control" type="text" value="" id="transport">
+              </div>
+            </div>
           </div>
           
           
@@ -282,11 +287,11 @@ $(document).ready(function () {
         $marka.append(`Marka: ${selectedPartyMaster.marka}`);
 
         $transport.empty();
-        $transport.append(`Transport: ` + selectedPartyMaster.transport);
+        $transport.val(selectedPartyMaster.transport);
 
         $destination.empty().append('Destination: ' + selectedPartyMaster.destination)
         console.log($partyMasterList.val());
-        if ($productCategoryList.val() != 0 && $partyMasterList.val() != 0) {
+        if ($productCategoryList.val()!=0  && $partyMasterList.val()!=0 ) {
           //console.log('in partMaster');
           //console.log($productCategoryList.val() + ' '+ $partyMasterList.val());
           ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
@@ -437,17 +442,20 @@ $(document).ready(function () {
                   ${per}  
                 </div>
                 <div class="col-2">
-                  ${(((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000}
+                  ${(+qty) * (+selectedProduct.price) }
                 </div>
               </div>
             </li>
           `)
         totalAmt += (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000;
 
+        totalAmt = roundTo(totalAmt,1);
+
         cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
+        cdDiscount = roundTo(cdDiscount, 1);
 
         grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
-        grandTotal = roundTo(grandTotal, 2);
+        grandTotal = roundTo(grandTotal, 1);
         updateAmtDiv();
         $('#addInvoiceItemModal').modal('hide');
       });
@@ -526,6 +534,8 @@ $(document).ready(function () {
       });
 
       function updateAmtDiv() {
+        let amtAfterCd = totalAmt - (+cdDiscount);
+        amtAfterCd = roundTo(amtAfterCd, 1)
         $('#totalAmt').empty();
         $('#totalAmt').append(`
           <div>
@@ -533,7 +543,7 @@ $(document).ready(function () {
             <p class="text-right"><b>Amount:  ${totalAmt}</b></p>
           
             <hr>
-            <p class="text-right"><b>Amount:  ${totalAmt - (+cdDiscount)}</b></p>
+            <p class="text-right"><b>Amount:  ${amtAfterCd}</b></p>
             <p class="text-right"><b>Packing Charges:  ${packingCharges}</b></p>
             <p class="text-right"><b>Grand Total:  ${grandTotal}</b></p>
           </div>
