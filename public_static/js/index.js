@@ -184,7 +184,7 @@ $(document).ready(function () {
         </div>
         
         <div class="row" id="submitBtnDiv">
-          <div class="col-5"><b>Checker</b></div>
+          <div class="col-5"><b></b></div>
           <div class="col-2">
             <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
           
@@ -378,7 +378,7 @@ $(document).ready(function () {
       let $productList = $('#productList');
       let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
 
-      let totalAmt = 0;
+      let totalAmtWithoutDis = 0, totalAmt = 0;
 
       $('#addInvoiceItemBtn').click(function () {
         if (selectedPartyMaster === undefined || $productCategoryList.val() === 0) {
@@ -424,8 +424,8 @@ $(document).ready(function () {
           per: per
         });
         $invoiceItemList.append(`
-            <li class="list-group-item" id="amountCalcList" >
-              <div class="row">
+            <li class="list-group-item" id="amountCalcList" style="padding: 0px">
+              <div class="row" padding-top: -5px"> 
                 <div class="col-1">
                   ${listItemCount++}
                 </div>
@@ -447,6 +447,8 @@ $(document).ready(function () {
               </div>
             </li>
           `)
+
+        totalAmtWithoutDis += +((+qty) * (+selectedProduct.price));
         totalAmt += (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000;
 
         totalAmt = roundTo(totalAmt,1);
@@ -535,17 +537,25 @@ $(document).ready(function () {
 
       function updateAmtDiv() {
         let amtAfterCd = totalAmt - (+cdDiscount);
-        amtAfterCd = roundTo(amtAfterCd, 1)
+        amtAfterCd = roundTo(amtAfterCd, 1);
         $('#totalAmt').empty();
         $('#totalAmt').append(`
           <div>
+            
             <hr>
-            <p class="text-right"><b>Amount:  ${totalAmt}</b></p>
-          
+              <p class="text-right"><b>Amount:  ${totalAmtWithoutDis}</b></p>
             <hr>
-            <p class="text-right"><b>Amount:  ${amtAfterCd}</b></p>
-            <p class="text-right"><b>Packing Charges:  ${packingCharges}</b></p>
-            <p class="text-right"><b>Grand Total:  ${grandTotal}</b></p>
+            <p class="text-right">
+            
+            <b>
+              
+              Discounted Amount:  ${totalAmt} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  
+              After CD Amount:  ${amtAfterCd} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 
+              Packing Charges:  ${packingCharges}
+            
+            </b></p>
+
+            <h6 class="text-right"><b>Grand Total:  ${grandTotal}</b><h6>
           </div>
         `)
       }
@@ -1816,24 +1826,10 @@ $(document).ready(function () {
   }
 
   function roundTo(n, digits) {
-    var negative = false;
-    if (digits === undefined) {
-      digits = 0;
-    }
-    if (n < 0) {
-      negative = true;
-      n = n * -1;
-    }
-    var multiplicator = Math.pow(10, digits);
-    n = parseFloat((n * multiplicator).toFixed(11));
-    n = (Math.round(n) / multiplicator).toFixed(2);
-    if (negative) {
-      n = (n * -1).toFixed(2);
-    }
-    return n;
+    return Math.round(n * Math.pow(10, 2) / Math.pow(10, 2))
   }
-
 });
+
 
 
 
