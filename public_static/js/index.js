@@ -1670,7 +1670,17 @@ $(document).ready(function () {
                 </div>
               </li>
           `;
-            console.log(data.ledgerRows)
+            str += `
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col">Opening Balance</div>
+                  <div class="col">${data.ledgerRows[0].partymaster.openingBalanceDate.split('-').reverse().join('/')}</div>
+                  <div class="col"></div>
+                  <div class="col"></div>
+                  <div class="col"></div>
+                  <div class="col">${data.ledgerRows[0].partymaster.openingBalance}</div>
+                </div>
+              </li>`;
             data.ledgerRows.forEach(function (ledgerRow) {
               str += `
               <li class="list-group-item">
