@@ -60,96 +60,83 @@ $(document).ready(function () {
         </div>
         
         <div class="row">
-          <div class="col-3">
+          <div class="col-4">
             <div class="form-group row">
               <label for="partyMasterList" class="col-4 col-form-label">Name: </label>
-              <select id="partyMasterList" class="custom-select">
+              <select id="partyMasterList" class="custom-select col-8 pr-0">
                 <option name="partyMasterList" value="0">None</option>
               </select>
             </div> 
           </div>
-          <div class="col-4">
+          <div class="col-3">
             <div class="form-group row align-items-center">
-              <label for="productCategoriesList" class="col-4 col-form-label">Product Category: </label>
-              <div class="col-8">
-                <select id="productCategoriesList" class="custom-select">
-                  <option name="productCategoriesList" value="0">None</option>
-                </select>
-              </div>
+              <label for="productCategoriesList" class="col-4 pl-0 col-form-label">Product: </label>
+              <select id="productCategoriesList" class="custom-select col-7 pr-0">
+                <option name="productCategoriesList" value="0">None</option>
+              </select>
             </div>
           </div>
           <div class="col-5">
-            <div class="form-group row align-items-center">
-              <div class="col-3">Slip No./Date</div>
-              <div class="col" style="padding:0.5rem 0.75rem;border:1px solid rgba(0, 0, 0, 0.15); border-radius: 0.25rem" id="slipNo"></div>
+            <div class="form-group row no-gutters align-items-center">
+              <div class="col-4">Slip No./Date</div>
+              <div class="col-2 pt-2 pb-2 pl-1" id="slipNo"></div>
               <div class="col-6">
-                <input class="form-control" type="date" id="invoiceDate">
+                <input class="form-control pr-0 pl-0" type="date" id="invoiceDate">
               </div>  
-              <div class="col">
-              
-              </div>
             </div> 
           </div>
         </div>
-        <div class="row">
+        <div class="row no-gutters">
           <div class="col-2 mt-2" id="marka">
             Marka:    
           </div>
-          <div class="col-3">
-            <div class="form-group row">
-              <label for="cases" class="col-3 col-form-label">Cases:</label>
+          <div class="col-5">
+            <div class="form-group row align-items-center no-gutters">
+              <div class="col-3">GR No/Date</div>
+              <div class="col-3">
+                <input type="number" value="0" id="bilityNumber" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
+              </div>
               <div class="col-6">
-                <input class="form-control" type="number" value="0" id="casesInp">
+                <input class="form-control pl-0 pr-0" type="date" id="bilityDate">
+              </div>  
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="form-group row align-items-center no-gutters">
+              <div class="col-4">C. No/Date</div>
+              <div class="col-2">
+                <input class="form-control pr-0 pl-0" type="number" value="0" id="chalanNumber">
+              </div>
+              <div class="col-6">
+                <input class="form-control pl-0 pr-0" type="date" id="chalanDate">
+              </div>  
+            </div>
+          </div>
+        </div>  
+        
+        <div class="row no-gutters">
+          <div class="col-3 mt-2" id="destination">
+            Destination:    
+          </div>
+          
+          <div class="col-2">
+            <div class="form-group row no-gutters">
+              <label for="cases" class="col-5 col-form-label">Cases:</label>
+              <div class="col-7">
+                <input class="form-control pr-0" type="number" value="0" id="casesInp">
               </div>
             </div>
           </div>
-          <div class="col-5 mt-2">
-            <div class="form-group row">
-              <label for="transport" class="col-3">Transport: </label> 
-              <div class="col-6">
+          <div class="col-7">
+            <div class="form-group row no-gutters">
+              <label for="transport" class="col-2 col-form-label">Transport: </label> 
+              <div class="col-10">
                 <input class="form-control" type="text" value="" id="transport">
               </div>
             </div>
           </div>
           
           
-        </div>  
-        <div class="row">
-          <div class="col mt-2" id="destination">
-            Destination:    
-          </div>
-          <div class="col-2">
-            <div class="form-group row">
-              <label for="bilityNumber" class="col-5 col-form-label">Bilty No.</label>
-              <div class="col-6">
-                <input class="form-control" type="number" value="0" id="bilityNumber">
-              </div>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="form-group row">
-              <label for="bilityDate" class="mt-1 col-4 col-form-label">Bilty Date:</label>
-              <div class="col-8">
-                <input class="form-control" type="date" id="bilityDate">
-              </div>  
-            </div>    
-          </div>
-          <div class="col-2">
-            <div class="form-group row">
-              <label for="chalanNumber" class="col col-form-label text-right">Chalan No.</label>
-              <div class="col">
-                <input class="form-control" type="number" value="0" id="chalanNumber">
-              </div>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="form-group row">
-              <label for="chalanDate" class="col-5 col-form-label">Chalan Date:</label>
-              <div class="col-7">
-                <input class="form-control" type="date" id="chalanDate">
-              </div>  
-            </div>    
-          </div>
         </div>
 
         
@@ -196,6 +183,10 @@ $(document).ready(function () {
         </div>
         
       `);
+
+      // $('label').css('padding-right', "0");
+      $('input').addClass("pl-1").addClass('pr-1');
+      $('#mainContent div.form-group').css('margin-bottom', '5px');
 
       let $marka = $('#marka');
       let $cases = $('#casesInp');
@@ -283,15 +274,25 @@ $(document).ready(function () {
         console.log(partyMasterRowObj[$partyMasterList.val()]);
         selectedPartyMaster = partyMasterRowObj[$partyMasterList.val()];
 
-        $marka.empty();
-        $marka.append(`Marka: ${selectedPartyMaster.marka}`);
+        if (selectedPartyMaster) {
+          $marka.empty();
+          $marka.append(`Marka: ${selectedPartyMaster.marka}`);
 
-        $transport.empty();
-        $transport.val(selectedPartyMaster.transport);
+          $transport.empty();
+          $transport.val(selectedPartyMaster.transport);
 
-        $destination.empty().append('Destination: ' + selectedPartyMaster.destination)
+          $destination.empty().append('Destination: ' + selectedPartyMaster.destination)
+        } else {
+          $marka.empty();
+          $marka.append(`Marka:`);
+
+          $transport.empty();
+          $transport.val("");
+
+          $destination.empty().append('Destination: ')
+        }
         console.log($partyMasterList.val());
-        if ($productCategoryList.val()!=0  && $partyMasterList.val()!=0 ) {
+        if ($productCategoryList.val() != 0 && $partyMasterList.val() != 0) {
           //console.log('in partMaster');
           //console.log($productCategoryList.val() + ' '+ $partyMasterList.val());
           ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
@@ -449,7 +450,7 @@ $(document).ready(function () {
           `)
         totalAmt += (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000;
 
-        totalAmt = roundTo(totalAmt,1);
+        totalAmt = roundTo(totalAmt, 1);
 
         cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
         cdDiscount = roundTo(cdDiscount, 1);
@@ -506,6 +507,8 @@ $(document).ready(function () {
             let mainContent = $('#mainContent')[0];
             $(document.body).empty().append(mainContent);
             $('input, select').css('border', 'none');
+            $('select').css('background', 'white').css('padding-left', "0");
+            $('*').css('font-size', '12px');
             ipcRenderer.send('printInvoice', {
               id: slipNumber
             });
@@ -1124,7 +1127,7 @@ $(document).ready(function () {
                   `;
                 })
 
-                str+='</ul>'
+                str += '</ul>'
 
                 $mainContent.append(str);
 
@@ -1144,11 +1147,11 @@ $(document).ready(function () {
 
                   $('#editProductCategoryDiscountSubmit').click(function (e) {
                     console.log('modal submit click');
-                    if( !$editProductCategoryDiscount.val()  || !$editProductCategorySplDiscount.val()) {
-                     //console.log('this');
+                    if (!$editProductCategoryDiscount.val() || !$editProductCategorySplDiscount.val()) {
+                      //console.log('this');
                       return;
                     }
-                    ipcRenderer.send('updatePartyProductCategoryDiscount',{
+                    ipcRenderer.send('updatePartyProductCategoryDiscount', {
                       productCategoryId: selectedProductCategoryId,
                       partyMasterId: partyMasterId,
                       discount: $editProductCategoryDiscount.val(),
@@ -1159,12 +1162,12 @@ $(document).ready(function () {
                     ipcRenderer.once('updatedPartyProductCategoryDiscount', function (e, data) {
                       $('#editPartyProductCategoryDiscountModal').modal('hide');
 
-                      if(data.success) {
+                      if (data.success) {
                         $('#viewPartyMaster').click()
                       }
-                      else{
-                          $resultRow.removeClass('text-success').addClass('text-danger');
-                          $resultRow.text("Error is" + data.error);
+                      else {
+                        $resultRow.removeClass('text-success').addClass('text-danger');
+                        $resultRow.text("Error is" + data.error);
                       }
                     });
                   })
