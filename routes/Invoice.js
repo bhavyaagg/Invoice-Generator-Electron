@@ -16,10 +16,10 @@ function submitInvoice(event, invoiceItemData) {
         productCategoryName: invoiceItemData.productCategoryName,
         invoiceId: invoiceItem.get().id,
         debit: 0,
-        balance: invoiceItemData.partyMasterBalance + invoiceItemData.grandTotal
+        balance: parseFloat(invoiceItemData.partyMasterBalance) + parseFloat(invoiceItemData.grandTotal)
       }).then(function (data) {
         models.PartyMaster.update({
-          balance: invoiceItemData.partyMasterBalance + invoiceItemData.grandTotal
+          balance: parseFloat(invoiceItemData.partyMasterBalance) + parseFloat(invoiceItemData.grandTotal)
         }, {
           where: {
             id: invoiceItemData.partymasterId

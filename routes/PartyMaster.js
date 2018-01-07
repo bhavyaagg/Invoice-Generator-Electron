@@ -44,7 +44,7 @@ function addPaymentForPartyMaster(event, data) {
     }
   }).then(function (partymaster) {
     if (partymaster) {
-      let partyMasterBalance = +(partymaster.get().balance);
+      let partyMasterBalance = parseFloat(partymaster.get().balance);
       models.Ledger.create({
         description: data.description,
         partymasterId: data.partyMasterId,
@@ -52,10 +52,10 @@ function addPaymentForPartyMaster(event, data) {
         credit: 0,
         productCategoryName: "",
         debit: data.amount,
-        balance: partyMasterBalance - data.amount
+        balance: parseFloat(partyMasterBalance) - parseFloat(data.amount)
       }).then(function (rows) {
         partymaster.update({
-          balance: partyMasterBalance - data.amount
+          balance: parseFloat(partyMasterBalance) - parseFloat(data.amount)
         }).then(function (row) {
           event.sender.send('addedPaymentForPartyMaster', {
             success: true
