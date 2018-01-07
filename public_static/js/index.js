@@ -164,7 +164,7 @@ $(document).ready(function () {
             </div>
           </li>
         </ul>
-        <div class="row">
+        <div class="row" style="padding-right: 70px;">
           <div class="col-12" id="totalAmt">
             
           </div>  
@@ -507,10 +507,16 @@ $(document).ready(function () {
             $('#addPackingChargesBtn').hide();
 
             let mainContent = $('#mainContent')[0];
+
             $(document.body).empty().append(mainContent);
+            $(document.body).css('padding-top','0px')
+
             $('input, select').css('border', 'none');
             $('select').css('background', 'white').css('padding-left', "0");
+            $('#mainContent').css('padding',"0px");
             $('*').css('font-size', '12px');
+
+            //$('*').css('padding', "");
             ipcRenderer.send('printInvoice', {
               id: slipNumber
             });
@@ -543,7 +549,7 @@ $(document).ready(function () {
         amtAfterCd = roundTo(amtAfterCd, 1);
         $('#totalAmt').empty();
         $('#totalAmt').append(`
-          <div>
+          <div >
             
             <hr>
               <p class="text-right"><b>Amount:  ${totalAmtWithoutDis}</b></p>
@@ -556,9 +562,10 @@ $(document).ready(function () {
               After CD Amount:  ${amtAfterCd} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
               Packing Charges:  ${packingCharges}
             
-            </b></p>
-
-            <h6 class="text-right"><b>Grand Total:  ${grandTotal}</b><h6>
+            </b>
+            </p>
+           
+            <h5 class="text-right">Grand Total:  ${grandTotal}</h5>
           </div>
         `)
       }
