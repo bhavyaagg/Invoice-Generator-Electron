@@ -1169,6 +1169,7 @@ $(document).ready(function () {
                   $('#viewPartyMaster').click();
                 }
               })
+              $("#editPartySubmit").unbind( "click" );
             })
           });
           let viewPartyDiscounts = $('.viewDiscounts');
