@@ -76,6 +76,41 @@ function addPaymentForPartyMaster(event, data) {
   })
 }
 
+function editPartyMaster(event, data) {
+  models.PartyMaster.update({
+    name: data.name,
+    destination: data.destination,
+    marka: data.marka,
+    openingBalance: data.openingBalance,
+    openingBalanceDate: data.openingBalanceDate,
+    transport: data.transport,
+    discount: data.discount,
+    splDiscount: data.splDiscount,
+    cd: data.cd
+  }, {
+    where: {
+      id: data.id
+    }
+  }).then(res => {
+    if (res) {
+      event.sender.send('editedPartyMaster', {
+        success: true
+      })
+    }
+    else {
+      event.sender.send('editedPartyMaster', {
+        success: false
+      })
+    }
+  }).catch(err => {
+    event.sender.send('editedPartyMaster', {
+      success: false,
+      error: err
+    })
+  })
+
+}
+
 module.exports = exports = {
   addPartyMaster,
   viewPartyMaster,
