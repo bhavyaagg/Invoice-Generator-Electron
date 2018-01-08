@@ -1079,6 +1079,7 @@ $(document).ready(function () {
                     ${party.cd}
                   </div>
                   <div class="col-2">
+                   <button id="editPartyMasterBtn" class="btn btn-primary editPartyMasterBtn">Edit</button>
                    <button id="viewPartyDiscount" class="btn btn-primary viewDiscounts">View Discount</button>
                   </div>
                 </div>
