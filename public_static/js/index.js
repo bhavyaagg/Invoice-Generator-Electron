@@ -649,8 +649,10 @@ $(document).ready(function () {
 
         console.log(invoiceItems);
 
+        let invoiceItemObj = {};
         console.log('invoice items' + invoiceItems);
         invoiceItems.forEach(invoiceItem => {
+          invoiceItemObj[invoiceItem.id] = invoiceItem;
           str += `
           <li class="list-group-item">
             <div class="row">
@@ -689,7 +691,7 @@ $(document).ready(function () {
                   <button class="btn btn-success edit-invoice-item" invoiceItemId=${invoiceItem.id}>EDIT</button>
                 </div>
                 <div class="col-4">
-                  <button id="printInvoice" class="btn btn-primary" invoiceItemId=${invoiceItem.id}>Print</button>
+                  <button class="btn btn-primary printInvoiceAgain" invoiceItemId=${invoiceItem.id}>PRINT</button>
                 </div>
                 <div class="col-4">
                   <button class="btn btn-danger delete-invoice-item" invoiceItemId=${invoiceItem.id}>DELETE</button>
@@ -704,6 +706,15 @@ $(document).ready(function () {
         //let productCategoryId = +(e.target.getAttribute("productCategoryId"));
 
         $mainContent.append(str);
+
+        $('.printInvoiceAgain').click(function (e) {
+
+          let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
+          let productCategoryId = invoiceItemObj[invoiceItemId].productcategoryId;
+
+
+
+        });
 
         $('.delete-invoice-item').click(function (e) {
           let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
