@@ -1011,11 +1011,14 @@ $(document).ready(function () {
     })
 
     $('#viewPartyMaster').click(function () {
+
+
       $mainContent.empty();
       $resultRow.empty();
 
       ipcRenderer.send('viewPartyMaster');
       ipcRenderer.once('getPartyMaster', function (event, data) {
+        $mainContent.empty();
         if (data.success) {
 
           if (data.partyMasterRows.length === 0) {
@@ -1238,8 +1241,9 @@ $(document).ready(function () {
                 $editProductCategoryDiscount.click(function (e) {
                   console.log('click');
                   $('#editPartyProductCategoryDiscountModal').modal('show');
-
-                  let selectedProductCategoryId = e.target.getAttribute('productCategoryId');
+                  console.log('valu');
+                  console.log(+(e.target.getAttribute('productCategoryId')));
+                  let selectedProductCategoryId = +(e.target.getAttribute('productCategoryId'));
 
                   let $editProductCategoryDiscount = $('#editProductCategoryDiscount');
                   let $editProductCategorySplDiscount = $('#editProductCategorySplDiscount');
@@ -1272,6 +1276,7 @@ $(document).ready(function () {
                         $resultRow.text("Error is" + data.error);
                       }
                     });
+                    $( "#editProductCategoryDiscountSubmit").unbind( "click" );
                   })
                 })
               }
