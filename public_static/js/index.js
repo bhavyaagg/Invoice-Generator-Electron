@@ -519,6 +519,13 @@ $(document).ready(function () {
             $('*').css('font-size', '12px');
 
             //$('*').css('padding', "");
+
+            ipcRenderer.send('submitInvoiceDetail', {
+              invoiceId: slipNumber,
+              listItems: invoiceListItems
+            })
+
+
             ipcRenderer.send('printInvoice', {
               id: slipNumber
             });
@@ -538,10 +545,7 @@ $(document).ready(function () {
             $resultRow.text("Invoice Could Not Be Added Because " + data.error);
           }
         });
-        ipcRenderer.send('submitInvoiceDetail', {
-          invoiceId: slipNumber,
-          listItems: invoiceListItems
-        })
+
 
 
       });
@@ -1706,7 +1710,47 @@ $(document).ready(function () {
             });
             str += "</ul>"
 
+
+
+            str += `
+              <div class="row">
+                <div class="col-5"></div>
+                <button class="btn btn-primary" id="printLedger">Print Ledger</button>
+                <div class="col-5"></div>
+              </div>
+            `
+
             $mainContent.append(str);
+
+            $('#printLedger').click(function () {
+              $('#printLedger').hide();
+              $('#addInvoiceItemBtn').hide();
+              $('#addPackingChargesBtn').hide();
+
+              let mainContent = $('#mainContent')[0];
+
+              $(document.body).empty().append(mainContent);
+
+
+              $('input, select').css('border', 'none');
+              $('select').css('background', 'white').css('padding-left', "0");
+              $('#mainContent').css('padding',"0px");
+              $('*').css('font-size', '12px');
+
+              ipcRenderer.send('printInvoice', {
+                id: 1000
+              });
+              ipcRenderer.once('printedInvoice', function (event, data) {
+                if (data.success) {
+                  location.reload();
+                } else {
+                  window.alert("Could not add invoice");
+                  $('#resultRow').removeClass('text-success').addClass('text-danger');
+                  $('#resultRow').text("Invoice Could Not Be Added");
+                  $mainContent.empty();
+                }
+              })
+            })
           } else {
             $resultRow.removeClass('text-success').addClass('text-danger');
             $resultRow.text("Ledger Could Not Be Viewed Because " + data.error);
