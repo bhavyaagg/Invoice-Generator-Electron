@@ -1122,6 +1122,9 @@ $(document).ready(function () {
             $editSplDiscount.val(selectedParty.splDiscount);
             $editCd.val(selectedParty.cd);
 
+            $('#editPartySubmit').click(function () {
+
+            })
           });
           let viewPartyDiscounts = $('.viewDiscounts');
 
