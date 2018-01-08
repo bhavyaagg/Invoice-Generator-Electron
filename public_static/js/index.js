@@ -1122,8 +1122,35 @@ $(document).ready(function () {
             $editSplDiscount.val(selectedParty.splDiscount);
             $editCd.val(selectedParty.cd);
 
-            $('#editPartySubmit').click(function () {
+            let editPartyMasterData = {
+              id: partyMasterId,
+              name: $editPartyName.val(),
+              destination: $editDestination.val(),
+              marka: $editMarka.val(),
+              openingBalance: +($editOpeningBalance.val()),
+              openingBalanceDate: $editOpeningBalanceDate.val(),
+              transport: $editTransport.val(),
+              discount: $editDiscount.val(),
+              splDiscount: $editSplDiscount.val(),
+              cd: $editCd.val()
+            };
 
+            if (!editPartyMasterData.name || !editPartyMasterData.destination || !editPartyMasterData.marka
+              || editPartyMasterData.openingBalance === "" || editPartyMasterData.openingBalanceDate === ""
+              || !editPartyMasterData.transport || !editPartyMasterData.discount === ""
+              || editPartyMasterData.splDiscount === "" || editPartyMasterData.cd === "") {
+              return;
+              // console.log(editPartyMasterData);
+            }
+
+            $('#editPartySubmit').click(function () {
+              ipcRenderer.send('editPartyMaster', editPartyMasterData);
+              ipcRenderer.once('editedPartyMaster', function (event, data) {
+                if(data.success) {
+                  $('#editPartyMasterModal').modal('hide');
+                  $('#viewPartyMaster').click();
+                }
+              })
             })
           });
           let viewPartyDiscounts = $('.viewDiscounts');
