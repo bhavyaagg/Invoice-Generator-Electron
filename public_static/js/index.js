@@ -1049,7 +1049,9 @@ $(document).ready(function () {
               </li>
           `;
 
+          let partyMasterRowObj = {};
           data.partyMasterRows.forEach(function (party) {
+            partyMasterRowObj[party.id] = party;
             str += `
             <ul class="list-group text-center">
               <li class="list-group-item">
@@ -1098,16 +1100,27 @@ $(document).ready(function () {
 
             let partyMasterId = +(event.target.parentNode.parentNode.getAttribute('partyId'));
 
+            let selectedParty = partyMasterRowObj[partyMasterId];
+
             let $editPartyName = $('#editPartyName');
             let $editDestination = $('#editDestination');
-            let $editMarks = $('#editMarka');
-            let $editOpeningBalance =  +($('#editOpeningBalance'));
-            let $editopeningBalanceDate = $('#editOpeningBalanceDate');
+            let $editMarka = $('#editMarka');
+            let $editOpeningBalance =  $('#editOpeningBalance');
+            let $editOpeningBalanceDate = $('#editOpeningBalanceDate');
             let $editTransport = $('#editTransport');
             let $editDiscount = $('#editDiscount');
-            let $splDiscount = $('#editSplDiscount');
+            let $editSplDiscount = $('#editSplDiscount');
             let $editCd = $('#editCd');
 
+            $editPartyName.val(selectedParty.name);
+            $editDestination.val(selectedParty.destination);
+            $editMarka.val(selectedParty.marka);
+            $editOpeningBalance.val(selectedParty.openingBalance);
+            $editOpeningBalanceDate.val(selectedParty.openingBalanceDate);
+            $editTransport.val(selectedParty.transport);
+            $editDiscount.val(selectedParty.discount);
+            $editSplDiscount.val(selectedParty.splDiscount);
+            $editCd.val(selectedParty.cd);
 
           });
           let viewPartyDiscounts = $('.viewDiscounts');
