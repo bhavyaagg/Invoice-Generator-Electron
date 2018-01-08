@@ -247,19 +247,19 @@ $(document).ready(function () {
       let slipNumber;
       let $slipNumber = $('#slipNo');
 
-     /* ipcRenderer.send('viewInvoiceItems');
-      ipcRenderer.once('getInvoiceItems', function (event, data) {
-        if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
-          slipNumber = 1;
-          $slipNumber.append(slipNumber);
-          return;
-        }
+      /* ipcRenderer.send('viewInvoiceItems');
+       ipcRenderer.once('getInvoiceItems', function (event, data) {
+         if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
+           slipNumber = 1;
+           $slipNumber.append(slipNumber);
+           return;
+         }
 
-        slipNumber = data.invoiceItems[data.invoiceItems.length - 1].id + 1;
-        $slipNumber.append(slipNumber);
+         slipNumber = data.invoiceItems[data.invoiceItems.length - 1].id + 1;
+         $slipNumber.append(slipNumber);
 
-      });
-*/
+       });
+ */
       //Get Data in Product Categories DropDown
       let productCategoriesRowObj = getDataProductCategories(); // All product Categories with id as key
 
@@ -511,11 +511,11 @@ $(document).ready(function () {
             let mainContent = $('#mainContent')[0];
 
             $(document.body).empty().append(mainContent);
-            $(document.body).css('padding-top','0px')
+            $(document.body).css('padding-top', '0px')
 
             $('input, select').css('border', 'none');
             $('select').css('background', 'white').css('padding-left', "0");
-            $('#mainContent').css('padding',"0px");
+            $('#mainContent').css('padding', "0px");
             $('*').css('font-size', '12px');
 
             //$('*').css('padding', "");
@@ -545,7 +545,6 @@ $(document).ready(function () {
             $resultRow.text("Invoice Could Not Be Added Because " + data.error);
           }
         });
-
 
 
       });
@@ -1105,7 +1104,7 @@ $(document).ready(function () {
             let $editPartyName = $('#editPartyName');
             let $editDestination = $('#editDestination');
             let $editMarka = $('#editMarka');
-            let $editOpeningBalance =  $('#editOpeningBalance');
+            let $editOpeningBalance = $('#editOpeningBalance');
             let $editOpeningBalanceDate = $('#editOpeningBalanceDate');
             let $editTransport = $('#editTransport');
             let $editDiscount = $('#editDiscount');
@@ -1122,31 +1121,33 @@ $(document).ready(function () {
             $editSplDiscount.val(selectedParty.splDiscount);
             $editCd.val(selectedParty.cd);
 
-            let editPartyMasterData = {
-              id: partyMasterId,
-              name: $editPartyName.val(),
-              destination: $editDestination.val(),
-              marka: $editMarka.val(),
-              openingBalance: +($editOpeningBalance.val()),
-              openingBalanceDate: $editOpeningBalanceDate.val(),
-              transport: $editTransport.val(),
-              discount: $editDiscount.val(),
-              splDiscount: $editSplDiscount.val(),
-              cd: $editCd.val()
-            };
-
-            if (!editPartyMasterData.name || !editPartyMasterData.destination || !editPartyMasterData.marka
-              || editPartyMasterData.openingBalance === "" || editPartyMasterData.openingBalanceDate === ""
-              || !editPartyMasterData.transport || !editPartyMasterData.discount === ""
-              || editPartyMasterData.splDiscount === "" || editPartyMasterData.cd === "") {
-              return;
-              // console.log(editPartyMasterData);
-            }
-
             $('#editPartySubmit').click(function () {
+              let editPartyMasterData = {
+                id: partyMasterId,
+                name: $editPartyName.val(),
+                destination: $editDestination.val(),
+                marka: $editMarka.val(),
+                openingBalance: +($editOpeningBalance.val()),
+                openingBalanceDate: $editOpeningBalanceDate.val(),
+                transport: $editTransport.val(),
+                discount: $editDiscount.val(),
+                splDiscount: $editSplDiscount.val(),
+                cd: $editCd.val()
+              };
+
+              if (!editPartyMasterData.name || !editPartyMasterData.destination || !editPartyMasterData.marka
+                || editPartyMasterData.openingBalance === "" || editPartyMasterData.openingBalanceDate === ""
+                || !editPartyMasterData.transport || !editPartyMasterData.discount === ""
+                || editPartyMasterData.splDiscount === "" || editPartyMasterData.cd === "") {
+                return;
+                // console.log(editPartyMasterData);
+              }
+
+
               ipcRenderer.send('editPartyMaster', editPartyMasterData);
               ipcRenderer.once('editedPartyMaster', function (event, data) {
-                if(data.success) {
+                console.log(data);
+                if (data.success) {
                   $('#editPartyMasterModal').modal('hide');
                   $('#viewPartyMaster').click();
                 }
@@ -1775,7 +1776,6 @@ $(document).ready(function () {
             str += "</ul>"
 
 
-
             str += `
               <div class="row">
                 <div class="col-5"></div>
@@ -1798,7 +1798,7 @@ $(document).ready(function () {
 
               $('input, select').css('border', 'none');
               $('select').css('background', 'white').css('padding-left', "0");
-              $('#mainContent').css('padding',"0px");
+              $('#mainContent').css('padding', "0px");
               $('*').css('font-size', '12px');
 
               ipcRenderer.send('printInvoice', {
