@@ -1090,6 +1090,26 @@ $(document).ready(function () {
 
           $mainContent.append(str);
 
+          let $editPartyMaster = $('.editPartyMasterBtn');
+
+          $editPartyMaster.click(function (event) {
+
+            $('#editPartyMasterModal').modal('show');
+
+            let partyMasterId = +(event.target.parentNode.parentNode.getAttribute('partyId'));
+
+            let $editPartyName = $('#editPartyName');
+            let $editDestination = $('#editDestination');
+            let $editMarks = $('#editMarka');
+            let $editOpeningBalance =  +($('#editOpeningBalance'));
+            let $editopeningBalanceDate = $('#editOpeningBalanceDate');
+            let $editTransport = $('#editTransport');
+            let $editDiscount = $('#editDiscount');
+            let $splDiscount = $('#editSplDiscount');
+            let $editCd = $('#editCd');
+
+
+          });
           let viewPartyDiscounts = $('.viewDiscounts');
 
           viewPartyDiscounts.click(function (event) {
