@@ -685,10 +685,13 @@ $(document).ready(function () {
                 ${invoiceItem.grandTotal}
               </div> 
               <div class="col-1 row">
-                <div class="col-6">
+                <div class="col-4">
                   <button class="btn btn-success edit-invoice-item" invoiceItemId=${invoiceItem.id}>EDIT</button>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
+                  <button id="printInvoice" class="btn btn-primary" invoiceItemId=${invoiceItem.id}>Print</button>
+                </div>
+                <div class="col-4">
                   <button class="btn btn-danger delete-invoice-item" invoiceItemId=${invoiceItem.id}>DELETE</button>
                 </div>
               </div>
