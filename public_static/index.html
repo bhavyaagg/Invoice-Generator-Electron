@@ -40,6 +40,88 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="editPartyMasterModal" tabindex="-1" role="dialog"
+     aria-labelledby="Edit Party Master"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Party Master</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="form-group row">
+            <label for="editPartyName" class="col-4 col-form-label">Party Name: </label>
+            <div class="col-8">
+              <input id="editPartyName" class="form-control" type="text">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="editDestination" class="col-4 col-form-label">Destination: </label>
+            <div class="col-8">
+              <input id="editDestination" class="form-control" type="text">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="editMarka" class="col-4 col-form-label">Marka: </label>
+            <div class="col-8">
+              <input id="editMarka" class="form-control" type="text">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="editOpeningBalance" class="col-4 col-form-label">Opening Balance: </label>
+            <div class="col-8">
+              <input id="editOpeningBalance" class="form-control" type="text">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="editopeningBalanceDate" class="col-3 col-form-label">Opening Balance Date: </label>
+            <div class="col-9">
+              <input class="form-control" type="date"  id="editopeningBalanceDate">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="editTransport" class="col-3 col-form-label">Transport: </label>
+            <div class="col-9">
+              <input class="form-control" type="text" value="" id="editTransport">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="editDiscount" class="col-3 col-form-label">Discount(%): </label>
+            <div class="col-9">
+              <input class="form-control" type="number" id="editDiscount">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="editSplDiscount" class="col-3 col-form-label">Spl. Discount(%): </label>
+            <div class="col-9">
+              <input class="form-control" type="number" id="editSplDiscount">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="editCd" class="col-3 col-form-label">CD(%): </label>
+            <div class="col-9">
+              <input class="form-control" type="number" id="editCd">
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-danger" id="editPartySubmitError"></p>
+      <div class="modal-footer">
+        <button id="editPartySubmit" class=" btn btn-success">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="modal fade" id="editPartyProductCategoryDiscountModal" tabindex="-1" role="dialog"
      aria-labelledby="Edit Product Category Discount"
