@@ -114,5 +114,6 @@ function editPartyMaster(event, data) {
 module.exports = exports = {
   addPartyMaster,
   viewPartyMaster,
-  addPaymentForPartyMaster
+  addPaymentForPartyMaster,
+  editPartyMaster
 };

@@ -74,6 +74,8 @@ ipcMain.on('addPartyMaster', routes.partyMaster.addPartyMaster);
 
 ipcMain.on('viewPartyMaster', routes.partyMaster.viewPartyMaster);
 
+ipcMain.on('editPartyMaster', routes.partyMaster.editPartyMaster);
+
 ipcMain.on('submitInvoice', routes.invoice.submitInvoice);
 
 ipcMain.on('submitInvoiceDetail', routes.invoice.submitInvoiceDetail);
