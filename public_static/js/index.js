@@ -711,14 +711,137 @@ $(document).ready(function () {
 
           console.log('print view click');
           let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
-          let productCategoryId = invoiceItemObj[invoiceItemId].productcategoryId;
+          let invoiceItem = invoiceItemObj[invoiceItemId];
+          console.log(invoiceItem);
 
           ipcRenderer.send('viewInvoiceDetailsByIds', {
-            invoiceId: invoiceItemId,
-            productCategoryId: productCategoryId
+            invoiceId: invoiceItemId
           });
           ipcRenderer.once('getInvoiceDetailByIds', function (event, data) {
-            console.log(data);
+            $mainContent.empty();
+            $mainContent.empty();
+            $resultRow.empty();
+
+            $mainContent.append(`
+              <div class="row">
+                <div class="col text-center">
+                  <h3>XYZ</h3>
+                  <h6>Rough Estimate</h6>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-4">
+                  <div class="form-group row">
+                    <label for="partyMasterList" class="col-4 col-form-label">Name: </label>
+                    <select id="partyMasterList" class="custom-select col-8 pr-0">
+                      <option name="partyMasterList" value="0">${invoiceItem.partymaster.dataValues.name}</option>
+                    </select>
+                  </div> 
+                </div>
+                <div class="col-3">
+                  <div class="form-group row align-items-center">
+                    <label for="productCategoriesList" class="col-4 pl-0 col-form-label">Product: </label>
+                    <select id="productCategoriesList" class="custom-select col-7 pr-0">
+                      <option name="productCategoriesList" value="0">${invoiceItem.productcategory.dataValues.name}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-5">
+                  <div class="form-group row no-gutters align-items-center">
+                    <div class="col-4">Slip No./Date</div>
+                    <div class="col-2 pt-2 pb-2 pl-1" id="slipNo">${invoiceItem.id}</div>
+                    <div class="col-6">
+                      <input class="form-control pr-0 pl-0" type="date" id="invoiceDate" value="${invoiceItem.dateOfInvoice}">
+                    </div>  
+                  </div> 
+                </div>
+              </div>
+              <div class="row no-gutters">
+                <div class="col-2 mt-2" id="marka">
+                  Marka:    
+                </div>
+                <div class="col-5">
+                  <div class="form-group row align-items-center no-gutters">
+                    <div class="col-3">GR No/Date</div>
+                    <div class="col-3">
+                      <input type="number" value="${invoiceItem.bilityNo}" id="bilityNumber" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
+                    </div>
+                    <div class="col-6">
+                      <input class="form-control pl-0 pr-0" value="${invoiceItem.bilityDate}" type="date" id="bilityDate">
+                    </div>  
+                  </div>
+                </div>
+                <div class="col-5">
+                  <div class="form-group row align-items-center no-gutters">
+                    <div class="col-4">C. No/Date</div>
+                    <div class="col-2">
+                      <input class="form-control pr-0 pl-0" type="number" value="${invoiceItem.chalanNo}" id="chalanNumber">
+                    </div>
+                    <div class="col-6">
+                      <input class="form-control pl-0 pr-0" value="${invoiceItem.chalanDate}" type="date" id="chalanDate">
+                    </div>  
+                  </div>
+                </div>
+              </div>  
+              
+              <div class="row no-gutters">
+                <div class="col-3 mt-2" id="destination">
+                  Destination: ${invoiceItem.destination}
+                </div>
+                
+                <div class="col-2">
+                  <div class="form-group row no-gutters">
+                    <label for="cases" class="col-5 col-form-label">Cases:</label>
+                    <div class="col-7">
+                      <input class="form-control pr-0" type="number" value="${invoiceItem.cases}" id="casesInp">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-7">
+                  <div class="form-group row no-gutters">
+                    <label for="transport" class="col-2 col-form-label">Transport: </label> 
+                    <div class="col-10">
+                      <input class="form-control" type="text" value="${invoiceItem.transport}" id="transport">
+                    </div>
+                  </div>
+                </div>
+                
+                
+              </div>
+      
+              
+              <ul class="list-group text-center" id="invoiceItemList">
+                <li class="list-group-item">
+                  <div class="row">
+                    <div class="col-1">
+                      <b>S.No.</b>
+                    </div>
+                    <div class="col-5">
+                      <b>Description of Goods</b>
+                    </div>
+                    <div class="col-1">
+                      <b>Qty</b>
+                    </div>
+                    <div class="col-2">
+                      <b>Rate</b>
+                    </div>
+                    <div class="col-1">
+                      <b>Per</b>
+                    </div>
+                    <div class="col-2">
+                      <b>Amt</b>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div class="row" style="padding-right: 50px;">
+                <div class="col-12" id="totalAmt">
+                  
+                </div>  
+              </div>  
+            `);
+
           })
 
         });
@@ -1176,7 +1299,7 @@ $(document).ready(function () {
                   $('#viewPartyMaster').click();
                 }
               })
-              $("#editPartySubmit").unbind( "click" );
+              $("#editPartySubmit").unbind("click");
             })
           });
           let viewPartyDiscounts = $('.viewDiscounts');
@@ -1284,7 +1407,7 @@ $(document).ready(function () {
                         $resultRow.text("Error is" + data.error);
                       }
                     });
-                    $( "#editProductCategoryDiscountSubmit").unbind( "click" );
+                    $("#editProductCategoryDiscountSubmit").unbind("click");
                   })
                 })
               }
