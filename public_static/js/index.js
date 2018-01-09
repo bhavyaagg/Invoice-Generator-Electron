@@ -842,6 +842,90 @@ $(document).ready(function () {
               </div>  
             `);
 
+            console.log(data);
+
+            let $invoiceItemList = $('#invoiceItemList');
+
+            let listItemCount = 1;
+            ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
+              partymasterId: +(selectedPartyMaster.id),
+              productcategoryId: +(selectedProductCategory.id)
+            });
+
+
+            let totalAmt = 0, totalAmtWithoutDis = 0;
+
+            ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, data) {
+              console.log(selectedPartyMaster.id + ' ' + selectedProductCategory.id);
+              console.log(data);
+              if (data && data.success) {
+                console.log(data.discountObj.discount + data.discountObj.splDiscount);
+                let discount = data.discountObj.discount;
+                let splDiscount = data.discountObj.splDiscount;
+
+                data.invoiceItems.forEach(invoiceItem=>{
+                  $invoiceItemList.append(`
+                    <li class="list-group-item" id="amountCalcList" style="padding: 0px">
+                      <div class="row" padding-top: -5px"> 
+                        <div class="col-1">
+                          ${listItemCount++}
+                        </div>
+                        <div class="col-5">
+                          ${invoiceItem.product.name}
+                        </div>
+                        <div class="col-1">
+                          ${invoiceItem.qty}
+                        </div>
+                        <div class="col-2" id="productPrice">
+                          ${invoiceItem.product.price}
+                        </div>
+                        <div class="col-1"> 
+                          ${invoiceItem.unitType}  
+                        </div>
+                        <div class="col-2">
+                          ${(+invoiceItem.qty) * (+invoiceItem.product.price) }
+                        </div>
+                      </div>
+                    </li>
+                  `)
+
+                  totalAmtWithoutDis += +((+invoiceItem.qty) * (+invoiceItem.product.price));
+                  totalAmt += (((+invoiceItem.qty) * (+invoiceItem.product.price)) * (100 - (+discount)) * (100 - splDiscount)) / 10000;
+
+                })
+              }
+            })
+
+
+            totalAmt = roundTo(totalAmt, 1);
+
+            let cdDiscount = totalAmt * +(invoiceItem.partymaster.dataValues.cd) / 100;
+            cdDiscount = roundTo(cdDiscount, 1);
+
+            let grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
+            grandTotal = roundTo(grandTotal, 1);
+
+            $('#totalAmt').empty();
+            $('#totalAmt').append(`
+              <div >
+                
+                <hr>
+                  <p class="text-right"><b>Amount:  ${totalAmtWithoutDis}</b></p>
+                <hr>
+                <p class="text-right">
+                
+                <b>
+                  
+                  Discounted Amount:  ${totalAmt} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                  After CD Amount:  ${amtAfterCd} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                  Packing Charges:  ${packingCharges}
+                
+                </b>
+                </p>
+               
+                <h5 class="text-right">Grand Total:  ${grandTotal}</h5>
+              </div>
+            `)
           })
 
         });
