@@ -848,22 +848,22 @@ $(document).ready(function () {
 
             let listItemCount = 1;
             ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
-              partymasterId: +(selectedPartyMaster.id),
-              productcategoryId: +(selectedProductCategory.id)
+              partymasterId: +(invoiceItem.partymasterId),
+              productcategoryId: +(invoiceItem.productcategoryId)
             });
 
 
             let totalAmt = 0, totalAmtWithoutDis = 0;
 
-            ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, data) {
-              console.log(selectedPartyMaster.id + ' ' + selectedProductCategory.id);
-              console.log(data);
-              if (data && data.success) {
-                console.log(data.discountObj.discount + data.discountObj.splDiscount);
-                let discount = data.discountObj.discount;
-                let splDiscount = data.discountObj.splDiscount;
-
-                data.invoiceItems.forEach(invoiceItem=>{
+            ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, discountData) {
+              // console.log(selectedPartyMaster.id + ' ' + selectedProductCategory.id);
+              // console.log(discountData);
+              if (discountData && discountData.success) {
+                console.log(discountData.discountObj.discount + discountData.discountObj.splDiscount);
+                let discount = discountData.discountObj.discount;
+                let splDiscount = discountData.discountObj.splDiscount;
+                console.log(data.invoiceItems);
+                data.invoiceItems.forEach(invoiceItem => {
                   $invoiceItemList.append(`
                     <li class="list-group-item" id="amountCalcList" style="padding: 0px">
                       <div class="row" padding-top: -5px"> 
@@ -893,44 +893,46 @@ $(document).ready(function () {
                   totalAmt += (((+invoiceItem.qty) * (+invoiceItem.product.price)) * (100 - (+discount)) * (100 - splDiscount)) / 10000;
 
                 })
+
+                let packingCharges = 0;
+                totalAmt = roundTo(totalAmt, 1);
+
+                let cdDiscount = totalAmt * +(invoiceItem.partymaster.dataValues.cd) / 100;
+                cdDiscount = roundTo(cdDiscount, 1);
+
+                let grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
+                grandTotal = roundTo(grandTotal, 1);
+
+
+                let amtAfterCd = totalAmt - (+cdDiscount);
+                amtAfterCd = roundTo(amtAfterCd, 1);
+
+
+                $('#totalAmt').empty();
+                $('#totalAmt').append(`
+                  <div >
+                    
+                    <hr>
+                      <p class="text-right"><b>Amount:  ${totalAmtWithoutDis}</b></p>
+                    <hr>
+                    <p class="text-right">
+                    
+                    <b>
+                      
+                      Discounted Amount:  ${totalAmt} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                      After CD Amount:  ${amtAfterCd} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                      Packing Charges:  ${packingCharges}
+                    
+                    </b>
+                    </p>
+                   
+                    <h5 class="text-right">Grand Total:  ${grandTotal}</h5>
+                  </div>
+                `)
               }
             })
 
-            let packingCharges = 0;
-            totalAmt = roundTo(totalAmt, 1);
 
-            let cdDiscount = totalAmt * +(invoiceItem.partymaster.dataValues.cd) / 100;
-            cdDiscount = roundTo(cdDiscount, 1);
-
-            let grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
-            grandTotal = roundTo(grandTotal, 1);
-
-
-            let amtAfterCd = totalAmt - (+cdDiscount);
-            amtAfterCd = roundTo(amtAfterCd, 1);
-
-
-            $('#totalAmt').empty();
-            $('#totalAmt').append(`
-              <div >
-                
-                <hr>
-                  <p class="text-right"><b>Amount:  ${totalAmtWithoutDis}</b></p>
-                <hr>
-                <p class="text-right">
-                
-                <b>
-                  
-                  Discounted Amount:  ${totalAmt} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                  After CD Amount:  ${amtAfterCd} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                  Packing Charges:  ${packingCharges}
-                
-                </b>
-                </p>
-               
-                <h5 class="text-right">Grand Total:  ${grandTotal}</h5>
-              </div>
-            `)
           })
 
         });
