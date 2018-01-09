@@ -1744,6 +1744,7 @@ $(document).ready(function () {
           $resultRow.empty();
           if (data.success) {
             let str = `
+            <h3>${data.ledgerRows[0].partymaster.name}</h3>  
             <ul class="list-group text-center">
               <li class="list-group-item">
                 <div class="row align-items-center">
@@ -1768,7 +1769,9 @@ $(document).ready(function () {
                 </div>
               </li>
           `;
+
             str += `
+              
               <li class="list-group-item">
                 <div class="row align-items-center">
                   <div class="col">Opening Balance</div>
