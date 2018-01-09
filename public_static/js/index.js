@@ -896,7 +896,7 @@ $(document).ready(function () {
               }
             })
 
-
+            let packingCharges = 0;
             totalAmt = roundTo(totalAmt, 1);
 
             let cdDiscount = totalAmt * +(invoiceItem.partymaster.dataValues.cd) / 100;
@@ -904,6 +904,11 @@ $(document).ready(function () {
 
             let grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
             grandTotal = roundTo(grandTotal, 1);
+
+
+            let amtAfterCd = totalAmt - (+cdDiscount);
+            amtAfterCd = roundTo(amtAfterCd, 1);
+
 
             $('#totalAmt').empty();
             $('#totalAmt').append(`
