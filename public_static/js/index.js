@@ -709,10 +709,17 @@ $(document).ready(function () {
 
         $('.printInvoiceAgain').click(function (e) {
 
+          console.log('print view click');
           let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
           let productCategoryId = invoiceItemObj[invoiceItemId].productcategoryId;
 
-
+          ipcRenderer.send('viewInvoiceDetailsByIds', {
+            invoiceId: invoiceItemId,
+            productCategoryId: productCategoryId
+          });
+          ipcRenderer.once('getInvoiceDetailByIds', function (event, data) {
+            console.log(data);
+          })
 
         });
 

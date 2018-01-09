@@ -6,19 +6,19 @@
 const models = require('./../db/models');
 
 function viewInvoiceDetailsByIds(event, data) {
+  console.log(data);
   models.InvoiceDetail.findAll({
     where: {
-      invoiceId: data.invoiceId,
-      productcategoryId: data.productcategoryId
-    }
+      invoiceId: data.invoiceId
+    },
+    include: [models.Product]
   }).then(resultRows => {
     if (resultRows.length > 0) {
       event.sender.send('getInvoiceDetailByIds', {
         success: true,
         invoiceItems: resultRows.map(v=>{
           v = v.get();
-          v.invoice = v.invoice.get();
-          v.productcategory = v.productcategory.get();
+          v.product = v.product.get();
           return v;
         })
       })
