@@ -8,5 +8,6 @@ module.exports = exports = {
   partyMaster: require('./PartyMaster'),
   invoice: require('./Invoice'),
   ledger: require('./Ledger'),
-  partyMasterProductCategoryDiscount: require('./PartyMasterProductCategoryDiscount')
+  partyMasterProductCategoryDiscount: require('./PartyMasterProductCategoryDiscount'),
+  invoiceDetail: require('./InvoiceDetail')
 };
