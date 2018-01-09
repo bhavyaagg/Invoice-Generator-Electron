@@ -36,3 +36,7 @@ function viewInvoiceDetailsByIds(event, data) {
     })
   })
 }
+
+module.exports = exports = {
+  viewInvoiceDetailsByIds
+};
