@@ -908,6 +908,8 @@ $(document).ready(function () {
                 amtAfterCd = roundTo(amtAfterCd, 1);
 
 
+                packingCharges = +(grandTotal) - +(invoiceItem.grandTotal);
+
                 $('#totalAmt').empty();
                 $('#totalAmt').append(`
                   <div >
@@ -926,9 +928,39 @@ $(document).ready(function () {
                     </b>
                     </p>
                    
-                    <h5 class="text-right">Grand Total:  ${grandTotal}</h5>
+                    <h5 class="text-right">Grand Total:  ${invoiceItem.grandTotal}</h5>
                   </div>
                 `)
+
+
+                $('#printLedger').hide();
+                $('#addInvoiceItemBtn').hide();
+                $('#addPackingChargesBtn').hide();
+
+                let mainContent = $('#mainContent')[0];
+
+                $(document.body).empty().append(mainContent);
+
+
+                $('input, select').css('border', 'none');
+                $('select').css('background', 'white').css('padding-left', "0");
+                $('#mainContent').css('padding', "0px");
+                $('*').css('font-size', '12px');
+
+
+                ipcRenderer.send('printInvoice', {
+                  id: 1000
+                });
+                ipcRenderer.once('printedInvoice', function (event, data) {
+                  if (data.success) {
+                    location.reload();
+                  } else {
+                    window.alert("Could not add invoice");
+                    $('#resultRow').removeClass('text-success').addClass('text-danger');
+                    $('#resultRow').text("Invoice Could Not Be Added");
+                    $mainContent.empty();
+                  }
+                })
               }
             })
 
@@ -973,18 +1005,6 @@ $(document).ready(function () {
         })
 
       });
-
-      /*
-      bilityNo:"0"
-      biltyDate:null
-      cases:0
-      chalanDate:"2017-08-19"
-      chalanNo:"0"
-      dateOfInvoice:"2018-01-02"
-      id:3
-      partymasterId:1
-      productcategoryId:1
-       */
 
     })
 
