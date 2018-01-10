@@ -1016,8 +1016,23 @@ $(document).ready(function () {
 
           $('#editInvoiceSubmit').click(function () {
 
-            ipcRenderer.send('editInvoice')
-            $("#editInvoiceSubmit").unbind("click");
+            ipcRenderer.send('editInvoice', {
+              id: +(invoiceItem.id),
+              cases: String($editCases.val()),
+              dateOfInvoice: $editDateOfInvoice.val(),
+              bilityNo: $editBilityNo.val(),
+              bilityDate: $editBilityDate.val(),
+              chalanNo: $editChalanDate.val(),
+              chalanDate: $editChalanDate.val(),
+              grandTotal: $editGrandTotal.val()
+            });
+
+            ipcRenderer.once('editedInvoiceItem', function () {
+              $('#editInvoiceItemModal').modal('hide');
+              $("#editInvoiceSubmit").unbind("click");
+              $viewInvoicesButton.click();
+            })
+
           })
 
         })
