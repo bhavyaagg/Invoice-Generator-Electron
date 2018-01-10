@@ -759,7 +759,7 @@ $(document).ready(function () {
               </div>
               <div class="row no-gutters">
                 <div class="col-2 mt-2" id="marka">
-                  Marka:    
+                  Marka: ${invoiceItem.partymaster.dataValues.marka}  
                 </div>
                 <div class="col-5">
                   <div class="form-group row align-items-center no-gutters">
@@ -908,7 +908,7 @@ $(document).ready(function () {
                 amtAfterCd = roundTo(amtAfterCd, 1);
 
 
-                packingCharges = +(grandTotal) - +(invoiceItem.grandTotal);
+                packingCharges =  +(invoiceItem.grandTotal) - +(grandTotal);
 
                 $('#totalAmt').empty();
                 $('#totalAmt').append(`
@@ -1038,7 +1038,7 @@ $(document).ready(function () {
               dateOfInvoice: $editDateOfInvoice.val(),
               bilityNo: $editBilityNo.val(),
               bilityDate: $editBilityDate.val(),
-              chalanNo: $editChalanDate.val(),
+              chalanNo: $editChalanNo.val(),
               chalanDate: $editChalanDate.val(),
               grandTotal: $editGrandTotal.val()
             });
