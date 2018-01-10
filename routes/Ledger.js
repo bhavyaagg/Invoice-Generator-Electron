@@ -35,6 +35,21 @@ function viewLedgerByPartyMasterId(event, partyMaster) {
   })
 }
 
+function deleteLedger(event, data) {
+  models.Ledger.destroy({
+    where: {
+      invoiceId: data.invoiceId
+    }
+  }).then(row => {
+    console.log(row);
+  }).catch( err=> {
+    event.sender.send('deletedLedger', {
+      success: false,
+      error: err
+    })
+  })
+}
+
 module.exports = exports = {
   viewLedgerByPartyMasterId
 };
