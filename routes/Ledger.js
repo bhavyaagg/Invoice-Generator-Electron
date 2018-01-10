@@ -35,7 +35,7 @@ function viewLedgerByPartyMasterId(event, partyMaster) {
   })
 }
 
-function deleteLedger(event, data) {
+function deleteLedgerItem(event, data) {
   models.Ledger.destroy({
     where: {
       invoiceId: data.invoiceId
@@ -51,5 +51,6 @@ function deleteLedger(event, data) {
 }
 
 module.exports = exports = {
-  viewLedgerByPartyMasterId
+  viewLedgerByPartyMasterId,
+  deleteLedgerItem
 };

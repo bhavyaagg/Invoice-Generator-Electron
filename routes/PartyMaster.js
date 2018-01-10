@@ -142,5 +142,6 @@ module.exports = exports = {
   addPartyMaster,
   viewPartyMaster,
   addPaymentForPartyMaster,
-  editPartyMaster
+  editPartyMaster,
+  updateBalance
 };
