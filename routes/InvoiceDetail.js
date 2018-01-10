@@ -5,7 +5,7 @@
 
 const models = require('./../db/models');
 
-function viewInvoiceDetailsByIds(event, data) {
+function viewInvoiceDetailsById(event, data) {
   console.log(data);
   models.InvoiceDetail.findAll({
     where: {
@@ -14,7 +14,7 @@ function viewInvoiceDetailsByIds(event, data) {
     include: [models.Product]
   }).then(resultRows => {
     if (resultRows.length > 0) {
-      event.sender.send('getInvoiceDetailByIds', {
+      event.sender.send('getInvoiceDetailById', {
         success: true,
         invoiceItems: resultRows.map(v=>{
           v = v.get();
@@ -24,13 +24,13 @@ function viewInvoiceDetailsByIds(event, data) {
       })
     }
     else{
-      event.sender.send('getInvoiceDetailByIds', {
+      event.sender.send('getInvoiceDetailById', {
         success: false,
         error: "No object Found"
       })
     }
   }).catch(err => {
-    event.sender.send('getInvoiceDetailByIds', {
+    event.sender.send('getInvoiceDetailById', {
       success: false,
       error: err
     })
@@ -38,5 +38,5 @@ function viewInvoiceDetailsByIds(event, data) {
 }
 
 module.exports = exports = {
-  viewInvoiceDetailsByIds
+  viewInvoiceDetailsById
 };

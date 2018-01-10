@@ -714,10 +714,10 @@ $(document).ready(function () {
           let invoiceItem = invoiceItemObj[invoiceItemId];
           console.log(invoiceItem);
 
-          ipcRenderer.send('viewInvoiceDetailsByIds', {
+          ipcRenderer.send('viewInvoiceDetailsById', {
             invoiceId: invoiceItemId
           });
-          ipcRenderer.once('getInvoiceDetailByIds', function (event, data) {
+          ipcRenderer.once('getInvoiceDetailById', function (event, data) {
             $mainContent.empty();
             $mainContent.empty();
             $resultRow.empty();
