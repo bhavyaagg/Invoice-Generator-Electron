@@ -993,15 +993,11 @@ $(document).ready(function () {
         $('.edit-invoice-item').click(function (e) {
           let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
           console.log(invoiceItemId);
-          ipcRenderer.send('viewInvoiceItemById', {
-            id: invoiceItemId
-          });
 
-          ipcRenderer.once('getInvoiceItemById', function (event, invoiceItem) {
+          let invoiceItem = invoiceItemObj[invoiceItemId];
 
-            console.log(invoiceItem);
-            $('#editInvoiceItemModal').modal('show');
-          })
+
+
         })
 
       });
