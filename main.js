@@ -90,6 +90,8 @@ ipcMain.on('deleteInvoiceItemById', routes.invoice.deleteInvoiceItemById);
 
 ipcMain.on('viewInvoiceItemById', routes.invoice.viewInvoiceItemById);
 
+ipcMain.on('editInvoice', routes.invoice.editInvoice);
+
 ipcMain.on('viewInvoiceDetailsById', routes.invoiceDetail.viewInvoiceDetailsById);
 
 ipcMain.on('addPartyMasterProductCategoryDiscount', routes.partyMasterProductCategoryDiscount.addPartyMasterProductCategoryDiscount);

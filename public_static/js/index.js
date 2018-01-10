@@ -1014,6 +1014,12 @@ $(document).ready(function () {
           $editChalanDate.val(invoiceItem.chalanDate);
           $editGrandTotal.val(invoiceItem.grandTotal);
 
+          $('#editInvoiceSubmit').click(function () {
+
+            ipcRenderer.send('editInvoice')
+            $("#editInvoiceSubmit").unbind("click");
+          })
+
         })
 
       });
