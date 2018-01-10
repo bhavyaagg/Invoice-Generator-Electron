@@ -617,10 +617,10 @@ $(document).ready(function () {
               <div class="col-1">
                 <b>Chalan Date</b>
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 <b>Grand Total</b>
               </div> 
-              <div class="col-1 row">
+              <div class="col-2 row">
                 <div class="col-6">
                   
                 </div>
@@ -683,10 +683,10 @@ $(document).ready(function () {
               <div class="col-1">
                 ${invoiceItem.chalanDate}
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 ${invoiceItem.grandTotal}
               </div> 
-              <div class="col-1 row">
+              <div class="col-2 row">
                 <div class="col-4">
                   <button class="btn btn-success edit-invoice-item" invoiceItemId=${invoiceItem.id}>EDIT</button>
                 </div>
@@ -713,13 +713,13 @@ $(document).ready(function () {
           let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
           let invoiceItem = invoiceItemObj[invoiceItemId];
           console.log(invoiceItem);
-
+          $mainContent.empty();
           ipcRenderer.send('viewInvoiceDetailsById', {
             invoiceId: invoiceItemId
           });
           ipcRenderer.once('getInvoiceDetailById', function (event, data) {
             $mainContent.empty();
-            $mainContent.empty();
+
             $resultRow.empty();
 
             $mainContent.append(`
@@ -787,7 +787,7 @@ $(document).ready(function () {
               
               <div class="row no-gutters">
                 <div class="col-3 mt-2" id="destination">
-                  Destination: ${invoiceItem.destination}
+                  Destination: ${invoiceItem.partymaster.dataValues.destination}
                 </div>
                 
                 <div class="col-2">
@@ -802,7 +802,7 @@ $(document).ready(function () {
                   <div class="form-group row no-gutters">
                     <label for="transport" class="col-2 col-form-label">Transport: </label> 
                     <div class="col-10">
-                      <input class="form-control" type="text" value="${invoiceItem.transport}" id="transport">
+                      <input class="form-control" type="text" value="${invoiceItem.partymaster.dataValues.transport}" id="transport">
                     </div>
                   </div>
                 </div>
@@ -996,7 +996,23 @@ $(document).ready(function () {
 
           let invoiceItem = invoiceItemObj[invoiceItemId];
 
+          $('#editInvoiceItemModal').modal('show');
 
+          let $editCases = $('#editCases');
+          let $editDateOfInvoice = $('#editDateOfInvoice');
+          let $editBilityNo = $('#editBilityNo');
+          let $editBilityDate = $('#editBilityDate');
+          let $editChalanNo = $('#editChalanNo');
+          let $editChalanDate = $('#editChalanDate');
+          let $editGrandTotal = $('#editGrandTotal');
+
+          $editCases.val(invoiceItem.cases);
+          $editDateOfInvoice.val(invoiceItem.dateOfInvoice);
+          $editBilityNo.val(invoiceItem.bilityNo);
+          $editBilityDate.val(invoiceItem.bilityDate);
+          $editChalanNo.val(invoiceItem.chalanNo);
+          $editChalanDate.val(invoiceItem.chalanDate);
+          $editGrandTotal.val(invoiceItem.grandTotal);
 
         })
 
