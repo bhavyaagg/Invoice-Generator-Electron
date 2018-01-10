@@ -78,7 +78,7 @@ ipcMain.on('editPartyMaster', routes.partyMaster.editPartyMaster);
 
 ipcMain.on('submitInvoice', routes.invoice.submitInvoice);
 
-ipcMain.on('updateBalance', routes.partyMaster.updateBalance)
+ipcMain.on('updateBalance', routes.partyMaster.updateBalance);
 
 ipcMain.on('submitInvoiceDetail', routes.invoice.submitInvoiceDetail);
 
@@ -112,4 +112,4 @@ ipcMain.on('printInvoice', function (event, data) {
 
 ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId);
 
-ipcMain.on('deleteLedgerItem', routes.Ledger.deleteLedgerItem);
+ipcMain.on('deleteLedgerItem', routes.ledger.deleteLedgerItem);

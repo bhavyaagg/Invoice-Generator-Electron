@@ -42,6 +42,9 @@ function deleteLedgerItem(event, data) {
     }
   }).then(row => {
     console.log(row);
+    event.sender.send('deletedLedger', {
+      success:true
+    })
   }).catch( err=> {
     event.sender.send('deletedLedger', {
       success: false,

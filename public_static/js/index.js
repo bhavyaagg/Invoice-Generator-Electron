@@ -972,6 +972,7 @@ $(document).ready(function () {
         $('.delete-invoice-item').click(function (e) {
           let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
           let youSure = window.confirm('Are you sure want to delete this');
+          let invoiceItem = invoiceItemObj[invoiceItemId];
 
           if (youSure) {
             ipcRenderer.send('deleteInvoiceItemById', {
@@ -982,6 +983,21 @@ $(document).ready(function () {
                 $viewInvoicesButton.click();
                 $resultRow.removeClass('text-danger').addClass('text-success');
                 $resultRow.text("Invoice Item Has Been Deleted");
+
+                ipcRenderer.send('deleteLedgerItem', {
+                  invoiceId: invoiceItemId
+                })
+                ipcRenderer.once('deletedLedger', function(e, data) {
+                  if(data.success) {
+                    ipcRenderer.send('updateBalance', {
+                      balance: invoiceItem.grandTotal,
+                      partyMasterId: invoiceItem.partyMasterId
+                    })
+
+                  }
+                })
+
+
               } else {
                 $resultRow.removeClass('text-success').addClass('text-danger');
                 $resultRow.text("Item Could Not Be Deleted Because " + data.error);
