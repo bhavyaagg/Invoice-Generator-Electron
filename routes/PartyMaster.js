@@ -111,6 +111,33 @@ function editPartyMaster(event, data) {
 
 }
 
+function updateBalance(event, data) {
+  models.PartyMaster.update({
+    balance: data.balance
+  }, {
+    where: {
+      partymasterId: data.partyMasterId
+    }
+  }).then(res => {
+    if(res && res.length>0) {
+      event.sender.send('updatedBalance',{
+        success: true
+      })
+    }
+    else{
+      event.sender.send('updatedBalance',{
+        success: false,
+        error: "No object Found"
+      })
+    }
+  }).catch(err => {
+    event.sender.send('updatedBalance', {
+      success: false,
+      error: err
+    })
+  })
+}
+
 module.exports = exports = {
   addPartyMaster,
   viewPartyMaster,
