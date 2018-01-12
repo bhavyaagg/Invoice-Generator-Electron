@@ -468,7 +468,7 @@ $(document).ready(function () {
 
       $('#printInvoice').click(function () {
         let mainContent = $('#mainContent')[0];
-        $(document.body).empty().append(mainContent)
+        $(document.body).empty().append(mainContent);
         ipcRenderer.send('printInvoice', {
           id: slipNumber
         })
@@ -843,6 +843,18 @@ $(document).ready(function () {
                   
                 </div>  
               </div>  
+              
+              <div class="row" id="submitBtnDiv">
+                <div class="col-5"><b></b></div>
+                <div class="col-2">
+                  <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoiceAgain">
+                
+                </div>
+                <div class="col-5">
+                  <input class="btn btn-primary" type="submit" value="Add Invoice Item" id="addInvoiceItemBtn">
+                </div>
+              </div>
+              
             `);
 
             console.log(data);
@@ -856,7 +868,7 @@ $(document).ready(function () {
             });
 
 
-            let totalAmt = 0, totalAmtWithoutDis = 0;
+            let totalAmt = 0, totalAmtWithoutDis = 0, qtyCount=0;
 
             ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, discountData) {
               // console.log(selectedPartyMaster.id + ' ' + selectedProductCategory.id);
@@ -865,7 +877,7 @@ $(document).ready(function () {
                 console.log(discountData.discountObj.discount + discountData.discountObj.splDiscount);
                 let discount = discountData.discountObj.discount;
                 let splDiscount = discountData.discountObj.splDiscount;
-                console.log(data.invoiceItems);
+
                 data.invoiceItems.forEach(invoiceItem => {
                   $invoiceItemList.append(`
                     <li class="list-group-item" id="amountCalcList" style="padding: 0px">
@@ -935,34 +947,35 @@ $(document).ready(function () {
                   </div>
                 `)
 
+                $('#submitInvoiceAgain').click(function() {
+                  $('#printLedger').hide();
+                  $('#addInvoiceItemBtn').hide();
+                  $('#addPackingChargesBtn').hide();
 
-                $('#printLedger').hide();
-                $('#addInvoiceItemBtn').hide();
-                $('#addPackingChargesBtn').hide();
+                  let mainContent = $('#mainContent')[0];
 
-                let mainContent = $('#mainContent')[0];
-
-                $(document.body).empty().append(mainContent);
-
-
-                $('input, select').css('border', 'none');
-                $('select').css('background', 'white').css('padding-left', "0");
-                $('#mainContent').css('padding', "0px");
-                $('*').css('font-size', '12px');
+                  $(document.body).empty().append(mainContent);
 
 
-                ipcRenderer.send('printInvoice', {
-                  id: 1000
-                });
-                ipcRenderer.once('printedInvoice', function (event, data) {
-                  if (data.success) {
-                    location.reload();
-                  } else {
-                    window.alert("Could not add invoice");
-                    $('#resultRow').removeClass('text-success').addClass('text-danger');
-                    $('#resultRow').text("Invoice Could Not Be Added");
-                    $mainContent.empty();
-                  }
+                  $('input, select').css('border', 'none');
+                  $('select').css('background', 'white').css('padding-left', "0");
+                  $('#mainContent').css('padding', "0px");
+                  $('*').css('font-size', '12px');
+
+
+                  ipcRenderer.send('printInvoice', {
+                    id: 1000
+                  });
+                  ipcRenderer.once('printedInvoice', function (event, data) {
+                    if (data.success) {
+                      location.reload();
+                    } else {
+                      window.alert("Could not add invoice");
+                      $('#resultRow').removeClass('text-success').addClass('text-danger');
+                      $('#resultRow').text("Invoice Could Not Be Added");
+                      $mainContent.empty();
+                    }
+                  })
                 })
               }
             })
