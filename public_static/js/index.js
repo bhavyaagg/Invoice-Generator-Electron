@@ -903,7 +903,7 @@ $(document).ready(function () {
                       </div>
                     </li>
                   `)
-
+                  qtyCount += invoiceItem.qty;
                   totalAmtWithoutDis += +((+invoiceItem.qty) * (+invoiceItem.product.price));
                   totalAmt += (((+invoiceItem.qty) * (+invoiceItem.product.price)) * (100 - (+discount)) * (100 - splDiscount)) / 10000;
 
