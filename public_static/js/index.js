@@ -416,7 +416,7 @@ $(document).ready(function () {
         let selectedProduct = productObj[+($productList.val())];
         let per = $('#per').val();
         per = $(`option[name="unitType"][value="${per}"]`).text();
-        console.log(2)
+
         if (qty <= 0 || typeof selectedProduct === "undefined")
           return;
 
@@ -925,27 +925,69 @@ $(document).ready(function () {
 
                 packingCharges =  +(invoiceItem.grandTotal) - +(grandTotal);
 
-                $('#totalAmt').empty();
-                $('#totalAmt').append(`
-                  <div >
-                    
-                    <hr>
-                      <p class="text-right"><b>Total Qty: ${qtyCount} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Amount:  ${totalAmtWithoutDis}</b></p>
-                    <hr>
-                    <p class="text-right">
-                    
-                    <b>
-                      
-                      Discounted Amount:  ${totalAmt} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                      After CD Amount:  ${amtAfterCd} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                      Packing Charges:  ${packingCharges}
-                    
-                    </b>
-                    </p>
-                   
-                    <h5 class="text-right">Grand Total:  ${invoiceItem.grandTotal}</h5>
-                  </div>
-                `)
+                updateAmtDiv();
+                $('#addInvoiceItemBtn').click(function () {
+                  $('#addInvoiceItemModal').modal('show');
+                })
+
+                let invoiceListItems = {};
+                let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit')
+
+                $addInvoiceItemSubmit.click(function (e) {
+
+                  let qty = $('#qty').val();
+                  let selectedProduct = productObj[+($productList.val())];
+                  let per = $('#per').val();
+                  per = $(`option[name="unitType"][value="${per}"]`).text();
+
+                  if (qty <= 0 || typeof selectedProduct === "undefined")
+                    return;
+
+                  qtyCount += +(qty);
+                  invoiceListItems.push({
+                    itemNumber: listItemCount,
+                    qty: qty,
+                    productId: selectedProduct.id,
+                    per: per
+                  });
+                  $invoiceItemList.append(`
+                    <li class="list-group-item" id="amountCalcList" style="padding: 0px">
+                      <div class="row" padding-top: -5px"> 
+                        <div class="col-1">
+                          ${listItemCount++}
+                        </div>
+                        <div class="col-5">
+                          ${selectedProduct.name}
+                        </div>
+                        <div class="col-1">
+                          ${qty}
+                        </div>
+                        <div class="col-2" id="productPrice">
+                          ${selectedProduct.price}
+                        </div>
+                        <div class="col-1"> 
+                          ${per}  
+                        </div>
+                        <div class="col-2">
+                          ${(+qty) * (+selectedProduct.price) }
+                        </div>
+                      </div>
+                    </li>
+                  `)
+
+                  totalAmtWithoutDis += +((+qty) * (+selectedProduct.price));
+                  totalAmt += (((+qty) * (+selectedProduct.price)) * (100 - (+discount)) * (100 - splDiscount)) / 10000;
+
+                  totalAmt = roundTo(totalAmt, 1);
+
+                  cdDiscount = totalAmt * +(invoiceItem.partymaster.dataValues.cd) / 100;
+                  cdDiscount = roundTo(cdDiscount, 1);
+
+                  grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
+                  grandTotal = roundTo(grandTotal, 1);
+                  updateAmtDiv();
+                  $('#addInvoiceItemModal').modal('hide');
+                });
 
                 $('#submitInvoiceAgain').click(function() {
                   $('#printLedger').hide();
@@ -977,6 +1019,30 @@ $(document).ready(function () {
                     }
                   })
                 })
+                
+                function updateAmtDiv() {
+                  $('#totalAmt').empty();
+                  $('#totalAmt').append(`
+                  <div >
+                    
+                    <hr>
+                      <p class="text-right"><b>Total Qty: ${qtyCount} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Amount:  ${totalAmtWithoutDis}</b></p>
+                    <hr>
+                    <p class="text-right">
+                    
+                    <b>
+                      
+                      Discounted Amount:  ${totalAmt} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                      After CD Amount:  ${amtAfterCd} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                      Packing Charges:  ${packingCharges}
+                    
+                    </b>
+                    </p>
+                   
+                    <h5 class="text-right">Grand Total:  ${invoiceItem.grandTotal}</h5>
+                  </div>
+                `)
+                }
               }
             })
 
