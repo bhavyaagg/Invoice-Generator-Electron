@@ -166,7 +166,8 @@ function viewProductByPCategoryId(event, productCategory) {
   models.Product.findAll({
     where: {
       productcategoryId: productCategory.id
-    }
+    },
+    order:[models.sequelize.literal(`\`product\`.\`name\` `)]
   }).then(function (product) {
     event.sender.send('getProductByPCategoryId', {
       success: true,
