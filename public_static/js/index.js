@@ -930,7 +930,7 @@ $(document).ready(function () {
                   <div >
                     
                     <hr>
-                      <p class="text-right"><b>Amount:  ${totalAmtWithoutDis}</b></p>
+                      <p class="text-right"><b>Total Qty: ${qtyCount} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Amount:  ${totalAmtWithoutDis}</b></p>
                     <hr>
                     <p class="text-right">
                     
