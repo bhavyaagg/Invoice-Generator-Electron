@@ -48,10 +48,8 @@ function submitInvoiceDetail(event, invoiceDetail) {
       invoiceId: invoiceDetail.invoiceId,
       productId: invoiceItem.productId
     }).then(function (item) {
-      event.sender.send('submittedInvoice', {
-        success: false,
-        error: err
-      });
+
+
     }).catch(function (err) {
       event.sender.send('submittedInvoice', {
         success: false,
@@ -162,6 +160,8 @@ function viewInvoiceItemById(event, invoiceItemId) {
 }
 
 function editInvoice(event, invoiceItem) {
+  console.log('incoming invoice item');
+  console.log(invoiceItem);
   models.Invoice.update(invoiceItem, {
 
     where: {

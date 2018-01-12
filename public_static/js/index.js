@@ -1007,6 +1007,8 @@ $(document).ready(function () {
                   cdDiscount = totalAmt * +(invoiceItem.partymaster.dataValues.cd) / 100;
                   cdDiscount = roundTo(cdDiscount, 1);
 
+                  amtAfterCd = totalAmt - +(cdDiscount);
+
                   grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
                   grandTotal = roundTo(grandTotal, 1);
                   updateAmtDiv();
@@ -1031,9 +1033,25 @@ $(document).ready(function () {
 
                   ipcRenderer.send('submitInvoiceDetail', {
                     invoiceId: invoiceItemId,
-                      listItems: invoiceListItems
-                  })
+                    listItems: invoiceListItems
+                  });
 
+                  /*ipcRenderer.once('submittedInvoice', (e,data)=>{
+                    if(data && data.success) {
+                      console.log('edit invoice grand Total');
+
+                    }
+                  });*/
+
+                  ipcRenderer.send('editInvoice',{
+                    grandTotal: grandTotal,
+                    id: invoiceItemId
+                  })
+                  ipcRenderer.once('editedInvoiceItem', (e,editedInvoiceData)=>{
+                    if(editedInvoiceData && editedInvoiceData.success) {
+
+                    }
+                  })
 
                   ipcRenderer.send('printInvoice', {
                     id: 1000
@@ -1069,7 +1087,7 @@ $(document).ready(function () {
                     </b>
                     </p>
                    
-                    <h5 class="text-right">Grand Total:  ${invoiceItem.grandTotal}</h5>
+                    <h5 class="text-right">Grand Total:  ${grandTotal }</h5>
                   </div>
                 `)
                 }
