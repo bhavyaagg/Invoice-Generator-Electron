@@ -114,7 +114,7 @@ function editPartyMaster(event, data) {
 function updateBalance(event, data) {
   console.log('calling');
   models.PartyMaster.update({
-    balance: models.sequelize.literal(`balance - ${data .balance}`)
+    balance: models.sequelize.literal(`balance - ${data.balance}`)
   }, {
     where: {
       partymasterId: data.partyMasterId

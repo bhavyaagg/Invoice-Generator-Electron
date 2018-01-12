@@ -1044,8 +1044,16 @@ $(document).ready(function () {
             });
 
             ipcRenderer.once('editedInvoiceItem', function () {
+
+              if(invoiceItem.grandTotal !== $editGrandTotal.val()) {
+
+
+              }
+
               $('#editInvoiceItemModal').modal('hide');
               $("#editInvoiceSubmit").unbind("click");
+
+
               $viewInvoicesButton.click();
             })
 

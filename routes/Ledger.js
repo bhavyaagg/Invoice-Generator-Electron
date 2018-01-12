@@ -53,7 +53,35 @@ function deleteLedgerItem(event, data) {
   })
 }
 
+function updateCreditByInvoiceId(event, data) {
+  models.Ledger.update({
+    credit: data.credit
+  },{
+    where:{
+      invoiceId: data.invoiceId
+    }
+  }).then(row=>{
+    if(row && row.length>0) {
+      event.sender.send('updatedCreditByInvoiceId',{
+        success: true
+      })
+    }
+    else {
+      event.sender.send('updatedCreditByInvoiceId',{
+        success: false,
+        error: "Nothing to update"
+      })
+    }
+  }).catch(err=>{
+    event.sender.send('updatedCreditByInvoiceId',{
+      success: false,
+      error: err
+    })
+  })
+}
+
 module.exports = exports = {
   viewLedgerByPartyMasterId,
-  deleteLedgerItem
+  deleteLedgerItem,
+  updateCreditByInvoiceId
 };
