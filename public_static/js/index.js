@@ -1018,6 +1018,7 @@ $(document).ready(function () {
                 $('#submitInvoiceAgain').click(function() {
                   $('#printLedger').hide();
                   $('#addInvoiceItemBtn').hide();
+                  $('#submitInvoiceAgain').hide();
                   $('#addPackingChargesBtn').hide();
 
                   let mainContent = $('#mainContent')[0];
