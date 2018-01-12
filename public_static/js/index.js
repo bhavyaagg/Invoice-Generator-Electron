@@ -933,6 +933,26 @@ $(document).ready(function () {
                 let invoiceListItems = {};
                 let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit')
 
+                let str = '';
+                //console.log(products);
+
+                ipcRenderer.send('viewProductByPCategoryId', {
+                  id: +(invoiceItem.productcategoryId)
+                });
+
+                let $productList = $('#productList');
+                let productObj = {};
+                ipcRenderer.once('getProductByPCategoryId', (e,products)=>{
+                  $productList.empty();
+                  products.forEach(product => {
+                    productObj[product.id] = product;
+                    str += `<option name="productList" value="${product.id}">${product.name}</option>`
+                  });
+                })
+
+
+                $productList.append(str);
+
                 $addInvoiceItemSubmit.click(function (e) {
 
                   let qty = $('#qty').val();
