@@ -1046,8 +1046,10 @@ $(document).ready(function () {
             ipcRenderer.once('editedInvoiceItem', function () {
 
               if(invoiceItem.grandTotal !== $editGrandTotal.val()) {
-
-
+                ipcRenderer.send('updateCreditByInvoiceId', {
+                  credit: $editGrandTotal.val(),
+                  invoiceId: invoiceItem.id
+                })
               }
 
               $('#editInvoiceItemModal').modal('hide');
