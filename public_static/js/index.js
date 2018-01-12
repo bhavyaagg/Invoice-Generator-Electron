@@ -1009,7 +1009,7 @@ $(document).ready(function () {
 
                   amtAfterCd = totalAmt - +(cdDiscount);
 
-                  grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
+                  grandTotal = totalAmt - (+cdDiscount) ;
                   grandTotal = roundTo(grandTotal, 1);
                   updateAmtDiv();
                   $('#addInvoiceItemModal').modal('hide');
@@ -1045,12 +1045,24 @@ $(document).ready(function () {
                   });*/
 
                   ipcRenderer.send('editInvoice',{
-                    grandTotal: grandTotal,
+                    grandTotal: (+grandTotal)+(+packingCharges),
                     id: invoiceItemId
                   })
                   ipcRenderer.once('editedInvoiceItem', (e,editedInvoiceData)=>{
                     if(editedInvoiceData && editedInvoiceData.success) {
+                      ipcRenderer.send('updateCreditByInvoiceId', {
+                        credit: (+grandTotal)+(+packingCharges),
+                        invoiceId: invoiceItem.id
+                      })
 
+                      ipcRenderer.once('updatedCreditByInvoiceId', (event, data)=>{
+                        if(data.success) {
+                          $('#editInvoiceItemModal').modal('hide');
+                          $("#editInvoiceSubmit").unbind("click");
+                          $viewInvoicesButton.click();
+
+                        }
+                      })
                     }
                   })
 
@@ -1088,7 +1100,7 @@ $(document).ready(function () {
                     </b>
                     </p>
                    
-                    <h5 class="text-right">Grand Total:  ${grandTotal }</h5>
+                    <h5 class="text-right">Grand Total:  ${(+grandTotal)+(+packingCharges)}</h5>
                   </div>
                 `)
                 }
@@ -2221,7 +2233,10 @@ $(document).ready(function () {
                   <div class="col">${data.ledgerRows[0].partymaster.openingBalance}</div>
                 </div>
               </li>`;
+            let debitTotal = 0, creditTotal = 0;
             data.ledgerRows.forEach(function (ledgerRow) {
+              creditTotal += ledgerRow.credit;
+              debitTotal += ledgerRow.debit;
               str += `
               <li class="list-group-item">
                 <div class="row align-items-center">
@@ -2230,7 +2245,7 @@ $(document).ready(function () {
                   <div class="col">${ledgerRow.productCategoryName}</div>
                   <div class="col">${ledgerRow.debit}</div>
                   <div class="col">${ledgerRow.credit}</div>
-                  <div class="col">${ledgerRow.balance}</div>
+                  <div class="col">${creditTotal-debitTotal}</div>
                 </div>
               </li>
               `
