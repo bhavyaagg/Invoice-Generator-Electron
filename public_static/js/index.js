@@ -372,6 +372,7 @@ $(document).ready(function () {
       });
 
       let listItemCount = 1;
+      let qtyCount = 0;
       let $invoiceItemList = $('#invoiceItemList');
       let productObj = {};
 
@@ -418,6 +419,8 @@ $(document).ready(function () {
         console.log(2)
         if (qty <= 0 || typeof selectedProduct === "undefined")
           return;
+
+        qtyCount += +(qty);
         invoiceListItems.push({
           itemNumber: listItemCount,
           qty: qty,
@@ -557,7 +560,7 @@ $(document).ready(function () {
           <div >
             
             <hr>
-              <p class="text-right"><b>Amount:  ${totalAmtWithoutDis}</b></p>
+              <p class="text-right"><b>Total Qty: ${qtyCount} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Amount:  ${totalAmtWithoutDis}</b></p>
             <hr>
             <p class="text-right">
             
@@ -1050,13 +1053,21 @@ $(document).ready(function () {
                   credit: $editGrandTotal.val(),
                   invoiceId: invoiceItem.id
                 })
+
+                ipcRenderer.once('updatedCreditByInvoiceId', (event, data)=>{
+                  if(data.success) {
+                    $('#editInvoiceItemModal').modal('hide');
+                    $("#editInvoiceSubmit").unbind("click");
+                    $viewInvoicesButton.click();
+
+                  }
+                })
               }
 
-              $('#editInvoiceItemModal').modal('hide');
-              $("#editInvoiceSubmit").unbind("click");
 
 
-              $viewInvoicesButton.click();
+
+
             })
 
           })
