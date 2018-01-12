@@ -48,9 +48,12 @@ function submitInvoiceDetail(event, invoiceDetail) {
       invoiceId: invoiceDetail.invoiceId,
       productId: invoiceItem.productId
     }).then(function (item) {
-
+      event.sender.send('submittedInvoice', {
+        success: false,
+        error: err
+      });
     }).catch(function (err) {
-      event.sender.send('getSubmitInvoice', {
+      event.sender.send('submittedInvoice', {
         success: false,
         error: err
       });

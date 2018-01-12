@@ -930,7 +930,7 @@ $(document).ready(function () {
                   $('#addInvoiceItemModal').modal('show');
                 })
 
-                let invoiceListItems = {};
+                let invoiceListItems = [];
                 let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit')
 
                 let str = '';
@@ -942,16 +942,20 @@ $(document).ready(function () {
 
                 let $productList = $('#productList');
                 let productObj = {};
-                ipcRenderer.once('getProductByPCategoryId', (e,products)=>{
+                ipcRenderer.once('getProductByPCategoryId', (e,data)=>{
                   $productList.empty();
-                  products.forEach(product => {
+                  console.log('product data');
+                  console.log(data);
+                  data.product.forEach(product => {
                     productObj[product.id] = product;
                     str += `<option name="productList" value="${product.id}">${product.name}</option>`
                   });
+
+                  $productList.append(str);
                 })
 
 
-                $productList.append(str);
+
 
                 $addInvoiceItemSubmit.click(function (e) {
 
@@ -1023,6 +1027,12 @@ $(document).ready(function () {
                   $('select').css('background', 'white').css('padding-left', "0");
                   $('#mainContent').css('padding', "0px");
                   $('*').css('font-size', '12px');
+
+
+                  ipcRenderer.send('submitInvoiceDetail', {
+                    invoiceId: invoiceItemId,
+                      listItems: invoiceListItems
+                  })
 
 
                   ipcRenderer.send('printInvoice', {
