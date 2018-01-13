@@ -2296,7 +2296,7 @@ $(document).ready(function () {
                   <div class="col"></div>
                 </div>
               </li>`;
-            let debitTotal = 0, creditTotal = 0;
+            let debitTotal = 0, creditTotal = data.ledgerRows[0].partymaster.openingBalance;
             data.ledgerRows.forEach(function (ledgerRow) {
               creditTotal += ledgerRow.credit;
               debitTotal += ledgerRow.debit;
