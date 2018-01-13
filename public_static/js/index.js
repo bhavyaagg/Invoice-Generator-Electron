@@ -2221,6 +2221,7 @@ $(document).ready(function () {
                   <div class="col">
                     Balance
                   </div>
+                  <div class="col"></div>
                 </div>
               </li>
           `;
@@ -2235,12 +2236,17 @@ $(document).ready(function () {
                   <div class="col"></div>
                   <div class="col"></div>
                   <div class="col">${data.ledgerRows[0].partymaster.openingBalance}</div>
+                  <div class="col"></div>
                 </div>
               </li>`;
             let debitTotal = 0, creditTotal = 0;
             data.ledgerRows.forEach(function (ledgerRow) {
               creditTotal += ledgerRow.credit;
               debitTotal += ledgerRow.debit;
+              let strBtn = '';
+              if(ledgerRow.debit>0 && ledgerRow.credit===0) {
+                strBtn = `<button class="btn btn-primary deletePayment" ledgerId="${ledgerRow.id}">Delete</button>`
+              }
               str += `
               <li class="list-group-item">
                 <div class="row align-items-center">
@@ -2250,6 +2256,7 @@ $(document).ready(function () {
                   <div class="col">${ledgerRow.debit}</div>
                   <div class="col">${ledgerRow.credit}</div>
                   <div class="col">${creditTotal-debitTotal}</div>
+                  <div class="col">${strBtn}</div>
                 </div>
               </li>
               `
@@ -2266,6 +2273,12 @@ $(document).ready(function () {
             `
 
             $mainContent.append(str);
+
+            $('.deletePayment').click(function (event) {
+              let ledgerId = +(event.target.getAttribute('ledgerId'));
+
+
+            })
 
             $('#printLedger').click(function () {
               $('#printLedger').hide();
