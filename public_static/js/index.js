@@ -2346,7 +2346,11 @@ $(document).ready(function () {
     })
 
     $masterLedger.click(e => {
+      ipcRenderer.send('viewMasterLedger');
 
+      ipcRenderer.once('getMasterLedger', (e, ledgerItems) => {
+        console.log(ledgerItems);
+      })
     })
   });
 
