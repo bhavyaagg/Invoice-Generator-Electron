@@ -81,8 +81,6 @@ function updateCreditByInvoiceId(event, data) {
 }
 
 function viewMasterLedger(event) {
-
-
   models.Ledger.findAll({
     include: [models.PartyMaster],
     group: 'partymasterId',

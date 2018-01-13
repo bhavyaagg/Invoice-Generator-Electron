@@ -181,6 +181,28 @@ function viewProductByPCategoryId(event, productCategory) {
   })
 }
 
+
+function viewProductSales(event) {
+  models.InvoiceDetail.findAll({
+    include: [models.Product],
+    group: 'productId',
+    attributes: [
+      [models.sequelize.fn('SUM', models.sequelize.col('qty')), 'qty']
+    ],
+    order:['qty']
+  }).then(rows => {
+    event.sender.send('getProductSales',{
+      success:true,
+      productSales: rows.map(v => v.get())
+    })
+  }).catch(err => {
+    event.sender.send('getProductSales',{
+      success:true,
+      error: err
+    })
+  })
+}
+
 module.exports = exports = {
   addProduct,
   editProduct,
@@ -188,5 +210,6 @@ module.exports = exports = {
   deleteProductCategoryById,
   viewProductById,
   viewProducts,
-  viewProductByPCategoryId
+  viewProductByPCategoryId,
+  viewProductSales
 };
