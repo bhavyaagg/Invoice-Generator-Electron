@@ -2152,6 +2152,9 @@ $(document).ready(function () {
       <div class="col text-center">
         <button id="addPayment" class="btn btn-primary">Add Payment</button>
       </div>
+      <div class="col text-center">
+        <button id="masterLedger" class="btn btn-primary">Master Ledger</button>
+      </div>
     `);
 
     ipcRenderer.send('viewPartyMaster');
