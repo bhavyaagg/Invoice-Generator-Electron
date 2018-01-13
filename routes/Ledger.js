@@ -95,7 +95,11 @@ function viewMasterLedger(event) {
     if(rows && rows.length>0) {
       event.sender.send('getMasterLedger', {
         success: true,
-        ledgerItems: rows.map(v => v.get())
+        ledgerItems: rows.map((v) => {
+          v = v.get();
+          v.partymaster = v.partymaster.get();
+          return v;
+        })
       })
     }
     else{
@@ -118,7 +122,7 @@ function deletePayment(event, data) {
       ledgerId: data.ledgerId
     }
   }).then(row => {
-    console.log(row);
+
     event.sender.send('deletedPayment', {
       success: true
     })
@@ -134,5 +138,6 @@ module.exports = exports = {
   viewLedgerByPartyMasterId,
   deleteLedgerItem,
   updateCreditByInvoiceId,
-  viewMasterLedger
+  viewMasterLedger,
+  deletePayment
 };
