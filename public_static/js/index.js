@@ -2156,6 +2156,36 @@ $(document).ready(function () {
           })
 
           console.log(productData);
+
+          let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-6">
+                    <b>Product Name</b>
+                  </div>
+                  <div class="col">
+                    <b>Total Qty</b>
+                  </div>
+                </div>
+              </li>
+          `;
+          productData.productSales.forEach(productSale=>{
+            str += `
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-6">
+                    ${productSale.product.name}
+                  </div>
+                  <div class="col">
+                    ${productSale.totalQty}
+                  </div>
+                </div>
+              </li>
+            `;
+          })
+
+          $mainContent.append(str);
         }
       });
     })
