@@ -2182,6 +2182,7 @@ $(document).ready(function () {
 
     const $viewLedger = $('#viewLedger');
     const $addPayment = $('#addPayment');
+    const $masterLedger = $('#masterLedger');
 
     $viewLedger.click(function () {
       let partyMasterId = +($('#partyMastersList').val());
@@ -2344,6 +2345,9 @@ $(document).ready(function () {
       }
     })
 
+    $masterLedger.click(e => {
+
+    })
   });
 
   $editProductCategorySubmit.click(function (e) {

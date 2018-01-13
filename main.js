@@ -115,3 +115,5 @@ ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId)
 ipcMain.on('deleteLedgerItem', routes.ledger.deleteLedgerItem);
 
 ipcMain.on('updateCreditByInvoiceId', routes.ledger.updateCreditByInvoiceId);
+
+ipcMain.on('viewMasterLedger', routes.ledger.viewMasterLedger);

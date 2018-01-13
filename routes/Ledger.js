@@ -80,8 +80,12 @@ function updateCreditByInvoiceId(event, data) {
   })
 }
 
+function viewMasterLedger() {
+  
+}
 module.exports = exports = {
   viewLedgerByPartyMasterId,
   deleteLedgerItem,
-  updateCreditByInvoiceId
+  updateCreditByInvoiceId,
+  viewMasterLedger
 };
