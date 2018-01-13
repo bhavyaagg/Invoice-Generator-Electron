@@ -110,6 +110,13 @@ ipcMain.on('printInvoice', function (event, data) {
   print.print(event);
 });
 
+ipcMain.on('printMainContent', function (event, data) {
+  print.preparePrint(mainWindow);
+  //print.savePDF(__dirname + '/invoices/' + data.id+'.pdf');
+  print.print(event);
+});
+
+
 ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId);
 
 ipcMain.on('deleteLedgerItem', routes.ledger.deleteLedgerItem);

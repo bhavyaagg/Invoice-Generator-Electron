@@ -2398,12 +2398,57 @@ $(document).ready(function () {
             totalCredit += ledgerItem.credit;
           })
           str+= `</ul>
-            <div class="row text-right">
-             Total Debit: ${totalDebit} Total Credit: ${totalCredit} Balance: ${(+(totalCredit) - totalDebit)}
-            </div>          
-          `
+            <div class="row">
+              <p class="text-right">
+                Total Debit: ${totalDebit} Total Credit: ${totalCredit} Balance: ${(+(totalCredit) - totalDebit)}
+              </p>
+            </div>        
+              
+          `;
 
           $mainContent.append(str);
+
+          $('#printMasterLedger').click(function () {
+            $('#submitInvoice').hide();
+            $('#addInvoiceItemBtn').hide();
+            $('#addPackingChargesBtn').hide();
+
+            let mainContent = $('#mainContent')[0];
+
+            $(document.body).empty().append(mainContent);
+            $(document.body).css('padding-top', '0px')
+
+            $('input, select').css('border', 'none');
+            $('select').css('background', 'white').css('padding-left', "0");
+            $('#mainContent').css('padding', "0px");
+            $('*').css('font-size', '12px');
+
+            //$('*').css('padding', "");
+
+            ipcRenderer.send('submitInvoiceDetail', {
+              invoiceId: slipNumber,
+              listItems: invoiceListItems
+            })
+
+
+            ipcRenderer.send('printInvoice', {
+              id: slipNumber
+            });
+            ipcRenderer.once('printedInvoice', function (event, data) {
+              if (data.success) {
+                location.reload();
+              } else {
+                window.alert("Could not add invoice");
+                $('#resultRow').removeClass('text-success').addClass('text-danger');
+                $('#resultRow').text("Invoice Could Not Be Added");
+                $mainContent.empty();
+              }
+            })
+          })
+        }
+        else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Invoice Could Not Be Added Because " + data.error);
         }
       })
     })
