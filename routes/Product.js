@@ -187,13 +187,16 @@ function viewProductSales(event) {
     include: [models.Product],
     group: 'productId',
     attributes: [
-      [models.sequelize.fn('SUM', models.sequelize.col('qty')), 'qty']
-    ],
-    order:['qty']
+      [models.sequelize.fn('SUM', models.sequelize.col('qty')), 'totalQty']
+    ]
   }).then(rows => {
     event.sender.send('getProductSales',{
       success:true,
-      productSales: rows.map(v => v.get())
+      productSales: rows.map((v) => {
+        v = v.get();
+        v.product = v.product.get();
+        return v;
+      })
     })
   }).catch(err => {
     event.sender.send('getProductSales',{

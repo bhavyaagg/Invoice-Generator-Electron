@@ -2141,7 +2141,23 @@ $(document).ready(function () {
       $mainContent.empty();
       $resultRow.empty();
 
+      ipcRenderer.send('viewProductSales');
 
+      ipcRenderer.once('getProductSales', (event, productData) => {
+
+        if(productData.success) {
+
+          productData.productSales.sort(function (a, b) {
+            if(+(a.totalQty) < +(b.totalQty))
+              return 1;
+            if(+(a.totalQty) > +(b.totalQty))
+              return -1;
+            return 0;
+          })
+
+          console.log(productData);
+        }
+      });
     })
 
   });
