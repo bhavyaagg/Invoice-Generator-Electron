@@ -91,7 +91,6 @@ function viewMasterLedger(event) {
       [models.sequelize.fn('SUM', models.sequelize.col('credit')), 'credit']
     ]
   }).then(rows => {
-    console.log(rows);
     if(rows && rows.length>0) {
       event.sender.send('getMasterLedger', {
         success: true,
@@ -122,10 +121,17 @@ function deletePayment(event, data) {
       ledgerId: data.ledgerId
     }
   }).then(row => {
-
-    event.sender.send('deletedPayment', {
-      success: true
-    })
+    if(row) {
+      event.sender.send('deletedPayment', {
+        success: true
+      })
+    }
+    else {
+      event.sender.send('deletedPayment', {
+        success: false,
+        error: "No row found"
+      })
+    }
   }).catch(err => {
     event.sender.send('deletedPayment', {
       success: false,

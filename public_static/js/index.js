@@ -2348,8 +2348,63 @@ $(document).ready(function () {
     $masterLedger.click(e => {
       ipcRenderer.send('viewMasterLedger');
 
-      ipcRenderer.once('getMasterLedger', (e, ledgerItems) => {
-        console.log(ledgerItems);
+      ipcRenderer.once('getMasterLedger', (e, ledgerData) => {
+        if(ledgerData.success) {
+
+          let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row">
+                  
+                  <div class="col">
+                    <b>Party Name</b>
+                  </div>
+                  <div class="col">
+                    <b>Debit</b>
+                  </div>
+                  <div class="col">
+                    <b>Credit</b>
+                  </div>
+                  <div class="col">
+                    <b>Balance</b>
+                  </div>
+                  
+                </div>
+              </li>
+          `;
+          let totalDebit = 0, totalCredit =0;
+          ledgerData.ledgerItems.forEach(ledgerItem => {
+            str += `
+              <li class="list-group-item">
+                <div class="row">
+                  
+                  <div class="col">
+                    ${ledgerItem.partymaster.name}
+                  </div>
+                  <div class="col">
+                    ${ledgerItem.debit}
+                  </div>
+                  <div class="col">
+                    ${ledgerItem.credit}
+                  </div>
+                  <div class="col">
+                    ${(+(ledgerItem.credit) - ledgerItem.debit)}
+                  </div>
+                  
+                </div>
+              </li>
+            `
+            totalDebit += ledgerItem.debit;
+            totalCredit += ledgerItem.credit;
+          })
+          str+= `</ul>
+            <div class="row text-right">
+             Total Debit: ${totalDebit} Total Credit: ${totalCredit} Balance: ${(+(totalCredit) - totalDebit)}
+            </div>          
+          `
+
+          $mainContent.append(str);
+        }
       })
     })
   });
