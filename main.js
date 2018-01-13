@@ -70,6 +70,8 @@ ipcMain.on('viewProductById', routes.product.viewProductById);
 
 ipcMain.on('viewProductByPCategoryId', routes.product.viewProductByPCategoryId);
 
+ipcMain.on('viewProductSales', routes.product.viewProductSales);
+
 ipcMain.on('addPartyMaster', routes.partyMaster.addPartyMaster);
 
 ipcMain.on('viewPartyMaster', routes.partyMaster.viewPartyMaster);
