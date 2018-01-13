@@ -2397,21 +2397,34 @@ $(document).ready(function () {
             totalDebit += ledgerItem.debit;
             totalCredit += ledgerItem.credit;
           })
-          str+= `</ul>
-            <div class="row">
-              <p class="text-right">
-                Total Debit: ${totalDebit} Total Credit: ${totalCredit} Balance: ${(+(totalCredit) - totalDebit)}
-              </p>
-            </div>        
-              
+          str+= `
+            <li class="list-group-item">
+                <div class="row">
+                  
+                  <div class="col">
+                    <b>TOTAL</b>
+                  </div>
+                  <div class="col">
+                    <b>${totalDebit}</b>
+                  </div>
+                  <div class="col">
+                    <b>${totalCredit}</b>
+                  </div>
+                  <div class="col">
+                    <b>${(+(totalCredit) - totalDebit)}</b>
+                  </div>
+                  
+                </div>
+              </li>
+            </ul>      
+            <input class="btn btn-primary" type="submit" value="PRINT" id="printMasterLedger">
           `;
 
           $mainContent.append(str);
 
           $('#printMasterLedger').click(function () {
-            $('#submitInvoice').hide();
-            $('#addInvoiceItemBtn').hide();
-            $('#addPackingChargesBtn').hide();
+            $('#printMasterLedger').hide();
+
 
             let mainContent = $('#mainContent')[0];
 
@@ -2425,16 +2438,10 @@ $(document).ready(function () {
 
             //$('*').css('padding', "");
 
-            ipcRenderer.send('submitInvoiceDetail', {
-              invoiceId: slipNumber,
-              listItems: invoiceListItems
-            })
 
-
-            ipcRenderer.send('printInvoice', {
-              id: slipNumber
-            });
-            ipcRenderer.once('printedInvoice', function (event, data) {
+            ipcRenderer.send('printMainContent');
+            ipcRenderer.once('printedMainContent', function (event, data) {
+              console.log(data);
               if (data.success) {
                 location.reload();
               } else {

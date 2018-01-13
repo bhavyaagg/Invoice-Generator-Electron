@@ -110,10 +110,10 @@ ipcMain.on('printInvoice', function (event, data) {
   print.print(event);
 });
 
-ipcMain.on('printMainContent', function (event, data) {
+ipcMain.on('printMainContent', function (event) {
   print.preparePrint(mainWindow);
   //print.savePDF(__dirname + '/invoices/' + data.id+'.pdf');
-  print.print(event);
+  print.printMainContent(event);
 });
 
 
