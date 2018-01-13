@@ -2170,6 +2170,8 @@ $(document).ready(function () {
                 </div>
               </li>
           `;
+
+          let totalQuantity = 0;
           productData.productSales.forEach(productSale=>{
             str += `
               <li class="list-group-item">
@@ -2183,8 +2185,22 @@ $(document).ready(function () {
                 </div>
               </li>
             `;
-          })
 
+            totalQuantity += productSale.totalQty;
+          })
+          str += `
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-6">
+                    <b>Total</b>
+                  </div>
+                  <div class="col">
+                    <b>${totalQuantity}</b>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          `;
           $mainContent.append(str);
         }
       });
