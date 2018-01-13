@@ -2438,9 +2438,9 @@ $(document).ready(function () {
 
             //$('*').css('padding', "");
 
-
-            ipcRenderer.send('printMainContent');
-            ipcRenderer.once('printedMainContent', function (event, data) {
+            // TODO PRINT MAIN CONTENT NOT WORKING HERE
+            ipcRenderer.send('printInvoice');
+            ipcRenderer.once('printedInvoice', function (event, data) {
               console.log(data);
               if (data.success) {
                 location.reload();
