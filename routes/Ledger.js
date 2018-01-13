@@ -82,7 +82,7 @@ function updateCreditByInvoiceId(event, data) {
 
 function viewMasterLedger(event) {
 
-  console.log('view master ledger');
+
   models.Ledger.findAll({
     include: [models.PartyMaster],
     group: 'partymasterId',
@@ -118,7 +118,7 @@ function viewMasterLedger(event) {
 function deletePayment(event, data) {
   models.Ledger.destroy({
     where: {
-      ledgerId: data.ledgerId
+      id: data.ledgerId
     }
   }).then(row => {
     if(row) {

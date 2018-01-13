@@ -1768,12 +1768,16 @@ $(document).ready(function () {
       <div class="col text-center">
         <button id="viewProductCategoriesButton" class="btn btn-primary">View Product Categories</button>
       </div>
+      <div class="col text-center">
+        <button id="viewProductSales" class="btn btn-primary">View Product Sales</button>
+      </div>
     `);
 
     const $addProductButton = $('#addProductButton');
     const $viewProductsButton = $('#viewProductsButton');
     const $addProductCategoryButton = $('#addProductCategoryButton');
     const $viewProductCategoriesButton = $('#viewProductCategoriesButton');
+    const $viewProductSales = $('#viewProductSales');
 
     $addProductButton.click(function () {
       $mainContent.empty();
@@ -2133,6 +2137,13 @@ $(document).ready(function () {
       });
     })
 
+    $viewProductSales.click(function () {
+      $mainContent.empty();
+      $resultRow.empty();
+
+
+    })
+
   });
 
   $ledgerButton.click(function () {
@@ -2277,8 +2288,22 @@ $(document).ready(function () {
             $('.deletePayment').click(function (event) {
               let ledgerId = +(event.target.getAttribute('ledgerId'));
 
+              ipcRenderer.send('deletePayment', {
+                ledgerId: ledgerId
+              })
 
-            })
+              ipcRenderer.once('deletedPayment', (e,data)=> {
+                console.log(data);
+                if(data.success) {
+                  $viewLedger.click();
+                }
+                else{
+                  $resultRow.removeClass('text-success').addClass('text-danger');
+                  $resultRow.text("Ledger Could Not Be delete " + data.error);
+                }
+              })
+            });
+
 
             $('#printLedger').click(function () {
               $('#printLedger').hide();
@@ -2311,7 +2336,7 @@ $(document).ready(function () {
             })
           } else {
             $resultRow.removeClass('text-success').addClass('text-danger');
-            $resultRow.text("Ledger Could Not Be Viewed Because " + data.error);
+            $resultRow.text("Ledger Could Not Be printed" + data.error);
           }
         })
       }
@@ -2356,9 +2381,10 @@ $(document).ready(function () {
           }
         })
       }
-    })
+    });
 
     $masterLedger.click(e => {
+      $mainContent.empty();
       ipcRenderer.send('viewMasterLedger');
 
       ipcRenderer.once('getMasterLedger', (e, ledgerData) => {
