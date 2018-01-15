@@ -70,11 +70,17 @@ ipcMain.on('viewProductById', routes.product.viewProductById);
 
 ipcMain.on('viewProductByPCategoryId', routes.product.viewProductByPCategoryId);
 
+ipcMain.on('viewProductSales', routes.product.viewProductSales);
+
 ipcMain.on('addPartyMaster', routes.partyMaster.addPartyMaster);
 
 ipcMain.on('viewPartyMaster', routes.partyMaster.viewPartyMaster);
 
+ipcMain.on('editPartyMaster', routes.partyMaster.editPartyMaster);
+
 ipcMain.on('submitInvoice', routes.invoice.submitInvoice);
+
+ipcMain.on('updateBalance', routes.partyMaster.updateBalance);
 
 ipcMain.on('submitInvoiceDetail', routes.invoice.submitInvoiceDetail);
 
@@ -88,6 +94,10 @@ ipcMain.on('deleteInvoiceItemById', routes.invoice.deleteInvoiceItemById);
 
 ipcMain.on('viewInvoiceItemById', routes.invoice.viewInvoiceItemById);
 
+ipcMain.on('editInvoice', routes.invoice.editInvoice);
+
+ipcMain.on('viewInvoiceDetailsById', routes.invoiceDetail.viewInvoiceDetailsById);
+
 ipcMain.on('addPartyMasterProductCategoryDiscount', routes.partyMasterProductCategoryDiscount.addPartyMasterProductCategoryDiscount);
 
 ipcMain.on('viewDiscountByPartyMasterIdAndProductCategoryId', routes.partyMasterProductCategoryDiscount.viewDiscountByPartyMasterIdAndProductCategoryId);
@@ -98,8 +108,23 @@ ipcMain.on('updatePartyProductCategoryDiscount', routes.partyMasterProductCatego
 
 ipcMain.on('printInvoice', function (event, data) {
   print.preparePrint(mainWindow);
-  print.savePDF(__dirname + '/invoices/' + data.id+'.pdf');
+  //print.savePDF(__dirname + '/invoices/' + data.id+'.pdf');
   print.print(event);
 });
 
+ipcMain.on('printMainContent', function (event, data) {
+  print.preparePrint(mainWindow);
+  //print.savePDF(__dirname + '/invoices/' + data.id+'.pdf');
+  print.printMainContent(event);
+});
+
+
 ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId);
+
+ipcMain.on('deleteLedgerItem', routes.ledger.deleteLedgerItem);
+
+ipcMain.on('updateCreditByInvoiceId', routes.ledger.updateCreditByInvoiceId);
+
+ipcMain.on('viewMasterLedger', routes.ledger.viewMasterLedger);
+
+ipcMain.on('deletePayment', routes.ledger.deletePayment);

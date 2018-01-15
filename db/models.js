@@ -117,5 +117,6 @@ module.exports = {
   Invoice,
   InvoiceDetail,
   Ledger,
-  PartyMasterProductCategoryDiscount
+  PartyMasterProductCategoryDiscount,
+  sequelize
 };

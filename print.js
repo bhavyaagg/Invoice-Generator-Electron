@@ -29,6 +29,19 @@ function print(event) {
   }
 }
 
+function printMainContent(event) {
+  if (print_win) {
+    print_win.webContents.print();
+    event.sender.send('printedMainContent', {
+      success: true
+    })
+  } else {
+    event.sender.send('printedMainContent', {
+      success: false
+    })
+  }
+}
+
 function savePDF(file_path) {
   if (!print_win) {
     dialog.showErrorBox('Error', "The printing window isn't created");
@@ -76,5 +89,6 @@ module.exports = exports = {
   preparePrint,
   savePDF,
   viewPDF,
-  print
+  print,
+  printMainContent
 };

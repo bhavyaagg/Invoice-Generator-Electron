@@ -108,7 +108,8 @@ function deleteProductById(event, product) {
 
 function viewProducts(event) {
   models.Product.findAll({
-    include: [models.ProductCategory]
+    include: [models.ProductCategory],
+    order: [models.sequelize.literal(`\`productcategory\`.\`id\` `)]
   }).then(function (rows) {
     if (rows.length > 0) {
       event.sender.send('getProducts', {
@@ -165,7 +166,8 @@ function viewProductByPCategoryId(event, productCategory) {
   models.Product.findAll({
     where: {
       productcategoryId: productCategory.id
-    }
+    },
+    order:[models.sequelize.literal(`\`product\`.\`name\` `)]
   }).then(function (product) {
     event.sender.send('getProductByPCategoryId', {
       success: true,
@@ -179,6 +181,31 @@ function viewProductByPCategoryId(event, productCategory) {
   })
 }
 
+
+function viewProductSales(event) {
+  models.InvoiceDetail.findAll({
+    include: [models.Product],
+    group: 'productId',
+    attributes: [
+      [models.sequelize.fn('SUM', models.sequelize.col('qty')), 'totalQty']
+    ]
+  }).then(rows => {
+    event.sender.send('getProductSales',{
+      success:true,
+      productSales: rows.map((v) => {
+        v = v.get();
+        v.product = v.product.get();
+        return v;
+      })
+    })
+  }).catch(err => {
+    event.sender.send('getProductSales',{
+      success:true,
+      error: err
+    })
+  })
+}
+
 module.exports = exports = {
   addProduct,
   editProduct,
@@ -186,5 +213,6 @@ module.exports = exports = {
   deleteProductCategoryById,
   viewProductById,
   viewProducts,
-  viewProductByPCategoryId
+  viewProductByPCategoryId,
+  viewProductSales
 };

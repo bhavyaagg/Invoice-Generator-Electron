@@ -49,8 +49,9 @@ function submitInvoiceDetail(event, invoiceDetail) {
       productId: invoiceItem.productId
     }).then(function (item) {
 
+
     }).catch(function (err) {
-      event.sender.send('getSubmitInvoice', {
+      event.sender.send('submittedInvoice', {
         success: false,
         error: err
       });
@@ -159,11 +160,9 @@ function viewInvoiceItemById(event, invoiceItemId) {
 }
 
 function editInvoice(event, invoiceItem) {
-  models.Invoice.update({
-    name: product.name,
-    price: product.price,
-    productcategoryId: product.productCategoryId
-  }, {
+  console.log('incoming invoice item');
+  console.log(invoiceItem);
+  models.Invoice.update(invoiceItem, {
 
     where: {
       id: invoiceItem.id
@@ -193,5 +192,6 @@ module.exports = exports = {
   submitInvoiceDetail,
   viewInvoiceItems,
   deleteInvoiceItemById,
-  viewInvoiceItemById
+  viewInvoiceItemById,
+  editInvoice
 };

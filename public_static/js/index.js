@@ -247,19 +247,19 @@ $(document).ready(function () {
       let slipNumber;
       let $slipNumber = $('#slipNo');
 
-     /* ipcRenderer.send('viewInvoiceItems');
-      ipcRenderer.once('getInvoiceItems', function (event, data) {
-        if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
-          slipNumber = 1;
-          $slipNumber.append(slipNumber);
-          return;
-        }
+      /* ipcRenderer.send('viewInvoiceItems');
+       ipcRenderer.once('getInvoiceItems', function (event, data) {
+         if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
+           slipNumber = 1;
+           $slipNumber.append(slipNumber);
+           return;
+         }
 
-        slipNumber = data.invoiceItems[data.invoiceItems.length - 1].id + 1;
-        $slipNumber.append(slipNumber);
+         slipNumber = data.invoiceItems[data.invoiceItems.length - 1].id + 1;
+         $slipNumber.append(slipNumber);
 
-      });
-*/
+       });
+ */
       //Get Data in Product Categories DropDown
       let productCategoriesRowObj = getDataProductCategories(); // All product Categories with id as key
 
@@ -372,6 +372,7 @@ $(document).ready(function () {
       });
 
       let listItemCount = 1;
+      let qtyCount = 0;
       let $invoiceItemList = $('#invoiceItemList');
       let productObj = {};
 
@@ -415,9 +416,11 @@ $(document).ready(function () {
         let selectedProduct = productObj[+($productList.val())];
         let per = $('#per').val();
         per = $(`option[name="unitType"][value="${per}"]`).text();
-        console.log(2)
+
         if (qty <= 0 || typeof selectedProduct === "undefined")
           return;
+
+        qtyCount += +(qty);
         invoiceListItems.push({
           itemNumber: listItemCount,
           qty: qty,
@@ -465,7 +468,7 @@ $(document).ready(function () {
 
       $('#printInvoice').click(function () {
         let mainContent = $('#mainContent')[0];
-        $(document.body).empty().append(mainContent)
+        $(document.body).empty().append(mainContent);
         ipcRenderer.send('printInvoice', {
           id: slipNumber
         })
@@ -511,14 +514,21 @@ $(document).ready(function () {
             let mainContent = $('#mainContent')[0];
 
             $(document.body).empty().append(mainContent);
-            $(document.body).css('padding-top','0px')
+            $(document.body).css('padding-top', '0px')
 
             $('input, select').css('border', 'none');
             $('select').css('background', 'white').css('padding-left', "0");
-            $('#mainContent').css('padding',"0px");
+            $('#mainContent').css('padding', "0px");
             $('*').css('font-size', '12px');
 
             //$('*').css('padding', "");
+
+            ipcRenderer.send('submitInvoiceDetail', {
+              invoiceId: slipNumber,
+              listItems: invoiceListItems
+            })
+
+
             ipcRenderer.send('printInvoice', {
               id: slipNumber
             });
@@ -538,10 +548,6 @@ $(document).ready(function () {
             $resultRow.text("Invoice Could Not Be Added Because " + data.error);
           }
         });
-        ipcRenderer.send('submitInvoiceDetail', {
-          invoiceId: slipNumber,
-          listItems: invoiceListItems
-        })
 
 
       });
@@ -554,7 +560,7 @@ $(document).ready(function () {
           <div >
             
             <hr>
-              <p class="text-right"><b>Amount:  ${totalAmtWithoutDis}</b></p>
+              <p class="text-right"><b>Total Qty: ${qtyCount} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Amount:  ${totalAmtWithoutDis}</b></p>
             <hr>
             <p class="text-right">
             
@@ -614,10 +620,10 @@ $(document).ready(function () {
               <div class="col-1">
                 <b>Chalan Date</b>
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 <b>Grand Total</b>
               </div> 
-              <div class="col-1 row">
+              <div class="col-2 row">
                 <div class="col-6">
                   
                 </div>
@@ -646,8 +652,10 @@ $(document).ready(function () {
 
         console.log(invoiceItems);
 
+        let invoiceItemObj = {};
         console.log('invoice items' + invoiceItems);
         invoiceItems.forEach(invoiceItem => {
+          invoiceItemObj[invoiceItem.id] = invoiceItem;
           str += `
           <li class="list-group-item">
             <div class="row">
@@ -678,14 +686,17 @@ $(document).ready(function () {
               <div class="col-1">
                 ${invoiceItem.chalanDate}
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 ${invoiceItem.grandTotal}
               </div> 
-              <div class="col-1 row">
-                <div class="col-6">
+              <div class="col-2 row">
+                <div class="col-4">
                   <button class="btn btn-success edit-invoice-item" invoiceItemId=${invoiceItem.id}>EDIT</button>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
+                  <button class="btn btn-primary printInvoiceAgain" invoiceItemId=${invoiceItem.id}>PRINT</button>
+                </div>
+                <div class="col-4">
                   <button class="btn btn-danger delete-invoice-item" invoiceItemId=${invoiceItem.id}>DELETE</button>
                 </div>
               </div>
@@ -699,9 +710,412 @@ $(document).ready(function () {
 
         $mainContent.append(str);
 
+        $('.printInvoiceAgain').click(function (e) {
+
+          console.log('print view click');
+          let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
+          let invoiceItem = invoiceItemObj[invoiceItemId];
+          console.log(invoiceItem);
+          $mainContent.empty();
+          ipcRenderer.send('viewInvoiceDetailsById', {
+            invoiceId: invoiceItemId
+          });
+          ipcRenderer.once('getInvoiceDetailById', function (event, data) {
+            $mainContent.empty();
+
+            $resultRow.empty();
+
+            $mainContent.append(`
+              <div class="row">
+                <div class="col text-center">
+                  <h3>XYZ</h3>
+                  <h6>Rough Estimate</h6>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-4">
+                  <div class="form-group row">
+                    <label for="partyMasterList" class="col-4 col-form-label">Name: </label>
+                    <select id="partyMasterList" class="custom-select col-8 pr-0">
+                      <option name="partyMasterList" value="0">${invoiceItem.partymaster.dataValues.name}</option>
+                    </select>
+                  </div> 
+                </div>
+                <div class="col-3">
+                  <div class="form-group row align-items-center">
+                    <label for="productCategoriesList" class="col-4 pl-0 col-form-label">Product: </label>
+                    <select id="productCategoriesList" class="custom-select col-7 pr-0">
+                      <option name="productCategoriesList" value="0">${invoiceItem.productcategory.dataValues.name}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-5">
+                  <div class="form-group row no-gutters align-items-center">
+                    <div class="col-4">Slip No./Date</div>
+                    <div class="col-2 pt-2 pb-2 pl-1" id="slipNo">${invoiceItem.id}</div>
+                    <div class="col-6">
+                      <input class="form-control pr-0 pl-0" type="date" id="invoiceDate" value="${invoiceItem.dateOfInvoice}">
+                    </div>  
+                  </div> 
+                </div>
+              </div>
+              <div class="row no-gutters">
+                <div class="col-2 mt-2" id="marka">
+                  Marka: ${invoiceItem.partymaster.dataValues.marka}  
+                </div>
+                <div class="col-5">
+                  <div class="form-group row align-items-center no-gutters">
+                    <div class="col-3">GR No/Date</div>
+                    <div class="col-3">
+                      <input type="number" value="${invoiceItem.bilityNo}" id="bilityNumber" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
+                    </div>
+                    <div class="col-6">
+                      <input class="form-control pl-0 pr-0" value="${invoiceItem.bilityDate}" type="date" id="bilityDate">
+                    </div>  
+                  </div>
+                </div>
+                <div class="col-5">
+                  <div class="form-group row align-items-center no-gutters">
+                    <div class="col-4">C. No/Date</div>
+                    <div class="col-2">
+                      <input class="form-control pr-0 pl-0" type="number" value="${invoiceItem.chalanNo}" id="chalanNumber">
+                    </div>
+                    <div class="col-6">
+                      <input class="form-control pl-0 pr-0" value="${invoiceItem.chalanDate}" type="date" id="chalanDate">
+                    </div>  
+                  </div>
+                </div>
+              </div>  
+              
+              <div class="row no-gutters">
+                <div class="col-3 mt-2" id="destination">
+                  Destination: ${invoiceItem.partymaster.dataValues.destination}
+                </div>
+                
+                <div class="col-2">
+                  <div class="form-group row no-gutters">
+                    <label for="cases" class="col-5 col-form-label">Cases:</label>
+                    <div class="col-7">
+                      <input class="form-control pr-0" type="number" value="${invoiceItem.cases}" id="casesInp">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-7">
+                  <div class="form-group row no-gutters">
+                    <label for="transport" class="col-2 col-form-label">Transport: </label> 
+                    <div class="col-10">
+                      <input class="form-control" type="text" value="${invoiceItem.partymaster.dataValues.transport}" id="transport">
+                    </div>
+                  </div>
+                </div>
+                
+                
+              </div>
+      
+              
+              <ul class="list-group text-center" id="invoiceItemList">
+                <li class="list-group-item">
+                  <div class="row">
+                    <div class="col-1">
+                      <b>S.No.</b>
+                    </div>
+                    <div class="col-5">
+                      <b>Description of Goods</b>
+                    </div>
+                    <div class="col-1">
+                      <b>Qty</b>
+                    </div>
+                    <div class="col-2">
+                      <b>Rate</b>
+                    </div>
+                    <div class="col-1">
+                      <b>Per</b>
+                    </div>
+                    <div class="col-2">
+                      <b>Amt</b>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div class="row" style="padding-right: 50px;">
+                <div class="col-12" id="totalAmt">
+                  
+                </div>  
+              </div>  
+              
+              <div class="row" id="submitBtnDiv">
+                <div class="col-5"><b></b></div>
+                <div class="col-2">
+                  <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoiceAgain">
+                
+                </div>
+                <div class="col-5">
+                  <input class="btn btn-primary" type="submit" value="Add Invoice Item" id="addInvoiceItemBtn">
+                </div>
+              </div>
+              
+            `);
+
+            console.log(data);
+
+            let $invoiceItemList = $('#invoiceItemList');
+
+            let listItemCount = 1;
+            ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
+              partymasterId: +(invoiceItem.partymasterId),
+              productcategoryId: +(invoiceItem.productcategoryId)
+            });
+
+
+            let totalAmt = 0, totalAmtWithoutDis = 0, qtyCount=0;
+
+            ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, discountData) {
+              // console.log(selectedPartyMaster.id + ' ' + selectedProductCategory.id);
+              // console.log(discountData);
+              if (discountData && discountData.success) {
+                console.log(discountData.discountObj.discount + discountData.discountObj.splDiscount);
+                let discount = discountData.discountObj.discount;
+                let splDiscount = discountData.discountObj.splDiscount;
+
+                data.invoiceItems.forEach(invoiceItem => {
+                  $invoiceItemList.append(`
+                    <li class="list-group-item" id="amountCalcList" style="padding: 0px">
+                      <div class="row" padding-top: -5px"> 
+                        <div class="col-1">
+                          ${listItemCount++}
+                        </div>
+                        <div class="col-5">
+                          ${invoiceItem.product.name}
+                        </div>
+                        <div class="col-1">
+                          ${invoiceItem.qty}
+                        </div>
+                        <div class="col-2" id="productPrice">
+                          ${invoiceItem.product.price}
+                        </div>
+                        <div class="col-1"> 
+                          ${invoiceItem.unitType}  
+                        </div>
+                        <div class="col-2">
+                          ${(+invoiceItem.qty) * (+invoiceItem.product.price) }
+                        </div>
+                      </div>
+                    </li>
+                  `)
+                  qtyCount += invoiceItem.qty;
+                  totalAmtWithoutDis += +((+invoiceItem.qty) * (+invoiceItem.product.price));
+                  totalAmt += (((+invoiceItem.qty) * (+invoiceItem.product.price)) * (100 - (+discount)) * (100 - splDiscount)) / 10000;
+
+                })
+
+                let packingCharges = 0;
+                totalAmt = roundTo(totalAmt, 1);
+
+                let cdDiscount = totalAmt * +(invoiceItem.partymaster.dataValues.cd) / 100;
+                cdDiscount = roundTo(cdDiscount, 1);
+
+                let grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
+                grandTotal = roundTo(grandTotal, 1);
+
+
+                let amtAfterCd = totalAmt - (+cdDiscount);
+                amtAfterCd = roundTo(amtAfterCd, 1);
+
+
+                packingCharges =  +(invoiceItem.grandTotal) - +(grandTotal);
+
+                updateAmtDiv();
+                $('#addInvoiceItemBtn').click(function () {
+                  $('#addInvoiceItemModal').modal('show');
+                })
+
+                let invoiceListItems = [];
+                let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit')
+
+                let str = '';
+                //console.log(products);
+
+                ipcRenderer.send('viewProductByPCategoryId', {
+                  id: +(invoiceItem.productcategoryId)
+                });
+
+                let $productList = $('#productList');
+                let productObj = {};
+                ipcRenderer.once('getProductByPCategoryId', (e,data)=>{
+                  $productList.empty();
+                  console.log('product data');
+                  console.log(data);
+                  data.product.forEach(product => {
+                    productObj[product.id] = product;
+                    str += `<option name="productList" value="${product.id}">${product.name}</option>`
+                  });
+
+                  $productList.append(str);
+                })
+
+
+
+
+                $addInvoiceItemSubmit.click(function (e) {
+
+                  let qty = $('#qty').val();
+                  let selectedProduct = productObj[+($productList.val())];
+                  let per = $('#per').val();
+                  per = $(`option[name="unitType"][value="${per}"]`).text();
+
+                  if (qty <= 0 || typeof selectedProduct === "undefined")
+                    return;
+
+                  qtyCount += +(qty);
+                  invoiceListItems.push({
+                    itemNumber: listItemCount,
+                    qty: qty,
+                    productId: selectedProduct.id,
+                    per: per
+                  });
+                  $invoiceItemList.append(`
+                    <li class="list-group-item" id="amountCalcList" style="padding: 0px">
+                      <div class="row" padding-top: -5px"> 
+                        <div class="col-1">
+                          ${listItemCount++}
+                        </div>
+                        <div class="col-5">
+                          ${selectedProduct.name}
+                        </div>
+                        <div class="col-1">
+                          ${qty}
+                        </div>
+                        <div class="col-2" id="productPrice">
+                          ${selectedProduct.price}
+                        </div>
+                        <div class="col-1"> 
+                          ${per}  
+                        </div>
+                        <div class="col-2">
+                          ${(+qty) * (+selectedProduct.price) }
+                        </div>
+                      </div>
+                    </li>
+                  `)
+
+                  totalAmtWithoutDis += +((+qty) * (+selectedProduct.price));
+                  totalAmt += (((+qty) * (+selectedProduct.price)) * (100 - (+discount)) * (100 - splDiscount)) / 10000;
+
+                  totalAmt = roundTo(totalAmt, 1);
+
+                  cdDiscount = totalAmt * +(invoiceItem.partymaster.dataValues.cd) / 100;
+                  cdDiscount = roundTo(cdDiscount, 1);
+
+                  amtAfterCd = totalAmt - +(cdDiscount);
+
+                  grandTotal = totalAmt - (+cdDiscount) ;
+                  grandTotal = roundTo(grandTotal, 1);
+                  updateAmtDiv();
+                  $('#addInvoiceItemModal').modal('hide');
+                });
+
+                $('#submitInvoiceAgain').click(function() {
+                  $('#printLedger').hide();
+                  $('#addInvoiceItemBtn').hide();
+                  $('#submitInvoiceAgain').hide();
+                  $('#addPackingChargesBtn').hide();
+
+                  let mainContent = $('#mainContent')[0];
+
+                  $(document.body).empty().append(mainContent);
+
+
+                  $('input, select').css('border', 'none');
+                  $('select').css('background', 'white').css('padding-left', "0");
+                  $('#mainContent').css('padding', "0px");
+                  $('*').css('font-size', '12px');
+
+
+                  ipcRenderer.send('submitInvoiceDetail', {
+                    invoiceId: invoiceItemId,
+                    listItems: invoiceListItems
+                  });
+
+                  /*ipcRenderer.once('submittedInvoice', (e,data)=>{
+                    if(data && data.success) {
+                      console.log('edit invoice grand Total');
+
+                    }
+                  });*/
+
+                  ipcRenderer.send('editInvoice',{
+                    grandTotal: (+grandTotal)+(+packingCharges),
+                    id: invoiceItemId
+                  })
+                  ipcRenderer.once('editedInvoiceItem', (e,editedInvoiceData)=>{
+                    if(editedInvoiceData && editedInvoiceData.success) {
+                      ipcRenderer.send('updateCreditByInvoiceId', {
+                        credit: (+grandTotal)+(+packingCharges),
+                        invoiceId: invoiceItem.id
+                      })
+
+                      ipcRenderer.once('updatedCreditByInvoiceId', (event, data)=>{
+                        if(data.success) {
+                          $('#editInvoiceItemModal').modal('hide');
+                          $("#editInvoiceSubmit").unbind("click");
+                          $viewInvoicesButton.click();
+
+                        }
+                      })
+                    }
+                  })
+
+                  ipcRenderer.send('printInvoice', {
+                    id: 1000
+                  });
+                  ipcRenderer.once('printedInvoice', function (event, data) {
+                    if (data.success) {
+                      location.reload();
+                    } else {
+                      window.alert("Could not add invoice");
+                      $('#resultRow').removeClass('text-success').addClass('text-danger');
+                      $('#resultRow').text("Invoice Could Not Be Added");
+                      $mainContent.empty();
+                    }
+                  })
+                })
+                
+                function updateAmtDiv() {
+                  $('#totalAmt').empty();
+                  $('#totalAmt').append(`
+                  <div >
+                    
+                    <hr>
+                      <p class="text-right"><b>Total Qty: ${qtyCount} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Amount:  ${totalAmtWithoutDis}</b></p>
+                    <hr>
+                    <p class="text-right">
+                    
+                    <b>
+                      
+                      Discounted Amount:  ${totalAmt} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                      After CD Amount:  ${amtAfterCd} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                      Packing Charges:  ${packingCharges}
+                    
+                    </b>
+                    </p>
+                   
+                    <h5 class="text-right">Grand Total:  ${(+grandTotal)+(+packingCharges)}</h5>
+                  </div>
+                `)
+                }
+              }
+            })
+
+
+          })
+
+        });
+
         $('.delete-invoice-item').click(function (e) {
           let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
           let youSure = window.confirm('Are you sure want to delete this');
+          let invoiceItem = invoiceItemObj[invoiceItemId];
 
           if (youSure) {
             ipcRenderer.send('deleteInvoiceItemById', {
@@ -712,6 +1126,21 @@ $(document).ready(function () {
                 $viewInvoicesButton.click();
                 $resultRow.removeClass('text-danger').addClass('text-success');
                 $resultRow.text("Invoice Item Has Been Deleted");
+
+                ipcRenderer.send('deleteLedgerItem', {
+                  invoiceId: invoiceItemId
+                })
+                ipcRenderer.once('deletedLedger', function(e, data) {
+                  if(data.success) {
+                    ipcRenderer.send('updateBalance', {
+                      balance: invoiceItem.grandTotal,
+                      partyMasterId: invoiceItem.partyMasterId
+                    })
+
+                  }
+                })
+
+
               } else {
                 $resultRow.removeClass('text-success').addClass('text-danger');
                 $resultRow.text("Item Could Not Be Deleted Because " + data.error);
@@ -723,30 +1152,69 @@ $(document).ready(function () {
         $('.edit-invoice-item').click(function (e) {
           let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
           console.log(invoiceItemId);
-          ipcRenderer.send('viewInvoiceItemById', {
-            id: invoiceItemId
-          });
 
-          ipcRenderer.once('getInvoiceItemById', function (event, invoiceItem) {
+          let invoiceItem = invoiceItemObj[invoiceItemId];
 
-            console.log(invoiceItem);
-            $('#editInvoiceItemModal').modal('show');
+          $('#editInvoiceItemModal').modal('show');
+
+          let $editCases = $('#editCases');
+          let $editDateOfInvoice = $('#editDateOfInvoice');
+          let $editBilityNo = $('#editBilityNo');
+          let $editBilityDate = $('#editBilityDate');
+          let $editChalanNo = $('#editChalanNo');
+          let $editChalanDate = $('#editChalanDate');
+          let $editGrandTotal = $('#editGrandTotal');
+
+          $editCases.val(invoiceItem.cases);
+          $editDateOfInvoice.val(invoiceItem.dateOfInvoice);
+          $editBilityNo.val(invoiceItem.bilityNo);
+          $editBilityDate.val(invoiceItem.bilityDate);
+          $editChalanNo.val(invoiceItem.chalanNo);
+          $editChalanDate.val(invoiceItem.chalanDate);
+          $editGrandTotal.val(invoiceItem.grandTotal);
+
+          $('#editInvoiceSubmit').click(function () {
+
+            ipcRenderer.send('editInvoice', {
+              id: +(invoiceItem.id),
+              cases: String($editCases.val()),
+              dateOfInvoice: $editDateOfInvoice.val(),
+              bilityNo: $editBilityNo.val(),
+              bilityDate: $editBilityDate.val(),
+              chalanNo: $editChalanNo.val(),
+              chalanDate: $editChalanDate.val(),
+              grandTotal: $editGrandTotal.val()
+            });
+
+            ipcRenderer.once('editedInvoiceItem', function () {
+
+              if(invoiceItem.grandTotal !== $editGrandTotal.val()) {
+                ipcRenderer.send('updateCreditByInvoiceId', {
+                  credit: $editGrandTotal.val(),
+                  invoiceId: invoiceItem.id
+                })
+
+                ipcRenderer.once('updatedCreditByInvoiceId', (event, data)=>{
+                  if(data.success) {
+                    $('#editInvoiceItemModal').modal('hide');
+                    $("#editInvoiceSubmit").unbind("click");
+                    $viewInvoicesButton.click();
+
+                  }
+                })
+              }
+
+
+
+
+
+            })
+
           })
+
         })
 
       });
-
-      /*
-      bilityNo:"0"
-      biltyDate:null
-      cases:0
-      chalanDate:"2017-08-19"
-      chalanNo:"0"
-      dateOfInvoice:"2018-01-02"
-      id:3
-      partymasterId:1
-      productcategoryId:1
-       */
 
     })
 
@@ -994,11 +1462,14 @@ $(document).ready(function () {
     })
 
     $('#viewPartyMaster').click(function () {
+
+
       $mainContent.empty();
       $resultRow.empty();
 
       ipcRenderer.send('viewPartyMaster');
       ipcRenderer.once('getPartyMaster', function (event, data) {
+        $mainContent.empty();
         if (data.success) {
 
           if (data.partyMasterRows.length === 0) {
@@ -1045,7 +1516,9 @@ $(document).ready(function () {
               </li>
           `;
 
+          let partyMasterRowObj = {};
           data.partyMasterRows.forEach(function (party) {
+            partyMasterRowObj[party.id] = party;
             str += `
             <ul class="list-group text-center">
               <li class="list-group-item">
@@ -1075,6 +1548,7 @@ $(document).ready(function () {
                     ${party.cd}
                   </div>
                   <div class="col-2">
+                   <button id="editPartyMasterBtn" class="btn btn-primary editPartyMasterBtn">Edit</button>
                    <button id="viewPartyDiscount" class="btn btn-primary viewDiscounts">View Discount</button>
                   </div>
                 </div>
@@ -1085,6 +1559,70 @@ $(document).ready(function () {
 
           $mainContent.append(str);
 
+          let $editPartyMaster = $('.editPartyMasterBtn');
+
+          $editPartyMaster.click(function (event) {
+
+            $('#editPartyMasterModal').modal('show');
+
+            let partyMasterId = +(event.target.parentNode.parentNode.getAttribute('partyId'));
+
+            let selectedParty = partyMasterRowObj[partyMasterId];
+
+            let $editPartyName = $('#editPartyName');
+            let $editDestination = $('#editDestination');
+            let $editMarka = $('#editMarka');
+            let $editOpeningBalance = $('#editOpeningBalance');
+            let $editOpeningBalanceDate = $('#editOpeningBalanceDate');
+            let $editTransport = $('#editTransport');
+            let $editDiscount = $('#editDiscount');
+            let $editSplDiscount = $('#editSplDiscount');
+            let $editCd = $('#editCd');
+
+            $editPartyName.val(selectedParty.name);
+            $editDestination.val(selectedParty.destination);
+            $editMarka.val(selectedParty.marka);
+            $editOpeningBalance.val(selectedParty.openingBalance);
+            $editOpeningBalanceDate.val(selectedParty.openingBalanceDate);
+            $editTransport.val(selectedParty.transport);
+            $editDiscount.val(selectedParty.discount);
+            $editSplDiscount.val(selectedParty.splDiscount);
+            $editCd.val(selectedParty.cd);
+
+            $('#editPartySubmit').click(function () {
+              let editPartyMasterData = {
+                id: partyMasterId,
+                name: $editPartyName.val(),
+                destination: $editDestination.val(),
+                marka: $editMarka.val(),
+                openingBalance: +($editOpeningBalance.val()),
+                openingBalanceDate: $editOpeningBalanceDate.val(),
+                transport: $editTransport.val(),
+                discount: $editDiscount.val(),
+                splDiscount: $editSplDiscount.val(),
+                cd: $editCd.val()
+              };
+
+              if (!editPartyMasterData.name || !editPartyMasterData.destination || !editPartyMasterData.marka
+                || editPartyMasterData.openingBalance === "" || editPartyMasterData.openingBalanceDate === ""
+                || !editPartyMasterData.transport || !editPartyMasterData.discount === ""
+                || editPartyMasterData.splDiscount === "" || editPartyMasterData.cd === "") {
+                return;
+                // console.log(editPartyMasterData);
+              }
+
+
+              ipcRenderer.send('editPartyMaster', editPartyMasterData);
+              ipcRenderer.once('editedPartyMaster', function (event, data) {
+                console.log(data);
+                if (data.success) {
+                  $('#editPartyMasterModal').modal('hide');
+                  $('#viewPartyMaster').click();
+                }
+              })
+              $("#editPartySubmit").unbind("click");
+            })
+          });
           let viewPartyDiscounts = $('.viewDiscounts');
 
           viewPartyDiscounts.click(function (event) {
@@ -1155,8 +1693,9 @@ $(document).ready(function () {
                 $editProductCategoryDiscount.click(function (e) {
                   console.log('click');
                   $('#editPartyProductCategoryDiscountModal').modal('show');
-
-                  let selectedProductCategoryId = e.target.getAttribute('productCategoryId');
+                  console.log('valu');
+                  console.log(+(e.target.getAttribute('productCategoryId')));
+                  let selectedProductCategoryId = +(e.target.getAttribute('productCategoryId'));
 
                   let $editProductCategoryDiscount = $('#editProductCategoryDiscount');
                   let $editProductCategorySplDiscount = $('#editProductCategorySplDiscount');
@@ -1189,6 +1728,7 @@ $(document).ready(function () {
                         $resultRow.text("Error is" + data.error);
                       }
                     });
+                    $("#editProductCategoryDiscountSubmit").unbind("click");
                   })
                 })
               }
@@ -1228,12 +1768,16 @@ $(document).ready(function () {
       <div class="col text-center">
         <button id="viewProductCategoriesButton" class="btn btn-primary">View Product Categories</button>
       </div>
+      <div class="col text-center">
+        <button id="viewProductSales" class="btn btn-primary">View Product Sales</button>
+      </div>
     `);
 
     const $addProductButton = $('#addProductButton');
     const $viewProductsButton = $('#viewProductsButton');
     const $addProductCategoryButton = $('#addProductCategoryButton');
     const $viewProductCategoriesButton = $('#viewProductCategoriesButton');
+    const $viewProductSales = $('#viewProductSales');
 
     $addProductButton.click(function () {
       $mainContent.empty();
@@ -1593,6 +2137,59 @@ $(document).ready(function () {
       });
     })
 
+    $viewProductSales.click(function () {
+      $mainContent.empty();
+      $resultRow.empty();
+
+      ipcRenderer.send('viewProductSales');
+
+      ipcRenderer.once('getProductSales', (event, productData) => {
+
+        if(productData.success) {
+
+          productData.productSales.sort(function (a, b) {
+            if(+(a.totalQty) < +(b.totalQty))
+              return 1;
+            if(+(a.totalQty) > +(b.totalQty))
+              return -1;
+            return 0;
+          })
+
+          console.log(productData);
+
+          let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-6">
+                    <b>Product Name</b>
+                  </div>
+                  <div class="col">
+                    <b>Total Qty</b>
+                  </div>
+                </div>
+              </li>
+          `;
+          productData.productSales.forEach(productSale=>{
+            str += `
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-6">
+                    ${productSale.product.name}
+                  </div>
+                  <div class="col">
+                    ${productSale.totalQty}
+                  </div>
+                </div>
+              </li>
+            `;
+          })
+
+          $mainContent.append(str);
+        }
+      });
+    })
+
   });
 
   $ledgerButton.click(function () {
@@ -1611,6 +2208,9 @@ $(document).ready(function () {
       </div>
       <div class="col text-center">
         <button id="addPayment" class="btn btn-primary">Add Payment</button>
+      </div>
+      <div class="col text-center">
+        <button id="masterLedger" class="btn btn-primary">Master Ledger</button>
       </div>
     `);
 
@@ -1639,6 +2239,7 @@ $(document).ready(function () {
 
     const $viewLedger = $('#viewLedger');
     const $addPayment = $('#addPayment');
+    const $masterLedger = $('#masterLedger');
 
     $viewLedger.click(function () {
       let partyMasterId = +($('#partyMastersList').val());
@@ -1655,6 +2256,7 @@ $(document).ready(function () {
           $resultRow.empty();
           if (data.success) {
             let str = `
+            <h3>${data.ledgerRows[0].partymaster.name}</h3>  
             <ul class="list-group text-center">
               <li class="list-group-item">
                 <div class="row align-items-center">
@@ -1676,10 +2278,13 @@ $(document).ready(function () {
                   <div class="col">
                     Balance
                   </div>
+                  <div class="col"></div>
                 </div>
               </li>
           `;
+
             str += `
+              
               <li class="list-group-item">
                 <div class="row align-items-center">
                   <div class="col">Opening Balance</div>
@@ -1688,9 +2293,17 @@ $(document).ready(function () {
                   <div class="col"></div>
                   <div class="col"></div>
                   <div class="col">${data.ledgerRows[0].partymaster.openingBalance}</div>
+                  <div class="col"></div>
                 </div>
               </li>`;
+            let debitTotal = 0, creditTotal = 0;
             data.ledgerRows.forEach(function (ledgerRow) {
+              creditTotal += ledgerRow.credit;
+              debitTotal += ledgerRow.debit;
+              let strBtn = '';
+              if(ledgerRow.debit>0 && ledgerRow.credit===0) {
+                strBtn = `<button class="btn btn-primary deletePayment" ledgerId="${ledgerRow.id}">Delete</button>`
+              }
               str += `
               <li class="list-group-item">
                 <div class="row align-items-center">
@@ -1699,17 +2312,77 @@ $(document).ready(function () {
                   <div class="col">${ledgerRow.productCategoryName}</div>
                   <div class="col">${ledgerRow.debit}</div>
                   <div class="col">${ledgerRow.credit}</div>
-                  <div class="col">${ledgerRow.balance}</div>
+                  <div class="col">${creditTotal-debitTotal}</div>
+                  <div class="col">${strBtn}</div>
                 </div>
               </li>
               `
             });
             str += "</ul>"
 
+
+            str += `
+              <div class="row">
+                <div class="col-5"></div>
+                <button class="btn btn-primary" id="printLedger">Print Ledger</button>
+                <div class="col-5"></div>
+              </div>
+            `
+
             $mainContent.append(str);
+
+            $('.deletePayment').click(function (event) {
+              let ledgerId = +(event.target.getAttribute('ledgerId'));
+
+              ipcRenderer.send('deletePayment', {
+                ledgerId: ledgerId
+              })
+
+              ipcRenderer.once('deletedPayment', (e,data)=> {
+                console.log(data);
+                if(data.success) {
+                  $viewLedger.click();
+                }
+                else{
+                  $resultRow.removeClass('text-success').addClass('text-danger');
+                  $resultRow.text("Ledger Could Not Be delete " + data.error);
+                }
+              })
+            });
+
+
+            $('#printLedger').click(function () {
+              $('#printLedger').hide();
+              $('#addInvoiceItemBtn').hide();
+              $('#addPackingChargesBtn').hide();
+
+              let mainContent = $('#mainContent')[0];
+
+              $(document.body).empty().append(mainContent);
+
+
+              $('input, select').css('border', 'none');
+              $('select').css('background', 'white').css('padding-left', "0");
+              $('#mainContent').css('padding', "0px");
+              $('*').css('font-size', '12px');
+
+              ipcRenderer.send('printInvoice', {
+                id: 1000
+              });
+              ipcRenderer.once('printedInvoice', function (event, data) {
+                if (data.success) {
+                  location.reload();
+                } else {
+                  window.alert("Could not add invoice");
+                  $('#resultRow').removeClass('text-success').addClass('text-danger');
+                  $('#resultRow').text("Invoice Could Not Be Added");
+                  $mainContent.empty();
+                }
+              })
+            })
           } else {
             $resultRow.removeClass('text-success').addClass('text-danger');
-            $resultRow.text("Ledger Could Not Be Viewed Because " + data.error);
+            $resultRow.text("Ledger Could Not Be printed" + data.error);
           }
         })
       }
@@ -1754,8 +2427,123 @@ $(document).ready(function () {
           }
         })
       }
-    })
+    });
 
+    $masterLedger.click(e => {
+      $mainContent.empty();
+      ipcRenderer.send('viewMasterLedger');
+
+      ipcRenderer.once('getMasterLedger', (e, ledgerData) => {
+        if(ledgerData.success) {
+
+          let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row">
+                  
+                  <div class="col">
+                    <b>Party Name</b>
+                  </div>
+                  <div class="col">
+                    <b>Debit</b>
+                  </div>
+                  <div class="col">
+                    <b>Credit</b>
+                  </div>
+                  <div class="col">
+                    <b>Balance</b>
+                  </div>
+                  
+                </div>
+              </li>
+          `;
+          let totalDebit = 0, totalCredit =0;
+          ledgerData.ledgerItems.forEach(ledgerItem => {
+            str += `
+              <li class="list-group-item">
+                <div class="row">
+                  
+                  <div class="col">
+                    ${ledgerItem.partymaster.name}
+                  </div>
+                  <div class="col">
+                    ${ledgerItem.debit}
+                  </div>
+                  <div class="col">
+                    ${ledgerItem.credit}
+                  </div>
+                  <div class="col">
+                    ${(+(ledgerItem.credit) - ledgerItem.debit)}
+                  </div>
+                  
+                </div>
+              </li>
+            `
+            totalDebit += ledgerItem.debit;
+            totalCredit += ledgerItem.credit;
+          })
+          str+= `
+            <li class="list-group-item">
+                <div class="row">
+                  
+                  <div class="col">
+                    <b>TOTAL</b>
+                  </div>
+                  <div class="col">
+                    <b>${totalDebit}</b>
+                  </div>
+                  <div class="col">
+                    <b>${totalCredit}</b>
+                  </div>
+                  <div class="col">
+                    <b>${(+(totalCredit) - totalDebit)}</b>
+                  </div>
+                  
+                </div>
+              </li>
+            </ul>      
+            <input class="btn btn-primary" type="submit" value="PRINT" id="printMasterLedger">
+          `;
+
+          $mainContent.append(str);
+
+          $('#printMasterLedger').click(function () {
+            $('#printMasterLedger').hide();
+
+
+            let mainContent = $('#mainContent')[0];
+
+            $(document.body).empty().append(mainContent);
+            $(document.body).css('padding-top', '0px')
+
+            $('input, select').css('border', 'none');
+            $('select').css('background', 'white').css('padding-left', "0");
+            $('#mainContent').css('padding', "0px");
+            $('*').css('font-size', '12px');
+
+            //$('*').css('padding', "");
+
+            // TODO PRINT MAIN CONTENT NOT WORKING HERE
+            ipcRenderer.send('printInvoice');
+            ipcRenderer.once('printedInvoice', function (event, data) {
+              console.log(data);
+              if (data.success) {
+                location.reload();
+              } else {
+                window.alert("Could not add invoice");
+                $('#resultRow').removeClass('text-success').addClass('text-danger');
+                $('#resultRow').text("Invoice Could Not Be Added");
+                $mainContent.empty();
+              }
+            })
+          })
+        }
+        else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Invoice Could Not Be Added Because " + data.error);
+        }
+      })
+    })
   });
 
   $editProductCategorySubmit.click(function (e) {
