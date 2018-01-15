@@ -58,7 +58,8 @@
   "homepage": "https://github.com/bhavyaagg/Invoice-Generator-Electron#readme",
   "devDependencies": {
     "electron": "^1.8.2-beta.3",
-    "electron-builder": "^19.52.1"
+    "electron-builder": "^19.52.1",
+    "electron-rebuild": "^1.7.3"
   },
   "dependencies": {
     "7zip-bin-mac": "^1.0.1",
