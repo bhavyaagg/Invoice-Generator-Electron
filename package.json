@@ -62,7 +62,6 @@
     "electron-rebuild": "^1.7.3"
   },
   "dependencies": {
-    "7zip-bin-mac": "^1.0.1",
     "sequelize": "^4.28.6",
     "sqlite3": "^3.1.13"
   }

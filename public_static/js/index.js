@@ -2130,7 +2130,8 @@ $(document).ready(function () {
             }
           });
 
-        } else {
+        }
+        else {
           $resultRow.removeClass('text-success').addClass('text-danger');
           $resultRow.text("Product Category Could Not Be Viewed Because " + data.error);
         }
