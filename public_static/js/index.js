@@ -1480,16 +1480,16 @@ $(document).ready(function () {
             <ul class="list-group text-center">
               <li class="list-group-item">
                 <div class="row">
-                  <div class="col-1">
+                  <div class="col">
                     <b>S.No.</b>
                   </div>
                   <div class="col-2">
-                    <b>Part Name</b>
+                    <b>Party Name</b>
                   </div>
-                  <div class="col-1">
+                  <div class="col">
                     <b>Destination</b>
                   </div>
-                  <div class="col-1">
+                  <div class="col">
                     <b>Marka</b>
                   </div>
                   <div class="col-1">
@@ -1501,10 +1501,10 @@ $(document).ready(function () {
                   <div class="col-2">
                     <b>Transport</b>
                   </div>
-                  <div class="col-1">
+                  <div class="col">
                     <b>CD</b>
                   </div>
-                  <div class="col-2">
+                  <div class="col-3">
                    
                   </div>
                 </div>
@@ -1518,16 +1518,16 @@ $(document).ready(function () {
             <ul class="list-group text-center">
               <li class="list-group-item">
                 <div class="row" partyId="${party.id}">
-                  <div class="col-1">
+                  <div class="col">
                     ${party.id}
                   </div>
                   <div class="col-2">
                     ${party.name}
                   </div>
-                  <div class="col-1">
+                  <div class="col">
                     ${party.destination}
                   </div>
-                  <div class="col-1">
+                  <div class="col">
                     ${party.marka}
                   </div>
                   <div class="col-1">
@@ -1539,12 +1539,13 @@ $(document).ready(function () {
                   <div class="col-2">
                     ${party.transport}
                   </div>
-                  <div class="col-1">
+                  <div class="col">
                     ${party.cd}
                   </div>
-                  <div class="col-2">
-                   <button id="editPartyMasterBtn" class="btn btn-primary editPartyMasterBtn">Edit</button>
-                   <button id="viewPartyDiscount" class="btn btn-primary viewDiscounts">View Discount</button>
+                  <div class="col-3">
+                   <button class="btn btn-primary editPartyMasterBtn">Edit</button>
+                   <button class="btn btn-primary viewDiscounts">Discounts</button>
+                   <button class="btn btn-danger deletePartyMaster">Delete</button>                   
                   </div>
                 </div>
               </li>
@@ -1734,6 +1735,28 @@ $(document).ready(function () {
             })
 
           });
+
+          let $deletePartyMaster = $('.deletePartyMaster');
+
+          $deletePartyMaster.click((e) => {
+            let partyMasterId = e.target.parentNode.parentNode.getAttribute('partyId');
+            console.log(partyMasterId);
+
+            ipcRenderer.send("deletePartyMaster", {
+              id: partyMasterId
+            });
+
+            ipcRenderer.once("deletedPartyMaster", (event, deletedPartyMaster) => {
+              if (deletedPartyMaster.success) {
+                $resultRow.removeClass('text-danger').addClass('text-success');
+                $resultRow.text("Party Master Was Deleted Successfully");
+              }
+              else {
+                $resultRow.removeClass('text-success').addClass('text-danger');
+                $resultRow.text("Party Master Could Not Be Deleted Because " + data.error);
+              }
+            })
+          })
 
         }
         else {

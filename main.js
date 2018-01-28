@@ -80,6 +80,8 @@ ipcMain.on('viewPartyMaster', routes.partyMaster.viewPartyMaster);
 
 ipcMain.on('editPartyMaster', routes.partyMaster.editPartyMaster);
 
+ipcMain.on('deletePartyMaster', routes.partyMaster.deletePartyMaster);
+
 ipcMain.on('submitInvoice', routes.invoice.submitInvoice);
 
 ipcMain.on('updateBalance', routes.partyMaster.updateBalance);
