@@ -868,7 +868,7 @@ $(document).ready(function () {
             });
 
 
-            let totalAmt = 0, totalAmtWithoutDis = 0, qtyCount=0;
+            let totalAmt = 0, totalAmtWithoutDis = 0, qtyCount = 0;
 
             ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, discountData) {
               // console.log(selectedPartyMaster.id + ' ' + selectedProductCategory.id);
@@ -923,7 +923,7 @@ $(document).ready(function () {
                 amtAfterCd = roundTo(amtAfterCd, 1);
 
 
-                packingCharges =  +(invoiceItem.grandTotal) - +(grandTotal);
+                packingCharges = +(invoiceItem.grandTotal) - +(grandTotal);
 
                 updateAmtDiv();
                 $('#addInvoiceItemBtn').click(function () {
@@ -942,7 +942,7 @@ $(document).ready(function () {
 
                 let $productList = $('#productList');
                 let productObj = {};
-                ipcRenderer.once('getProductByPCategoryId', (e,data)=>{
+                ipcRenderer.once('getProductByPCategoryId', (e, data) => {
                   $productList.empty();
                   console.log('product data');
                   console.log(data);
@@ -953,8 +953,6 @@ $(document).ready(function () {
 
                   $productList.append(str);
                 })
-
-
 
 
                 $addInvoiceItemSubmit.click(function (e) {
@@ -1009,13 +1007,13 @@ $(document).ready(function () {
 
                   amtAfterCd = totalAmt - +(cdDiscount);
 
-                  grandTotal = totalAmt - (+cdDiscount) ;
+                  grandTotal = totalAmt - (+cdDiscount);
                   grandTotal = roundTo(grandTotal, 1);
                   updateAmtDiv();
                   $('#addInvoiceItemModal').modal('hide');
                 });
 
-                $('#submitInvoiceAgain').click(function() {
+                $('#submitInvoiceAgain').click(function () {
                   $('#printLedger').hide();
                   $('#addInvoiceItemBtn').hide();
                   $('#submitInvoiceAgain').hide();
@@ -1044,19 +1042,19 @@ $(document).ready(function () {
                     }
                   });*/
 
-                  ipcRenderer.send('editInvoice',{
-                    grandTotal: (+grandTotal)+(+packingCharges),
+                  ipcRenderer.send('editInvoice', {
+                    grandTotal: (+grandTotal) + (+packingCharges),
                     id: invoiceItemId
                   })
-                  ipcRenderer.once('editedInvoiceItem', (e,editedInvoiceData)=>{
-                    if(editedInvoiceData && editedInvoiceData.success) {
+                  ipcRenderer.once('editedInvoiceItem', (e, editedInvoiceData) => {
+                    if (editedInvoiceData && editedInvoiceData.success) {
                       ipcRenderer.send('updateCreditByInvoiceId', {
-                        credit: (+grandTotal)+(+packingCharges),
+                        credit: (+grandTotal) + (+packingCharges),
                         invoiceId: invoiceItem.id
                       })
 
-                      ipcRenderer.once('updatedCreditByInvoiceId', (event, data)=>{
-                        if(data.success) {
+                      ipcRenderer.once('updatedCreditByInvoiceId', (event, data) => {
+                        if (data.success) {
                           $('#editInvoiceItemModal').modal('hide');
                           $("#editInvoiceSubmit").unbind("click");
                           $viewInvoicesButton.click();
@@ -1080,7 +1078,7 @@ $(document).ready(function () {
                     }
                   })
                 })
-                
+
                 function updateAmtDiv() {
                   $('#totalAmt').empty();
                   $('#totalAmt').append(`
@@ -1100,7 +1098,7 @@ $(document).ready(function () {
                     </b>
                     </p>
                    
-                    <h5 class="text-right">Grand Total:  ${(+grandTotal)+(+packingCharges)}</h5>
+                    <h5 class="text-right">Grand Total:  ${(+grandTotal) + (+packingCharges)}</h5>
                   </div>
                 `)
                 }
@@ -1130,8 +1128,8 @@ $(document).ready(function () {
                 ipcRenderer.send('deleteLedgerItem', {
                   invoiceId: invoiceItemId
                 })
-                ipcRenderer.once('deletedLedger', function(e, data) {
-                  if(data.success) {
+                ipcRenderer.once('deletedLedger', function (e, data) {
+                  if (data.success) {
                     ipcRenderer.send('updateBalance', {
                       balance: invoiceItem.grandTotal,
                       partyMasterId: invoiceItem.partyMasterId
@@ -1188,14 +1186,14 @@ $(document).ready(function () {
 
             ipcRenderer.once('editedInvoiceItem', function () {
 
-              if(invoiceItem.grandTotal !== $editGrandTotal.val()) {
+              if (invoiceItem.grandTotal !== $editGrandTotal.val()) {
                 ipcRenderer.send('updateCreditByInvoiceId', {
                   credit: $editGrandTotal.val(),
                   invoiceId: invoiceItem.id
                 })
 
-                ipcRenderer.once('updatedCreditByInvoiceId', (event, data)=>{
-                  if(data.success) {
+                ipcRenderer.once('updatedCreditByInvoiceId', (event, data) => {
+                  if (data.success) {
                     $('#editInvoiceItemModal').modal('hide');
                     $("#editInvoiceSubmit").unbind("click");
                     $viewInvoicesButton.click();
@@ -1203,9 +1201,6 @@ $(document).ready(function () {
                   }
                 })
               }
-
-
-
 
 
             })
@@ -2136,22 +2131,218 @@ $(document).ready(function () {
           $resultRow.text("Product Category Could Not Be Viewed Because " + data.error);
         }
       });
-    })
+    });
 
     $viewProductSales.click(function () {
       $mainContent.empty();
       $resultRow.empty();
 
+      ipcRenderer.send('viewProductCategories');
+
+      ipcRenderer.once('getProductCategories', (event, productCategories) => {
+
+        if (productCategories.success) {
+          let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-8">
+                    <b>Product Category Name</b>
+                  </div>
+                </div>
+              </li>
+          `;
+
+
+          productCategories.productCategories.forEach((productCategory) => {
+            str += `
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-8">
+                    <b>${productCategory.name}</b>
+                  </div>
+                  <div class="col-2">
+                    <button class="btn btn-success view-product-sales" productCategoryId="${productCategory.id}">
+                      View Product Sales
+                    </button>
+                  </div>
+                </div>
+              </li>
+            `
+          });
+
+          str += `
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-8">
+                    <b>All</b>
+                  </div>
+                  <div class="col-2">
+                    <button class="btn btn-success view-product-sales" productCategoryId="0">
+                      View Product Sales
+                    </button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          `;
+          $mainContent.empty().append(str);
+
+          $('.view-product-sales').click((e) => {
+            console.log(1)
+            let productCategoryId = +(e.target.getAttribute("productCategoryId"));
+            if (productCategoryId === 0) {
+              console.log(1)
+              ipcRenderer.send('viewProductSales');
+
+              ipcRenderer.once('getProductSales', (event, productData) => {
+                console.log(productData)
+                if (productData.success) {
+
+                  productData.productSales.sort(function (a, b) {
+                    if (+(a.totalQty) < +(b.totalQty))
+                      return 1;
+                    if (+(a.totalQty) > +(b.totalQty))
+                      return -1;
+                    return 0;
+                  })
+
+                  console.log(productData);
+
+                  let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-6">
+                    <b>Product Name</b>
+                  </div>
+                  <div class="col">
+                    <b>Total Qty</b>
+                  </div>
+                </div>
+              </li>
+          `;
+
+                  let totalQuantity = 0;
+                  productData.productSales.forEach(productSale => {
+                    str += `
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-6">
+                    ${productSale.product.name}
+                  </div>
+                  <div class="col">
+                    ${productSale.totalQty}
+                  </div>
+                </div>
+              </li>
+            `;
+
+                    totalQuantity += productSale.totalQty;
+                  })
+                  str += `
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-6">
+                    <b>Total</b>
+                  </div>
+                  <div class="col">
+                    <b>${totalQuantity}</b>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          `;
+                  $mainContent.empty().append(str);
+                }
+              });
+
+
+            } else {
+              console.log(3)
+              ipcRenderer.send('viewProductSalesByProductCategoryId', {
+                id: productCategoryId
+              });
+
+              ipcRenderer.once('getProductSalesByProductCategoryId', (event, productData) => {
+                console.log(productData)
+                if (productData.success) {
+                  console.log(productData.productSales)
+                  productData.productSales.sort(function (a, b) {
+                    if (+(a.totalQty) < +(b.totalQty))
+                      return 1;
+                    if (+(a.totalQty) > +(b.totalQty))
+                      return -1;
+                    return 0;
+                  });
+
+                  console.log(productData.productSales)
+
+                  let str = `
+                    <ul class="list-group text-center">
+                      <li class="list-group-item">
+                        <div class="row align-items-center">
+                          <div class="col-6">
+                            <b>Product Name</b>
+                          </div>
+                          <div class="col">
+                            <b>Total Qty</b>
+                          </div>
+                        </div>
+                      </li>
+                  `;
+
+                  let totalQuantity = 0;
+                  productData.productSales.forEach(productSale => {
+                    str += `
+                      <li class="list-group-item">
+                        <div class="row align-items-center">
+                          <div class="col-6">
+                            ${productSale.product.name}
+                          </div>
+                          <div class="col">
+                            ${productSale.totalQty}
+                          </div>
+                        </div>
+                      </li>
+                    `;
+
+                    totalQuantity += productSale.totalQty;
+                  })
+                  str += `
+                    <li class="list-group-item">
+                      <div class="row align-items-center">
+                        <div class="col-6">
+                          <b>Total</b>
+                        </div>
+                        <div class="col">
+                          <b>${totalQuantity}</b>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                  `;
+                  $mainContent.empty().append(str);
+                }
+              });
+            }
+
+          })
+        }
+
+      });
+
+      /*
       ipcRenderer.send('viewProductSales');
 
       ipcRenderer.once('getProductSales', (event, productData) => {
 
-        if(productData.success) {
+        if (productData.success) {
 
           productData.productSales.sort(function (a, b) {
-            if(+(a.totalQty) < +(b.totalQty))
+            if (+(a.totalQty) < +(b.totalQty))
               return 1;
-            if(+(a.totalQty) > +(b.totalQty))
+            if (+(a.totalQty) > +(b.totalQty))
               return -1;
             return 0;
           })
@@ -2173,7 +2364,7 @@ $(document).ready(function () {
           `;
 
           let totalQuantity = 0;
-          productData.productSales.forEach(productSale=>{
+          productData.productSales.forEach(productSale => {
             str += `
               <li class="list-group-item">
                 <div class="row align-items-center">
@@ -2205,6 +2396,8 @@ $(document).ready(function () {
           $mainContent.append(str);
         }
       });
+
+      */
     })
 
   });
@@ -2318,7 +2511,7 @@ $(document).ready(function () {
               creditTotal += ledgerRow.credit;
               debitTotal += ledgerRow.debit;
               let strBtn = '';
-              if(ledgerRow.debit>0 && ledgerRow.credit===0) {
+              if (ledgerRow.debit > 0 && ledgerRow.credit === 0) {
                 strBtn = `<button class="btn btn-primary deletePayment" ledgerId="${ledgerRow.id}">Delete</button>`
               }
               str += `
@@ -2329,7 +2522,7 @@ $(document).ready(function () {
                   <div class="col">${ledgerRow.productCategoryName}</div>
                   <div class="col">${ledgerRow.debit}</div>
                   <div class="col">${ledgerRow.credit}</div>
-                  <div class="col">${creditTotal-debitTotal}</div>
+                  <div class="col">${creditTotal - debitTotal}</div>
                   <div class="col">${strBtn}</div>
                 </div>
               </li>
@@ -2355,12 +2548,12 @@ $(document).ready(function () {
                 ledgerId: ledgerId
               })
 
-              ipcRenderer.once('deletedPayment', (e,data)=> {
+              ipcRenderer.once('deletedPayment', (e, data) => {
                 console.log(data);
-                if(data.success) {
+                if (data.success) {
                   $viewLedger.click();
                 }
-                else{
+                else {
                   $resultRow.removeClass('text-success').addClass('text-danger');
                   $resultRow.text("Ledger Could Not Be delete " + data.error);
                 }
@@ -2451,7 +2644,7 @@ $(document).ready(function () {
       ipcRenderer.send('viewMasterLedger');
 
       ipcRenderer.once('getMasterLedger', (e, ledgerData) => {
-        if(ledgerData.success) {
+        if (ledgerData.success) {
 
           let str = `
             <ul class="list-group text-center">
@@ -2474,7 +2667,7 @@ $(document).ready(function () {
                 </div>
               </li>
           `;
-          let totalDebit = 0, totalCredit =0;
+          let totalDebit = 0, totalCredit = 0;
           ledgerData.ledgerItems.forEach(ledgerItem => {
             str += `
               <li class="list-group-item">
@@ -2499,7 +2692,7 @@ $(document).ready(function () {
             totalDebit += ledgerItem.debit;
             totalCredit += ledgerItem.credit;
           })
-          str+= `
+          str += `
             <li class="list-group-item">
                 <div class="row">
                   

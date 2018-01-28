@@ -72,6 +72,8 @@ ipcMain.on('viewProductByPCategoryId', routes.product.viewProductByPCategoryId);
 
 ipcMain.on('viewProductSales', routes.product.viewProductSales);
 
+ipcMain.on('viewProductSalesByProductCategoryId', routes.product.viewProductSalesByProductCategoryId);
+
 ipcMain.on('addPartyMaster', routes.partyMaster.addPartyMaster);
 
 ipcMain.on('viewPartyMaster', routes.partyMaster.viewPartyMaster);
