@@ -140,7 +140,8 @@ function viewProductById(event, product) {
     where: {
       id: product.id
     }
-  }).then(function (product) {product
+  }).then(function (product) {
+    product
     if (product) {
       event.sender.send('getProductById', {
         success: true,
@@ -167,7 +168,7 @@ function viewProductByPCategoryId(event, productCategory) {
     where: {
       productcategoryId: productCategory.id
     },
-    order:[models.sequelize.literal(`\`product\`.\`name\` `)]
+    order: [models.sequelize.literal(`\`product\`.\`name\` `)]
   }).then(function (product) {
     event.sender.send('getProductByPCategoryId', {
       success: true,
@@ -188,11 +189,11 @@ function viewProductSales(event) {
     group: 'productId',
     attributes: [
       [models.sequelize.fn('SUM', models.sequelize.col('qty')), 'totalQty']
-    ],
-    order: ['totalQty']
+    ]
   }).then(rows => {
-    event.sender.send('getProductSales',{
-      success:true,
+    console.log(rows)
+    event.sender.send('getProductSales', {
+      success: true,
       productSales: rows.map((v) => {
         v = v.get();
         v.product = v.product.get();
@@ -200,8 +201,42 @@ function viewProductSales(event) {
       })
     })
   }).catch(err => {
-    event.sender.send('getProductSales',{
-      success:true,
+    event.sender.send('getProductSales', {
+      success: true,
+      error: err
+    })
+  })
+}
+
+function viewProductSalesByProductCategoryId(event, productCategoryId) {
+  models.InvoiceDetail.findAll({
+    where: {
+      '$product.productcategoryId$': productCategoryId.id
+    },
+    include: [
+      {
+        model: models.Product,
+      }
+    ],
+    group: 'productId',
+    attributes: [
+      [models.sequelize.fn('SUM', models.sequelize.col('qty')), 'totalQty']
+    ]
+  }).then(rows => {
+    console.log(1)
+    event.sender.send('getProductSalesByProductCategoryId', {
+      success: true,
+      productSales: rows.map((v) => {
+        v = v.get();
+        v.product = v.product.get();
+        return v;
+      })
+    })
+  }).catch(err => {
+    console.log(2)
+    console.log(err)
+    event.sender.send('getProductSalesByProductCategoryId', {
+      success: true,
       error: err
     })
   })
@@ -215,5 +250,6 @@ module.exports = exports = {
   viewProductById,
   viewProducts,
   viewProductByPCategoryId,
-  viewProductSales
+  viewProductSales,
+  viewProductSalesByProductCategoryId
 };
