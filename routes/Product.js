@@ -188,7 +188,8 @@ function viewProductSales(event) {
     group: 'productId',
     attributes: [
       [models.sequelize.fn('SUM', models.sequelize.col('qty')), 'totalQty']
-    ]
+    ],
+    order: ['totalQty']
   }).then(rows => {
     event.sender.send('getProductSales',{
       success:true,
