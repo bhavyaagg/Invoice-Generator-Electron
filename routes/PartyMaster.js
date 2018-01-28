@@ -120,13 +120,13 @@ function updateBalance(event, data) {
       partymasterId: data.partyMasterId
     }
   }).then(res => {
-    if(res && res.length>0) {
-      event.sender.send('updatedBalance',{
+    if (res && res.length > 0) {
+      event.sender.send('updatedBalance', {
         success: true
       })
     }
-    else{
-      event.sender.send('updatedBalance',{
+    else {
+      event.sender.send('updatedBalance', {
         success: false,
         error: "No object Found"
       })
@@ -139,10 +139,63 @@ function updateBalance(event, data) {
   })
 }
 
+function deletePartyMaster(event, partymaster) {
+  // TODO: Complete this
+  // models.PartyMaster
+  //Invoice
+  // InvoiceDetail
+  // Ledger
+  // PartyMasterProductCategoryDiscount
+
+  models.PartyMasterProductCategoryDiscount.destroy({
+    where: {
+      partymasterId: partymaster.id
+    }
+  }).then(() => {
+    models.Ledger.destroy({
+      where: {
+        partymasterId: partymaster.id
+      }
+    }).then(() => {
+      models.Invoice.findAll({
+        where: {
+          partymasterId: partymaster.id
+        }
+      }).then((rows) => {
+        rows.map(async (v) => {
+          await models.InvoiceDetail.destroy({
+            where: {
+              invoiceId: v.get().id
+            }
+          });
+          v.destroy();
+        });
+        models.PartyMaster.destroy({
+          where: {
+            id: partymaster.id
+          }
+        }).then((noOfDeletedPartyMasters) => {
+          if (noOfDeletedPartyMasters === 1) {
+            // Ok
+            console.log(1)
+          } else {
+            // Error
+            console.log(0)
+          }
+        })
+      })
+    })
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+
+
 module.exports = exports = {
   addPartyMaster,
   viewPartyMaster,
   addPaymentForPartyMaster,
   editPartyMaster,
-  updateBalance
+  updateBalance,
+  deletePartyMaster
 };
