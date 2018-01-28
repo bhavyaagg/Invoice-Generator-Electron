@@ -176,17 +176,21 @@ function deletePartyMaster(event, partymaster) {
           }
         }).then((noOfDeletedPartyMasters) => {
           if (noOfDeletedPartyMasters === 1) {
-            // Ok
-            console.log(1)
+            event.sender.send('deletedPartyMaster', {
+              success: true,
+            })
           } else {
             // Error
-            console.log(0)
+            throw new Error("No Party Master Found")
           }
         })
       })
     })
   }).catch((err) => {
-    console.log(err);
+    event.sender.send('deletedPartyMaster', {
+      success: false,
+      error: err
+    })
   })
 }
 
