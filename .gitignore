@@ -4,6 +4,4 @@ dist/
 .DS_Store
 secrets.js
 dbData/
-invoices/
-InvoiceGenerator-*/
 *.sqlite
