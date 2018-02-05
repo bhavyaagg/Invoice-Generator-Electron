@@ -257,7 +257,7 @@ $(document).ready(function () {
       let slipNumber;
       let $slipNumber = $('#slipNo');
 
-      /* ipcRenderer.send('viewInvoiceItems');
+       ipcRenderer.send('viewInvoiceItems');
        ipcRenderer.once('getInvoiceItems', function (event, data) {
          if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
            slipNumber = 1;
@@ -269,7 +269,6 @@ $(document).ready(function () {
          $slipNumber.append(slipNumber);
 
        });
- */
       //Get Data in Product Categories DropDown
       let productCategoriesRowObj = getDataProductCategories(); // All product Categories with id as key
 
@@ -523,6 +522,7 @@ $(document).ready(function () {
         console.log($bilityDate.val());
         console.log($chalanDate.val());
         ipcRenderer.send('submitInvoice', {
+          id: slipNumber,
           cases: String($cases.val()),
           dateOfInvoice: $invoiceDate.val(),
           bilityNo: $bilityNumber.val(),
