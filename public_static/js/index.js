@@ -110,7 +110,7 @@ $(document).ready(function () {
             <div class="form-group row align-items-center no-gutters">
               <div class="col-4">C. No/Date</div>
               <div class="col-2">
-                <input class="form-control pr-0 pl-0" type="number" value="0" id="chalanNumber">
+                <input class="form-control pr-0 pl-0" type="text" value="0" id="chalanNumber">
               </div>
               <div class="col-6">
                 <input class="form-control pl-0 pr-0" type="date" id="chalanDate">
