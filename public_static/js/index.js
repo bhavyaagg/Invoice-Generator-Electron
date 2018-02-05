@@ -396,7 +396,7 @@ $(document).ready(function () {
         if (selectedPartyMaster === undefined || $productCategoryList.val() === 0) {
 
           $resultRow.removeClass('text-success').addClass('text-danger');
-          $resultRow.text("Select Part Master and/OR product Category");
+          $resultRow.text("Select Party Master and/OR product Category");
           return;
         }
 
@@ -430,7 +430,7 @@ $(document).ready(function () {
         if (qty <= 0 || typeof selectedProduct === "undefined")
           return;
 
-        qtyCount += +(qty);
+
         invoiceListItems.push({
           itemNumber: listItemCount,
           qty: qty,
@@ -438,12 +438,12 @@ $(document).ready(function () {
           per: per
         });
         $invoiceItemList.append(`
-            <li class="list-group-item" id="amountCalcList" style="padding: 0px">
-              <div class="row" padding-top: -5px"> 
+            <li class="list-group-item" id='${"amountCalcList"+ String(invoiceListItems.length - 1)}' style="padding: 0px; border: 1px solid black">
+              <div class="row" style="padding-top: -5px"> 
                 <div class="col-1">
                   ${listItemCount++}
                 </div>
-                <div class="col-5">
+                <div class="col-4">
                   ${selectedProduct.name}
                 </div>
                 <div class="col-1">
@@ -458,9 +458,16 @@ $(document).ready(function () {
                 <div class="col-2">
                   ${(+qty) * (+selectedProduct.price) }
                 </div>
+                <div class="col-1" >
+    
+                  <button class="btn invoiceListItemClass" data-id="${invoiceListItems.length - 1}">X</button>
+                </div>
               </div>
             </li>
           `)
+
+
+        qtyCount += +(qty);
 
         totalAmtWithoutDis += +((+qty) * (+selectedProduct.price));
         totalAmt += (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000;
@@ -474,6 +481,30 @@ $(document).ready(function () {
         grandTotal = roundTo(grandTotal, 1);
         updateAmtDiv();
         $('#addInvoiceItemModal').modal('hide');
+      });
+
+      $('.invoiceListItemClass').click(function (e) {
+        console.log("ho rha hai");
+        let invoiceItemId = +(e.target.getAttribute('data-id'));
+
+        let selectedProduct = invoiceListItems[invoiceItemId];
+        let qty = selectedProduct.qty;
+
+        qtyCount -= +(qty);
+
+        $('li').find('amountCalcList'+ String(invoiceItemId)).remove();
+
+        totalAmtWithoutDis -= +((+qty) * (+selectedProduct.price));
+        totalAmt -= (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000;
+
+        totalAmt = roundTo(totalAmt, 1);
+
+        cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
+        cdDiscount = roundTo(cdDiscount, 1);
+
+        grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
+        grandTotal = roundTo(grandTotal, 1);
+        updateAmtDiv();
       });
 
       $('#printInvoice').click(function () {
@@ -660,10 +691,10 @@ $(document).ready(function () {
         invoiceItems = data.invoiceItems;
 
 
-        console.log(invoiceItems);
+        //console.log(invoiceItems);
 
         let invoiceItemObj = {};
-        console.log('invoice items' + invoiceItems);
+        //console.log('invoice items' + invoiceItems);
         invoiceItems.forEach(invoiceItem => {
           invoiceItemObj[invoiceItem.id] = invoiceItem;
           str += `
@@ -789,7 +820,7 @@ $(document).ready(function () {
                   <div class="form-group row align-items-center no-gutters">
                     <div class="col-4">C. No/Date</div>
                     <div class="col-2">
-                      <input class="form-control pr-0 pl-0" type="number" value="${invoiceItem.chalanNo}" id="chalanNumber">
+                      <input class="form-control pr-0 pl-0" type="text" value="${invoiceItem.chalanNo}" id="chalanNumber">
                     </div>
                     <div class="col-6">
                       <input class="form-control pl-0 pr-0" value="${invoiceItem.chalanDate}" type="date" id="chalanDate">
@@ -983,7 +1014,7 @@ $(document).ready(function () {
                     per: per
                   });
                   $invoiceItemList.append(`
-                    <li class="list-group-item" id="amountCalcList" style="padding: 0px">
+                    <li class="list-group-item" id="amountCalcList" style="padding: 0px; bo">
                       <div class="row" padding-top: -5px"> 
                         <div class="col-1">
                           ${listItemCount++}
