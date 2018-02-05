@@ -257,18 +257,18 @@ $(document).ready(function () {
       let slipNumber;
       let $slipNumber = $('#slipNo');
 
-       ipcRenderer.send('viewInvoiceItems');
-       ipcRenderer.once('getInvoiceItems', function (event, data) {
-         if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
-           slipNumber = 1;
-           $slipNumber.append(slipNumber);
-           return;
-         }
+      ipcRenderer.send('viewInvoiceItems');
+      ipcRenderer.once('getInvoiceItems', function (event, data) {
+        if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
+          slipNumber = 1;
+          $slipNumber.append(slipNumber);
+          return;
+        }
 
-         slipNumber = data.invoiceItems[data.invoiceItems.length - 1].id + 1;
-         $slipNumber.append(slipNumber);
+        slipNumber = data.invoiceItems[data.invoiceItems.length - 1].id + 1;
+        $slipNumber.append(slipNumber);
 
-       });
+      });
       //Get Data in Product Categories DropDown
       let productCategoriesRowObj = getDataProductCategories(); // All product Categories with id as key
 
@@ -418,7 +418,7 @@ $(document).ready(function () {
         updateAmtDiv();
         $('#addPackingChargesModal').modal('hide');
       });
-      let invoiceListItems = [];
+      let invoiceListItems = {};
       $addInvoiceItemSubmit.click(function (e) {
 
         let qty = $('#qty').val();
@@ -430,17 +430,18 @@ $(document).ready(function () {
           return;
 
 
-        invoiceListItems.push({
+        invoiceListItems[listItemCount] = {
           itemNumber: listItemCount,
           qty: qty,
           productId: selectedProduct.id,
-          per: per
-        });
+          per: per,
+          price: selectedProduct.price
+        };
         $invoiceItemList.append(`
-            <li class="list-group-item" id='${"amountCalcList"+ String(invoiceListItems.length - 1)}' style="padding: 0px; border: 1px solid black">
+            <li class="list-group-item" id='${"amountCalcList" + String(listItemCount)}' style="padding: 0px; border: 1px solid black">
               <div class="row" style="padding-top: -5px"> 
                 <div class="col-1">
-                  ${listItemCount++}
+                  ${listItemCount}
                 </div>
                 <div class="col-4">
                   ${selectedProduct.name}
@@ -459,11 +460,11 @@ $(document).ready(function () {
                 </div>
                 <div class="col-1" >
     
-                  <button class="btn invoiceListItemClass" data-id="${invoiceListItems.length - 1}">X</button>
+                  <button class="btn invoiceListItemClass" data-id="${listItemCount}">X</button>
                 </div>
               </div>
             </li>
-          `)
+        `)
 
 
         qtyCount += +(qty);
@@ -480,31 +481,39 @@ $(document).ready(function () {
         grandTotal = roundTo(grandTotal, 1);
         updateAmtDiv();
         $('#addInvoiceItemModal').modal('hide');
+        $('#amountCalcList' + String(listItemCount)).click(function (e) {
+
+          let invoiceItemId = +(e.target.getAttribute('data-id'));
+
+          let selectedProduct = invoiceListItems[invoiceItemId];
+
+          let qty = selectedProduct.qty;
+
+
+          qtyCount -= +(qty);
+
+
+
+          $('#amountCalcList' + String(invoiceItemId)).remove();
+
+          totalAmtWithoutDis -= +((+qty) * (+selectedProduct.price));
+          totalAmt -= (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000;
+
+          totalAmt = roundTo(totalAmt, 1);
+
+          cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
+          cdDiscount = roundTo(cdDiscount, 1);
+
+          grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
+          grandTotal = roundTo(grandTotal, 1);
+          updateAmtDiv();
+          delete invoiceListItems[invoiceItemId];
+
+
+        });
+        listItemCount++;
       });
 
-      $('.invoiceListItemClass').click(function (e) {
-        console.log("ho rha hai");
-        let invoiceItemId = +(e.target.getAttribute('data-id'));
-
-        let selectedProduct = invoiceListItems[invoiceItemId];
-        let qty = selectedProduct.qty;
-
-        qtyCount -= +(qty);
-
-        $('li').find('amountCalcList'+ String(invoiceItemId)).remove();
-
-        totalAmtWithoutDis -= +((+qty) * (+selectedProduct.price));
-        totalAmt -= (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000;
-
-        totalAmt = roundTo(totalAmt, 1);
-
-        cdDiscount = totalAmt * +(selectedPartyMaster.cd) / 100;
-        cdDiscount = roundTo(cdDiscount, 1);
-
-        grandTotal = totalAmt - (+cdDiscount) + (+(packingCharges));
-        grandTotal = roundTo(grandTotal, 1);
-        updateAmtDiv();
-      });
 
       $('#printInvoice').click(function () {
         let mainContent = $('#mainContent')[0];
@@ -566,7 +575,7 @@ $(document).ready(function () {
 
             ipcRenderer.send('submitInvoiceDetail', {
               invoiceId: slipNumber,
-              listItems: invoiceListItems
+              listItems: Object.values(invoiceListItems)
             })
 
 
