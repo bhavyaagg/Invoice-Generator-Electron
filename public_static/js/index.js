@@ -443,7 +443,7 @@ $(document).ready(function () {
                 <div class="col-1">
                   ${listItemCount}
                 </div>
-                <div class="col-4">
+                <div class="col-5">
                   ${selectedProduct.name}
                 </div>
                 <div class="col-1">
@@ -457,11 +457,8 @@ $(document).ready(function () {
                 </div>
                 <div class="col-2">
                   ${(+qty) * (+selectedProduct.price) }
-                </div>
-                <div class="col-1" >
-    
                   <button class="btn invoiceListItemClass" data-id="${listItemCount}">X</button>
-                </div>
+                </div> 
               </div>
             </li>
         `)
@@ -558,6 +555,7 @@ $(document).ready(function () {
             $('#submitInvoice').hide();
             $('#addInvoiceItemBtn').hide();
             $('#addPackingChargesBtn').hide();
+            $('.invoiceListItemClass').hide();
             console.log(data);
             $slipNumber.append(data.invoiceItem.id);
             slipNumber = data.invoiceItem.id;
