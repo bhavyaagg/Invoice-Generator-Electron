@@ -5,3 +5,4 @@ dist/
 secrets.js
 dbData/
 *.sqlite
+invoicegenerator.sqlite3

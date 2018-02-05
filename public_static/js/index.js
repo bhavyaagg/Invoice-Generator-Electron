@@ -87,8 +87,13 @@ $(document).ready(function () {
           </div>
         </div>
         <div class="row no-gutters">
-          <div class="col-2 mt-2" id="marka">
-            Marka:    
+          <div class="col-2 mt-2" >
+            <div class="form-group row align-items-center no-gutters">
+              <div class="col-3">Marka</div>
+              <div class="col-9">
+                <input type="text" value="" id="marka" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
+              </div> 
+            </div>   
           </div>
           <div class="col-5">
             <div class="form-group row align-items-center no-gutters">
@@ -115,8 +120,13 @@ $(document).ready(function () {
         </div>  
         
         <div class="row no-gutters">
-          <div class="col-3 mt-2" id="destination">
-            Destination:    
+          <div class="col-3 mt-2" >
+            <div class="form-group row align-items-center no-gutters">
+              <div class="col-3">Destination</div>
+              <div class="col-9">
+                <input type="text" value="" id="destination" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
+              </div> 
+            </div>  
           </div>
           
           <div class="col-2">
@@ -275,21 +285,21 @@ $(document).ready(function () {
         selectedPartyMaster = partyMasterRowObj[$partyMasterList.val()];
 
         if (selectedPartyMaster) {
-          $marka.empty();
-          $marka.append(`Marka: ${selectedPartyMaster.marka}`);
+          //$marka.empty();
+          $marka.val(`  ${selectedPartyMaster.marka}`);
 
           $transport.empty();
           $transport.val(selectedPartyMaster.transport);
 
-          $destination.empty().append('Destination: ' + selectedPartyMaster.destination)
+          $destination.empty().val(' ' + selectedPartyMaster.destination)
         } else {
-          $marka.empty();
-          $marka.append(`Marka:`);
+          //$marka.empty();
+          $marka.val(``);
 
           $transport.empty();
           $transport.val("");
 
-          $destination.empty().append('Destination: ')
+          $destination.empty().append(' ')
         }
         console.log($partyMasterList.val());
         if ($productCategoryList.val() != 0 && $partyMasterList.val() != 0) {
