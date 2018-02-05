@@ -928,7 +928,7 @@ $(document).ready(function () {
 
                 data.invoiceItems.forEach(invoiceItem => {
                   $invoiceItemList.append(`
-                    <li class="list-group-item" id="amountCalcList" style="padding: 0px">
+                    <li class="list-group-item" id="amountCalcList" style="padding: 0px; border: 1px solid black">
                       <div class="row" padding-top: -5px"> 
                         <div class="col-1">
                           ${listItemCount++}
@@ -1014,17 +1014,18 @@ $(document).ready(function () {
                     return;
 
                   qtyCount += +(qty);
-                  invoiceListItems.push({
+                  invoiceListItems[listItemCount] = {
                     itemNumber: listItemCount,
                     qty: qty,
                     productId: selectedProduct.id,
-                    per: per
-                  });
+                    per: per,
+                    price: selectedProduct.price
+                  };
                   $invoiceItemList.append(`
-                    <li class="list-group-item" id="amountCalcList" style="padding: 0px; bo">
-                      <div class="row" padding-top: -5px"> 
+                    <li class="list-group-item" id='${"amountCalcList" + String(listItemCount)}' style="padding: 0px; border: 1px solid black">
+                      <div class="row" style="padding-top: -5px"> 
                         <div class="col-1">
-                          ${listItemCount++}
+                          ${listItemCount}
                         </div>
                         <div class="col-5">
                           ${selectedProduct.name}
@@ -1040,7 +1041,8 @@ $(document).ready(function () {
                         </div>
                         <div class="col-2">
                           ${(+qty) * (+selectedProduct.price) }
-                        </div>
+                          <button class="btn invoiceListItemClass" data-id="${listItemCount}">X</button>
+                        </div> 
                       </div>
                     </li>
                   `)
@@ -1058,7 +1060,42 @@ $(document).ready(function () {
                   grandTotal = totalAmt - (+cdDiscount);
                   grandTotal = roundTo(grandTotal, 1);
                   updateAmtDiv();
+
                   $('#addInvoiceItemModal').modal('hide');
+
+                  $('#amountCalcList' + String(listItemCount)).click(function (e) {
+
+                    let invoiceItemId = +(e.target.getAttribute('data-id'));
+
+                    let selectedProduct = invoiceListItems[invoiceItemId];
+
+                    let qty = selectedProduct.qty;
+
+
+                    qtyCount -= +(qty);
+
+
+
+                    $('#amountCalcList' + String(invoiceItemId)).remove();
+
+                    totalAmtWithoutDis -= +((+qty) * (+selectedProduct.price));
+                    totalAmt -= (((+qty) * (+selectedProduct.price)) * (100 - (+discount)) * (100 - splDiscount)) / 10000;
+
+                    totalAmt = roundTo(totalAmt, 1);
+
+                    cdDiscount = totalAmt * +(invoiceItem.partymaster.dataValues.cd) / 100;
+                    cdDiscount = roundTo(cdDiscount, 1);
+
+                    amtAfterCd = totalAmt - +(cdDiscount);
+
+                    grandTotal = totalAmt - (+cdDiscount);
+                    grandTotal = roundTo(grandTotal, 1);
+                    updateAmtDiv();
+                    delete invoiceListItems[invoiceItemId];
+
+
+                  });
+                  listItemCount++;
                 });
 
                 $('#submitInvoiceAgain').click(function () {
@@ -1066,6 +1103,7 @@ $(document).ready(function () {
                   $('#addInvoiceItemBtn').hide();
                   $('#submitInvoiceAgain').hide();
                   $('#addPackingChargesBtn').hide();
+                  $('.invoiceListItemClass').hide();
 
                   let mainContent = $('#mainContent')[0];
 
@@ -1080,7 +1118,7 @@ $(document).ready(function () {
 
                   ipcRenderer.send('submitInvoiceDetail', {
                     invoiceId: invoiceItemId,
-                    listItems: invoiceListItems
+                    listItems: Object.values(invoiceListItems)
                   });
 
                   /*ipcRenderer.once('submittedInvoice', (e,data)=>{
