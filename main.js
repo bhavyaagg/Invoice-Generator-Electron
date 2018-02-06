@@ -84,6 +84,8 @@ ipcMain.on('deletePartyMaster', routes.partyMaster.deletePartyMaster);
 
 ipcMain.on('submitInvoice', routes.invoice.submitInvoice);
 
+ipcMain.on('submitReturnInvoice', routes.invoice.submitReturnInvoice);
+
 ipcMain.on('updateBalance', routes.partyMaster.updateBalance);
 
 ipcMain.on('submitInvoiceDetail', routes.invoice.submitInvoiceDetail);

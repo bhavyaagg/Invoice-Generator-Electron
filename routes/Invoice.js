@@ -40,6 +40,42 @@ function submitInvoice(event, invoiceItemData) {
   })
 }
 
+function submitReturnInvoice(event, invoiceItemData) {
+  models.Invoice.create(invoiceItemData)
+    .then(invoiceItem => {
+
+      models.Ledger.create({
+        description: "Slip No. " + invoiceItem.get().id,
+        partymasterId: invoiceItemData.partymasterId,
+        dateOfTransaction: invoiceItemData.dateOfInvoice,
+        credit: 0,
+        productCategoryName: invoiceItemData.productCategoryName,
+        invoiceId: invoiceItem.get().id,
+        debit: invoiceItemData.grandTotal,
+        balance: parseFloat(invoiceItemData.partyMasterBalance) + parseFloat(invoiceItemData.grandTotal)
+      }).then(function (data) {
+        models.PartyMaster.update({
+          balance: parseFloat(invoiceItemData.partyMasterBalance) + parseFloat(invoiceItemData.grandTotal)
+        }, {
+          where: {
+            id: invoiceItemData.partymasterId
+          }
+        }).then(function () {
+          event.sender.send('getSubmitReturnInvoice', {
+            success: true,
+            invoiceItem: invoiceItem.get()
+          })
+        })
+      })
+
+    }).catch(err => {
+    event.sender.send('getSubmitInvoice', {
+      success: false,
+      error: err
+    });
+  })
+}
+
 function submitInvoiceDetail(event, invoiceDetail) {
   invoiceDetail.listItems.forEach(invoiceItem => {
     models.InvoiceDetail.create({
@@ -193,5 +229,6 @@ module.exports = exports = {
   viewInvoiceItems,
   deleteInvoiceItemById,
   viewInvoiceItemById,
-  editInvoice
+  editInvoice,
+  submitReturnInvoice
 };
