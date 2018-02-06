@@ -137,7 +137,7 @@ function deletePayment(event, data) {
     })
   })
 }
-function viewLedgerByInvocieId(event, data) {
+function viewLedgerByInvoiceId(event, data) {
   models.Ledger.find({
     where: {
       invoiceId: data.invoiceId
@@ -169,5 +169,5 @@ module.exports = exports = {
   updateCreditByInvoiceId,
   viewMasterLedger,
   deletePayment,
-  viewLedgerByInvocieId
+  viewLedgerByInvoiceId
 };

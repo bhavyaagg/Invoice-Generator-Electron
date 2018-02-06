@@ -94,6 +94,8 @@ ipcMain.on('viewInvoiceItems', routes.invoice.viewInvoiceItems);
 
 ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId);
 
+ipcMain.on('viewLedgerByInvoiceId', routes.ledger.viewLedgerByInvoiceId);
+
 ipcMain.on('addPaymentForPartyMaster', routes.partyMaster.addPaymentForPartyMaster);
 
 ipcMain.on('deleteInvoiceItemById', routes.invoice.deleteInvoiceItemById);
