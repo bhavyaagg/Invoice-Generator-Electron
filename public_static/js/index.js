@@ -1782,7 +1782,7 @@ $(document).ready(function () {
           return;
         console.log($bilityDate.val());
         console.log($chalanDate.val());
-        ipcRenderer.send('submitInvoice', {
+        ipcRenderer.send('submitReturnInvoice', {
           id: slipNumber,
           cases: String($cases.val()),
           dateOfInvoice: $invoiceDate.val(),
@@ -1805,7 +1805,7 @@ $(document).ready(function () {
           $chalanDate.hide();
         }
 
-        ipcRenderer.once('getSubmitInvoice', function (event, data) {
+        ipcRenderer.once('getSubmitReturnInvoice', function (event, data) {
           if (data.success) {
             $('#submitInvoice').hide();
             $('#addInvoiceItemBtn').hide();

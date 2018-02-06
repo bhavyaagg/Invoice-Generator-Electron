@@ -52,10 +52,10 @@ function submitReturnInvoice(event, invoiceItemData) {
         productCategoryName: invoiceItemData.productCategoryName,
         invoiceId: invoiceItem.get().id,
         debit: invoiceItemData.grandTotal,
-        balance: parseFloat(invoiceItemData.partyMasterBalance) + parseFloat(invoiceItemData.grandTotal)
+        balance: parseFloat(invoiceItemData.partyMasterBalance) - parseFloat(invoiceItemData.grandTotal)
       }).then(function (data) {
         models.PartyMaster.update({
-          balance: parseFloat(invoiceItemData.partyMasterBalance) + parseFloat(invoiceItemData.grandTotal)
+          balance: parseFloat(invoiceItemData.partyMasterBalance) - parseFloat(invoiceItemData.grandTotal)
         }, {
           where: {
             id: invoiceItemData.partymasterId
