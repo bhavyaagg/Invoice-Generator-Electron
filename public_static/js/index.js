@@ -1137,6 +1137,8 @@ $(document).ready(function () {
                   })
                   ipcRenderer.once('editedInvoiceItem', (e, editedInvoiceData) => {
                     if (editedInvoiceData && editedInvoiceData.success) {
+
+
                       ipcRenderer.send('updateCreditByInvoiceId', {
                         credit: (+grandTotal) + (+packingCharges),
                         invoiceId: invoiceItem.id

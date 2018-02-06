@@ -137,11 +137,37 @@ function deletePayment(event, data) {
     })
   })
 }
+function viewLedgerByInvocieId(event, data) {
+  models.Ledger.find({
+    where: {
+      invoiceId: data.invoiceId
+    }
+  }).then(function (row) {
+    if (row) {
+      event.sender.send('getLedgerByInvoiceId', {
+        success: true,
+        ledgerRows: row.map((v) => {v.get()})
+      });
+    } else {
+      event.sender.send('getLedgerByInvoiceId', {
+        success: false,
+        error: "No Ledger exists"
+      });
+    }
+  }).catch(function (err) {
+    console.log(err);
+    event.sender.send('getLedgerByInvoiceId', {
+      success: false,
+      error: err
+    });
+  })
+}
 
 module.exports = exports = {
   viewLedgerByPartyMasterId,
   deleteLedgerItem,
   updateCreditByInvoiceId,
   viewMasterLedger,
-  deletePayment
+  deletePayment,
+  viewLedgerByInvocieId
 };
