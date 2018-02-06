@@ -1160,7 +1160,19 @@ $(document).ready(function () {
                           })
                         }
                         else {
+                          ipcRenderer.send('updateDebitByInvoiceId', {
+                            debit: (+grandTotal) + (+packingCharges),
+                            invoiceId: invoiceItem.id
+                          })
 
+                          ipcRenderer.once('updatedDebitByInvoiceId', (event, data) => {
+                            if (data.success) {
+                              $('#editInvoiceItemModal').modal('hide');
+                              $("#editInvoiceSubmit").unbind("click");
+                              $viewInvoicesButton.click();
+
+                            }
+                          })
                         }
                       });
 
