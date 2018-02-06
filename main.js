@@ -133,6 +133,8 @@ ipcMain.on('deleteLedgerItem', routes.ledger.deleteLedgerItem);
 
 ipcMain.on('updateCreditByInvoiceId', routes.ledger.updateCreditByInvoiceId);
 
+ipcMain.on('updateDebitByInvoiceId', routes.ledger.updateDebitByInvoiceId);
+
 ipcMain.on('viewMasterLedger', routes.ledger.viewMasterLedger);
 
 ipcMain.on('deletePayment', routes.ledger.deletePayment);
