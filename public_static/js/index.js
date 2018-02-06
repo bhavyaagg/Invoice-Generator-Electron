@@ -1138,20 +1138,32 @@ $(document).ready(function () {
                   ipcRenderer.once('editedInvoiceItem', (e, editedInvoiceData) => {
                     if (editedInvoiceData && editedInvoiceData.success) {
 
+                      ipcRenderer.send('viewLedgerByInvoiceId', {
+                        invoiceId: invoiceItemId
+                      });
 
-                      ipcRenderer.send('updateCreditByInvoiceId', {
-                        credit: (+grandTotal) + (+packingCharges),
-                        invoiceId: invoiceItem.id
-                      })
+                      ipcRenderer.once('getLedgerByInvoiceId', (event, data) => {
+                        console.log(data);
+                        if(data.credit > 0) {
+                          ipcRenderer.send('updateCreditByInvoiceId', {
+                            credit: (+grandTotal) + (+packingCharges),
+                            invoiceId: invoiceItem.id
+                          })
 
-                      ipcRenderer.once('updatedCreditByInvoiceId', (event, data) => {
-                        if (data.success) {
-                          $('#editInvoiceItemModal').modal('hide');
-                          $("#editInvoiceSubmit").unbind("click");
-                          $viewInvoicesButton.click();
+                          ipcRenderer.once('updatedCreditByInvoiceId', (event, data) => {
+                            if (data.success) {
+                              $('#editInvoiceItemModal').modal('hide');
+                              $("#editInvoiceSubmit").unbind("click");
+                              $viewInvoicesButton.click();
+
+                            }
+                          })
+                        }
+                        else {
 
                         }
-                      })
+                      });
+
                     }
                   })
 

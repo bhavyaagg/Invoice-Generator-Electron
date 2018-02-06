@@ -80,6 +80,34 @@ function updateCreditByInvoiceId(event, data) {
   })
 }
 
+
+function updateDebitByInvoiceId(event, data) {
+  models.Ledger.update({
+    debit: data.debit
+  }, {
+    where: {
+      invoiceId: data.invoiceId
+    }
+  }).then(row => {
+    if (row && row.length > 0) {
+      event.sender.send('updatedDebitByInvoiceId', {
+        success: true
+      })
+    }
+    else {
+      event.sender.send('updatedDebitByInvoiceId', {
+        success: false,
+        error: "Nothing to update"
+      })
+    }
+  }).catch(err => {
+    event.sender.send('updatedDebitByInvoiceId', {
+      success: false,
+      error: err
+    })
+  })
+}
+
 function viewMasterLedger(event) {
   models.Ledger.findAll({
     include: [models.PartyMaster],
@@ -146,7 +174,7 @@ function viewLedgerByInvoiceId(event, data) {
     if (row) {
       event.sender.send('getLedgerByInvoiceId', {
         success: true,
-        ledgerRows: row.map((v) => {v.get()})
+        ledgerRow: row.get()
       });
     } else {
       event.sender.send('getLedgerByInvoiceId', {
@@ -169,5 +197,6 @@ module.exports = exports = {
   updateCreditByInvoiceId,
   viewMasterLedger,
   deletePayment,
-  viewLedgerByInvoiceId
+  viewLedgerByInvoiceId,
+  updateDebitByInvoiceId
 };
