@@ -1143,12 +1143,14 @@ $(document).ready(function () {
                       });
 
                       ipcRenderer.once('getLedgerByInvoiceId', (event, data) => {
-                        console.log(data);
-                        if(data.credit > 0) {
+                        console.log('Current credit is ');
+                        console.log( data);
+                        if((+data.ledgerRow.credit) > 0) {
+                          console.log('crediting this ' + data);
                           ipcRenderer.send('updateCreditByInvoiceId', {
                             credit: (+grandTotal) + (+packingCharges),
                             invoiceId: invoiceItem.id
-                          })
+                          });
 
                           ipcRenderer.once('updatedCreditByInvoiceId', (event, data) => {
                             if (data.success) {
@@ -1160,6 +1162,7 @@ $(document).ready(function () {
                           })
                         }
                         else {
+                          console.log('debiting this ' + data);
                           ipcRenderer.send('updateDebitByInvoiceId', {
                             debit: (+grandTotal) + (+packingCharges),
                             invoiceId: invoiceItem.id
@@ -1326,7 +1329,7 @@ $(document).ready(function () {
 
       });
 
-    })
+    });
 
     $('#addInvoiceReturn').click(function () {
       $mainContent.empty();
@@ -1464,7 +1467,7 @@ $(document).ready(function () {
         <div class="row" id="submitBtnDiv">
           <div class="col-5"><b></b></div>
           <div class="col-2">
-            <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
+            <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitReturnInvoice">
           
           </div>
           <div class="col-5">
@@ -1800,7 +1803,7 @@ $(document).ready(function () {
           id: slipNumber
         })
       });
-      $('#submitInvoice').click(function () {
+      $('#submitReturnInvoice').click(function () {
         let bilityDate = ($bilityDate.val() ? $bilityDate.val() : null)
         let chalanDate = $chalanDate.val();
 
@@ -1833,7 +1836,7 @@ $(document).ready(function () {
 
         ipcRenderer.once('getSubmitReturnInvoice', function (event, data) {
           if (data.success) {
-            $('#submitInvoice').hide();
+            $('#submitReturnInvoice').hide();
             $('#addInvoiceItemBtn').hide();
             $('#addPackingChargesBtn').hide();
             $('.invoiceListItemClass').hide();
