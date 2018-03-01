@@ -2932,7 +2932,10 @@ $(document).ready(function () {
               let productCategoryId = +(e.target.getAttribute("productCategoryId"));
               if (productCategoryId === 0) {
                 console.log(1)
-                ipcRenderer.send('viewProductSales');
+                ipcRenderer.send('viewProductSales', {
+                  startDate: $('#productSaleStartDate').val(),
+                  endDate: $('#productSaleEndDate').val()
+                });
 
                 ipcRenderer.once('getProductSales', (event, productData) => {
                   console.log(productData)
@@ -2947,7 +2950,9 @@ $(document).ready(function () {
                     })
 
                     console.log(productData);
-
+                    $mainContent.append(`
+                      <div class="productSaleData"></div>  
+                    `);
                     let str = `
                       <ul class="list-group text-center">
                         <li class="list-group-item">
@@ -2992,7 +2997,7 @@ $(document).ready(function () {
                       </li>
                     </ul>
                   `;
-                    $mainContent.empty().append(str);
+                    $('.productSaleData').empty().append(str);
                   }
                 });
 
