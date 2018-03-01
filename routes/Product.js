@@ -186,9 +186,15 @@ function viewProductByPCategoryId(event, productCategory) {
 }
 
 
-function viewProductSales(event) {
+function viewProductSales(event, salesDate) {
   models.InvoiceDetail.findAll({
     include: [models.Product],
+    where:{
+      updatedAt: {
+        [Sequelize.Op.lt]: new Date(salesDate.endDate),  //new Date().toISOString(),
+        [Sequelize.Op.gt]: new Date(salesDate.startDate)  //new Date("2018-01-01").toISOString()
+      }
+    },
     group: 'productId',
     attributes: [
       [models.sequelize.fn('SUM', models.sequelize.col('qty')), 'totalQty']
