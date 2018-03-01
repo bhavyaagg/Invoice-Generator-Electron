@@ -3,6 +3,9 @@
  */
 
 const models = require('./../db/models');
+const Sequelize = require('sequelize');
+
+
 
 function addProduct(event, data) {
   models.Product.create({
@@ -211,7 +214,11 @@ function viewProductSales(event) {
 function viewProductSalesByProductCategoryId(event, productCategoryId) {
   models.InvoiceDetail.findAll({
     where: {
-      '$product.productcategoryId$': productCategoryId.id
+      '$product.productcategoryId$': productCategoryId.id,
+      updatedAt: {
+        [Sequelize.Op.lt]: new Date().toISOString(),
+        [Sequelize.Op.gt]: new Date("2018-01-01").toISOString()
+      }
     },
     include: [
       {

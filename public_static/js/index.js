@@ -2931,49 +2931,49 @@ $(document).ready(function () {
                   console.log(productData);
 
                   let str = `
-            <ul class="list-group text-center">
-              <li class="list-group-item">
-                <div class="row align-items-center">
-                  <div class="col-6">
-                    <b>Product Name</b>
-                  </div>
-                  <div class="col">
-                    <b>Total Qty</b>
-                  </div>
-                </div>
-              </li>
-          `;
+                    <ul class="list-group text-center">
+                      <li class="list-group-item">
+                        <div class="row align-items-center">
+                          <div class="col-6">
+                            <b>Product Name</b>
+                          </div>
+                          <div class="col">
+                            <b>Total Qty</b>
+                          </div>
+                        </div>
+                      </li>
+                  `;
 
                   let totalQuantity = 0;
                   productData.productSales.forEach(productSale => {
-                    str += `
-              <li class="list-group-item">
-                <div class="row align-items-center">
-                  <div class="col-6">
-                    ${productSale.product.name}
-                  </div>
-                  <div class="col">
-                    ${productSale.totalQty}
-                  </div>
-                </div>
-              </li>
-            `;
+                  str += `
+                    <li class="list-group-item">
+                      <div class="row align-items-center">
+                        <div class="col-6">
+                          ${productSale.product.name}
+                        </div>
+                        <div class="col">
+                          ${productSale.totalQty}
+                        </div>
+                      </div>
+                    </li>
+                  `;
 
                     totalQuantity += productSale.totalQty;
                   })
                   str += `
-              <li class="list-group-item">
-                <div class="row align-items-center">
-                  <div class="col-6">
-                    <b>Total</b>
-                  </div>
-                  <div class="col">
-                    <b>${totalQuantity}</b>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          `;
+                    <li class="list-group-item">
+                      <div class="row align-items-center">
+                        <div class="col-6">
+                          <b>Total</b>
+                        </div>
+                        <div class="col">
+                          <b>${totalQuantity}</b>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                `;
                   $mainContent.empty().append(str);
                 }
               });
@@ -3031,17 +3031,17 @@ $(document).ready(function () {
                     totalQuantity += productSale.totalQty;
                   })
                   str += `
-                    <li class="list-group-item">
-                      <div class="row align-items-center">
-                        <div class="col-6">
-                          <b>Total</b>
+                      <li class="list-group-item">
+                        <div class="row align-items-center">
+                          <div class="col-6">
+                            <b>Total</b>
+                          </div>
+                          <div class="col">
+                            <b>${totalQuantity}</b>
+                          </div>
                         </div>
-                        <div class="col">
-                          <b>${totalQuantity}</b>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
+                      </li>
+                    </ul>
                   `;
                   $mainContent.empty().append(str);
                 }
@@ -3121,6 +3121,60 @@ $(document).ready(function () {
       */
     })
 
+  });
+
+  $editProductCategorySubmit.click(function (e) {
+    let productCategoryId = +(e.target.getAttribute("productCategoryId"));
+    let productCategoryName = $editProductCategoryName.val();
+
+    if (productCategoryName === "") {
+      $editProductCategoryError.text("Please Enter the Product Category Name");
+    } else {
+      ipcRenderer.send('editProductCategory', {
+        id: productCategoryId,
+        name: productCategoryName
+      });
+      ipcRenderer.once('editedProductCategory', function (event, data) {
+        $editProductCategoryModal.modal('hide');
+        if (data.success) {
+          $('#viewProductCategoriesButton').click();
+          $resultRow.removeClass('text-danger').addClass('text-success');
+          $resultRow.text("Product Category Has Been Updated");
+        } else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Product Category Could Not Be Updated Because " + data.error);
+        }
+      })
+    }
+  });
+
+  $editProductSubmit.click(function (e) {
+    let productId = +(e.target.getAttribute("productId"));
+    let productName = $editProductName.val();
+    let productPrice = +($editProductPrice.val());
+    let productCategoryId = +($editProductCategoryForProductList.val());
+
+    if (!productName || !productPrice || productCategoryId === 0) {
+      $editProductError.text("Please Enter the All the Details");
+    } else {
+      ipcRenderer.send('editProduct', {
+        id: productId,
+        name: productName,
+        price: productPrice,
+        productCategoryId: productCategoryId
+      });
+      ipcRenderer.once('editedProduct', function (event, data) {
+        $editProductModal.modal('hide');
+        if (data.success) {
+          $('#viewProductsButton').click();
+          $resultRow.removeClass('text-danger').addClass('text-success');
+          $resultRow.text("Product Has Been Updated");
+        } else {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Product Could Not Be Updated Because " + data.error);
+        }
+      })
+    }
   });
 
   $ledgerButton.click(function () {
@@ -3477,60 +3531,6 @@ $(document).ready(function () {
       })
     })
   });
-
-  $editProductCategorySubmit.click(function (e) {
-    let productCategoryId = +(e.target.getAttribute("productCategoryId"));
-    let productCategoryName = $editProductCategoryName.val();
-
-    if (productCategoryName === "") {
-      $editProductCategoryError.text("Please Enter the Product Category Name");
-    } else {
-      ipcRenderer.send('editProductCategory', {
-        id: productCategoryId,
-        name: productCategoryName
-      });
-      ipcRenderer.once('editedProductCategory', function (event, data) {
-        $editProductCategoryModal.modal('hide');
-        if (data.success) {
-          $('#viewProductCategoriesButton').click();
-          $resultRow.removeClass('text-danger').addClass('text-success');
-          $resultRow.text("Product Category Has Been Updated");
-        } else {
-          $resultRow.removeClass('text-success').addClass('text-danger');
-          $resultRow.text("Product Category Could Not Be Updated Because " + data.error);
-        }
-      })
-    }
-  })
-
-  $editProductSubmit.click(function (e) {
-    let productId = +(e.target.getAttribute("productId"));
-    let productName = $editProductName.val();
-    let productPrice = +($editProductPrice.val());
-    let productCategoryId = +($editProductCategoryForProductList.val());
-
-    if (!productName || !productPrice || productCategoryId === 0) {
-      $editProductError.text("Please Enter the All the Details");
-    } else {
-      ipcRenderer.send('editProduct', {
-        id: productId,
-        name: productName,
-        price: productPrice,
-        productCategoryId: productCategoryId
-      });
-      ipcRenderer.once('editedProduct', function (event, data) {
-        $editProductModal.modal('hide');
-        if (data.success) {
-          $('#viewProductsButton').click();
-          $resultRow.removeClass('text-danger').addClass('text-success');
-          $resultRow.text("Product Has Been Updated");
-        } else {
-          $resultRow.removeClass('text-success').addClass('text-danger');
-          $resultRow.text("Product Could Not Be Updated Because " + data.error);
-        }
-      })
-    }
-  })
 
   function getDataProductCategories() {
     let productCategoriesRowObj = {};
