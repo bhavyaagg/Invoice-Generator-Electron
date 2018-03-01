@@ -2910,112 +2910,61 @@ $(document).ready(function () {
           $mainContent.empty().append(str);
 
           $('.view-product-sales').click((e) => {
-            console.log(1)
-            let productCategoryId = +(e.target.getAttribute("productCategoryId"));
-            if (productCategoryId === 0) {
+            //Here
+            $mainContent.empty().append(`
+              <div class="row form-group">
+                <div class="col-4">
+                  <input class="form-control" type="date" id="productSaleStartDate" value="2018-01-01" >
+                </div> 
+                <div class="col-4">
+                  <input class="form-control" type="date" id="productSaleEndDate" value="${getCurrentDate()}">
+                </div> 
+                <button class="btn btn-success" id="productSaleDateSubmit">
+                      Go
+                </button>
+              </div>
+            `);
+
+            $('#productSaleDateSubmit').click(function () {
+
+
               console.log(1)
-              ipcRenderer.send('viewProductSales');
+              let productCategoryId = +(e.target.getAttribute("productCategoryId"));
+              if (productCategoryId === 0) {
+                console.log(1)
+                ipcRenderer.send('viewProductSales');
 
-              ipcRenderer.once('getProductSales', (event, productData) => {
-                console.log(productData)
-                if (productData.success) {
+                ipcRenderer.once('getProductSales', (event, productData) => {
+                  console.log(productData)
+                  if (productData.success) {
 
-                  productData.productSales.sort(function (a, b) {
-                    if (+(a.totalQty) < +(b.totalQty))
-                      return 1;
-                    if (+(a.totalQty) > +(b.totalQty))
-                      return -1;
-                    return 0;
-                  })
+                    productData.productSales.sort(function (a, b) {
+                      if (+(a.totalQty) < +(b.totalQty))
+                        return 1;
+                      if (+(a.totalQty) > +(b.totalQty))
+                        return -1;
+                      return 0;
+                    })
 
-                  console.log(productData);
+                    console.log(productData);
 
-                  let str = `
-                    <ul class="list-group text-center">
-                      <li class="list-group-item">
-                        <div class="row align-items-center">
-                          <div class="col-6">
-                            <b>Product Name</b>
+                    let str = `
+                      <ul class="list-group text-center">
+                        <li class="list-group-item">
+                          <div class="row align-items-center">
+                            <div class="col-6">
+                              <b>Product Name</b>
+                            </div>
+                            <div class="col">
+                              <b>Total Qty</b>
+                            </div>
                           </div>
-                          <div class="col">
-                            <b>Total Qty</b>
-                          </div>
-                        </div>
-                      </li>
-                  `;
+                        </li>
+                    `;
 
-                  let totalQuantity = 0;
-                  productData.productSales.forEach(productSale => {
-                  str += `
-                    <li class="list-group-item">
-                      <div class="row align-items-center">
-                        <div class="col-6">
-                          ${productSale.product.name}
-                        </div>
-                        <div class="col">
-                          ${productSale.totalQty}
-                        </div>
-                      </div>
-                    </li>
-                  `;
-
-                    totalQuantity += productSale.totalQty;
-                  })
-                  str += `
-                    <li class="list-group-item">
-                      <div class="row align-items-center">
-                        <div class="col-6">
-                          <b>Total</b>
-                        </div>
-                        <div class="col">
-                          <b>${totalQuantity}</b>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                `;
-                  $mainContent.empty().append(str);
-                }
-              });
-
-
-            } else {
-              console.log(3)
-              ipcRenderer.send('viewProductSalesByProductCategoryId', {
-                id: productCategoryId
-              });
-
-              ipcRenderer.once('getProductSalesByProductCategoryId', (event, productData) => {
-                console.log(productData)
-                if (productData.success) {
-                  console.log(productData.productSales)
-                  productData.productSales.sort(function (a, b) {
-                    if (+(a.totalQty) < +(b.totalQty))
-                      return 1;
-                    if (+(a.totalQty) > +(b.totalQty))
-                      return -1;
-                    return 0;
-                  });
-
-                  console.log(productData.productSales)
-
-                  let str = `
-                    <ul class="list-group text-center">
-                      <li class="list-group-item">
-                        <div class="row align-items-center">
-                          <div class="col-6">
-                            <b>Product Name</b>
-                          </div>
-                          <div class="col">
-                            <b>Total Qty</b>
-                          </div>
-                        </div>
-                      </li>
-                  `;
-
-                  let totalQuantity = 0;
-                  productData.productSales.forEach(productSale => {
-                    str += `
+                    let totalQuantity = 0;
+                    productData.productSales.forEach(productSale => {
+                      str += `
                       <li class="list-group-item">
                         <div class="row align-items-center">
                           <div class="col-6">
@@ -3028,9 +2977,9 @@ $(document).ready(function () {
                       </li>
                     `;
 
-                    totalQuantity += productSale.totalQty;
-                  })
-                  str += `
+                      totalQuantity += productSale.totalQty;
+                    })
+                    str += `
                       <li class="list-group-item">
                         <div class="row align-items-center">
                           <div class="col-6">
@@ -3043,11 +2992,88 @@ $(document).ready(function () {
                       </li>
                     </ul>
                   `;
-                  $mainContent.empty().append(str);
-                }
-              });
-            }
+                    $mainContent.empty().append(str);
+                  }
+                });
 
+
+              } else {
+                console.log(3)
+                ipcRenderer.send('viewProductSalesByProductCategoryId', {
+                  id: productCategoryId,
+                  startDate: $('#productSaleStartDate').val(),
+                  endDate: $('#productSaleEndDate').val()
+                });
+
+                ipcRenderer.once('getProductSalesByProductCategoryId', (event, productData) => {
+                  console.log(productData)
+                  if (productData.success) {
+                    console.log(productData.productSales)
+                    productData.productSales.sort(function (a, b) {
+                      if (+(a.totalQty) < +(b.totalQty))
+                        return 1;
+                      if (+(a.totalQty) > +(b.totalQty))
+                        return -1;
+                      return 0;
+                    });
+
+                    console.log(productData.productSales)
+
+                    let str = `
+                    <div class="saleDataList">
+                      <ul class="list-group text-center">
+                        <li class="list-group-item">
+                          <div class="row align-items-center">
+                            <div class="col-6">
+                              <b>Product Name</b>
+                            </div>
+                            <div class="col">
+                              <b>Total Qty</b>
+                            </div>
+                          </div>
+                        </li>
+                    `;
+
+                    let totalQuantity = 0;
+                    productData.productSales.forEach(productSale => {
+                      str += `
+                        <li class="list-group-item">
+                          <div class="row align-items-center">
+                            <div class="col-6">
+                              ${productSale.product.name}
+                            </div>
+                            <div class="col">
+                              ${productSale.totalQty}
+                            </div>
+                          </div>
+                        </li>
+                        
+                      `;
+
+                      totalQuantity += productSale.totalQty;
+                    })
+                    str += `
+                          <li class="list-group-item">
+                            <div class="row align-items-center">
+                              <div class="col-6">
+                                <b>Total</b>
+                              </div>
+                              <div class="col">
+                                <b>${totalQuantity}</b>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    `;
+                    $('.saleDataList').empty();
+                    $mainContent.append(str);
+                  }
+                });
+              }
+              //here
+            });
+            $('#productSaleDateSubmit').click();
           })
         }
 

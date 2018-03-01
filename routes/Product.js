@@ -216,8 +216,8 @@ function viewProductSalesByProductCategoryId(event, productCategoryId) {
     where: {
       '$product.productcategoryId$': productCategoryId.id,
       updatedAt: {
-        [Sequelize.Op.lt]: new Date().toISOString(),
-        [Sequelize.Op.gt]: new Date("2018-01-01").toISOString()
+        [Sequelize.Op.lt]: new Date(productCategoryId.endDate),  //new Date().toISOString(),
+        [Sequelize.Op.gt]: new Date(productCategoryId.startDate)  //new Date("2018-01-01").toISOString()
       }
     },
     include: [
