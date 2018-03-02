@@ -3259,150 +3259,197 @@ $(document).ready(function () {
 
     $viewLedger.click(function () {
       let partyMasterId = +($('#partyMastersList').val());
+      $mainContent.empty();
+      $mainContent.append(`
+        <div class="row form-group">
+          <div class="col-4">
+            <input class="form-control" type="date" id="ledgerStartDate" value="2018-01-01" >
+          </div> 
+          <div class="col-4">
+            <input class="form-control" type="date" id="ledgerEndDate" value="${getCurrentDate()}">
+          </div> 
+          <button class="btn btn-success" id="ledgerDateSubmit">
+                Go
+          </button>
+        </div>
+        <div id="ledgerContent">
+        
+        </div>
+      `);
 
-      if (partyMasterId === 0) {
-        $resultRow.removeClass('text-success').addClass('text-danger');
-        $resultRow.text("Please Select A Party Master");
-      } else {
-        ipcRenderer.send('viewLedgerByPartyMasterId', {
-          id: partyMasterId
-        });
-        ipcRenderer.once('getLedgerByPartyMasterId', function (event, data) {
-          $mainContent.empty();
-          $resultRow.empty();
-          if (data.success) {
-            let str = `
-            <h3>${data.ledgerRows[0].partymaster.name}</h3>  
-            <ul class="list-group text-center">
-              <li class="list-group-item">
-                <div class="row align-items-center">
-                  <div class="col">
-                    Description
-                  </div>
-                  <div class="col">
-                    Date Of Transaction
-                  </div>
-                  <div class="col">
-                    Product Name
-                  </div>
-                  <div class="col">
-                    Debit
-                  </div>
-                  <div class="col">
-                    Credit
-                  </div>
-                  <div class="col">
-                    Balance
-                  </div>
-                  <div class="col"></div>
-                </div>
-              </li>
-          `;
+      let $ledgerContent = $('#ledgerContent') ;
+      $('#ledgerDateSubmit').click(function () {
 
+        $ledgerContent.empty();
+        if (partyMasterId === 0) {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Please Select A Party Master");
+        } else {
+          ipcRenderer.send('viewLedgerByPartyMasterId', {
+            id: partyMasterId
+          });
+          ipcRenderer.once('getLedgerByPartyMasterId', function (event, data) {
+
+            $resultRow.empty();
+            if (data.success) {
+              let str = `
+              <h3>${data.ledgerRows[0].partymaster.name}</h3>  
+              <ul class="list-group text-center">
+                <li class="list-group-item">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      Description
+                    </div>
+                    <div class="col">
+                      Date Of Transaction
+                    </div>
+                    <div class="col">
+                      Product Name
+                    </div>
+                    <div class="col">
+                      Debit
+                    </div>
+                    <div class="col">
+                      Credit
+                    </div>
+                    <div class="col">
+                      Balance
+                    </div>
+                    <div class="col"></div>
+                  </div>
+                </li>
+            `;
+            let openingBalance = data.ledgerRows[0].partymaster.openingBalance;
+
+            let $ledgerStartDate =  $('#ledgerStartDate');
+            let $ledgerEndDate = $('#ledgerEndDate');
             str += `
               
               <li class="list-group-item">
                 <div class="row align-items-center">
                   <div class="col">Opening Balance</div>
-                  <div class="col">${data.ledgerRows[0].partymaster.openingBalanceDate.split('-').reverse().join('/')}</div>
+                  <div class="col">${$ledgerStartDate.val().split('-').reverse().join('/')}</div>
                   <div class="col"></div>
                   <div class="col"></div>
                   <div class="col"></div>
-                  <div class="col">${data.ledgerRows[0].partymaster.openingBalance}</div>
+                  <div class="col" id="openingBalanceDiv"></div>
                   <div class="col"></div>
                 </div>
               </li>`;
-            let debitTotal = 0, creditTotal = data.ledgerRows[0].partymaster.openingBalance;
-            data.ledgerRows.forEach(function (ledgerRow) {
-              console.log(ledgerRow);
-              creditTotal += ledgerRow.credit;
-              debitTotal += ledgerRow.debit;
-              let strBtn = '';
-              if (ledgerRow.debit > 0 && ledgerRow.credit === 0 && ledgerRow.invoiceId ===  null) {
-                strBtn = `<button class="btn btn-primary deletePayment" ledgerId="${ledgerRow.id}">Delete</button>`
-              }
-              str += `
-              <li class="list-group-item">
-                <div class="row align-items-center">
-                  <div class="col">${ledgerRow.description}</div>
-                  <div class="col">${ledgerRow.dateOfTransaction.split('-').reverse().join('/')}</div>
-                  <div class="col">${ledgerRow.productCategoryName}</div>
-                  <div class="col">${ledgerRow.debit}</div>
-                  <div class="col">${ledgerRow.credit}</div>
-                  <div class="col">${creditTotal - debitTotal}</div>
-                  <div class="col">${strBtn}</div>
-                </div>
-              </li>
-              `
-            });
-            str += "</ul>"
 
 
-            str += `
-              <div class="row">
-                <div class="col-5"></div>
-                <button class="btn btn-primary" id="printLedger">Print Ledger</button>
-                <div class="col-5"></div>
-              </div>
-            `
+              console.log('start date' + (new Date($ledgerStartDate.val())).valueOf());
+              let startDate = (new Date($ledgerStartDate.val())).valueOf();
+              let endDate = (new Date($ledgerEndDate.val())).valueOf();
+              console.log('end date' + (new Date($ledgerEndDate.val())).valueOf());
 
-            $mainContent.append(str);
+              let debitTotal = 0, creditTotal = data.ledgerRows[0].partymaster.openingBalance;
+              data.ledgerRows.forEach(function (ledgerRow) {
+                //console.log(ledgerRow);
+                creditTotal += ledgerRow.credit;
+                debitTotal += ledgerRow.debit;
+                let strBtn = '';
 
-            $('.deletePayment').click(function (event) {
-              let ledgerId = +(event.target.getAttribute('ledgerId'));
+                console.log('ledger value'+ new Date(ledgerRow.dateOfTransaction).valueOf() );
 
-              ipcRenderer.send('deletePayment', {
-                ledgerId: ledgerId
-              })
-
-              ipcRenderer.once('deletedPayment', (e, data) => {
-                console.log(data);
-                if (data.success) {
-                  $viewLedger.click();
+                if(new Date(ledgerRow.dateOfTransaction).valueOf() < startDate ||
+                  new Date(ledgerRow.dateOfTransaction).valueOf() > endDate ) {
+                  openingBalance = creditTotal - debitTotal ;
+                  return ;
                 }
-                else {
-                  $resultRow.removeClass('text-success').addClass('text-danger');
-                  $resultRow.text("Ledger Could Not Be delete " + data.error);
+                if (ledgerRow.debit > 0 && ledgerRow.credit === 0 && ledgerRow.invoiceId ===  null) {
+                  strBtn = `<button class="btn btn-primary deletePayment" ledgerId="${ledgerRow.id}">Delete</button>`
                 }
-              })
-            });
-
-
-            $('#printLedger').click(function () {
-              $('#printLedger').hide();
-              $('#addInvoiceItemBtn').hide();
-              $('#addPackingChargesBtn').hide();
-
-              let mainContent = $('#mainContent')[0];
-
-              $(document.body).empty().append(mainContent);
-
-
-              $('input, select').css('border', 'none');
-              $('select').css('background', 'white').css('padding-left', "0");
-              $('#mainContent').css('padding', "0px");
-              $('*').css('font-size', '12px');
-
-              ipcRenderer.send('printInvoice', {
-                id: 1000
+                str += `
+                <li class="list-group-item">
+                  <div class="row align-items-center">
+                    <div class="col">${ledgerRow.description}</div>
+                    <div class="col">${ledgerRow.dateOfTransaction.split('-').reverse().join('/')}</div>
+                    <div class="col">${ledgerRow.productCategoryName}</div>
+                    <div class="col">${ledgerRow.debit}</div>
+                    <div class="col">${ledgerRow.credit}</div>
+                    <div class="col">${creditTotal - debitTotal}</div>
+                    <div class="col">${strBtn}</div>
+                  </div>
+                </li>
+                `
               });
-              ipcRenderer.once('printedInvoice', function (event, data) {
-                if (data.success) {
-                  location.reload();
-                } else {
-                  window.alert("Could not add invoice");
-                  $('#resultRow').removeClass('text-success').addClass('text-danger');
-                  $('#resultRow').text("Invoice Could Not Be Added");
-                  $mainContent.empty();
-                }
+              str += "</ul>"
+              console.log('opening balamce' + openingBalance);
+
+
+              str += `
+                <div class="row">
+                  <div class="col-5"></div>
+                  <button class="btn btn-primary" id="printLedger">Print Ledger</button>
+                  <div class="col-5"></div>
+                </div>
+              `
+
+              $ledgerContent.append(str);
+
+              $('#openingBalanceDiv').append(`
+                <p>${openingBalance}</p>
+              `);
+
+              $('.deletePayment').click(function (event) {
+                let ledgerId = +(event.target.getAttribute('ledgerId'));
+
+                ipcRenderer.send('deletePayment', {
+                  ledgerId: ledgerId
+                })
+
+                ipcRenderer.once('deletedPayment', (e, data) => {
+                  console.log(data);
+                  if (data.success) {
+                    $viewLedger.click();
+                  }
+                  else {
+                    $resultRow.removeClass('text-success').addClass('text-danger');
+                    $resultRow.text("Ledger Could Not Be delete " + data.error);
+                  }
+                })
+              });
+
+
+              $('#printLedger').click(function () {
+                $('#printLedger').hide();
+                $('#addInvoiceItemBtn').hide();
+                $('#addPackingChargesBtn').hide();
+
+                let mainContent = $('#mainContent')[0];
+
+                $(document.body).empty().append(mainContent);
+
+
+                $('input, select').css('border', 'none');
+                $('select').css('background', 'white').css('padding-left', "0");
+                $('#mainContent').css('padding', "0px");
+                $('*').css('font-size', '12px');
+
+                ipcRenderer.send('printInvoice', {
+                  id: 1000
+                });
+                ipcRenderer.once('printedInvoice', function (event, data) {
+                  if (data.success) {
+                    location.reload();
+                  } else {
+                    window.alert("Could not add invoice");
+                    $('#resultRow').removeClass('text-success').addClass('text-danger');
+                    $('#resultRow').text("Invoice Could Not Be Added");
+                    $mainContent.empty();
+                  }
+                })
               })
-            })
-          } else {
-            $resultRow.removeClass('text-success').addClass('text-danger');
-            $resultRow.text("Ledger Could Not Be printed" + data.error);
-          }
-        })
-      }
+            } else {
+              $resultRow.removeClass('text-success').addClass('text-danger');
+              $resultRow.text("Ledger Could Not Be printed" + data.error);
+            }
+          })
+        }
+
+      });
+      $('#ledgerDateSubmit').click();
     });
 
     $addPayment.click(function () {
