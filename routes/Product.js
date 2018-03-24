@@ -191,8 +191,8 @@ function viewProductSales(event, salesDate) {
     include: [models.Product],
     where:{
       updatedAt: {
-        [Sequelize.Op.lt]: new Date(salesDate.endDate),  //new Date().toISOString(),
-        [Sequelize.Op.gt]: new Date(salesDate.startDate)  //new Date("2018-01-01").toISOString()
+        [Sequelize.Op.lte]: new Date(salesDate.endDate),  //new Date().toISOString(),
+        [Sequelize.Op.gte]: new Date(salesDate.startDate)  //new Date("2018-01-01").toISOString()
       }
     },
     group: 'productId',
@@ -222,8 +222,8 @@ function viewProductSalesByProductCategoryId(event, productCategoryId) {
     where: {
       '$product.productcategoryId$': productCategoryId.id,
       updatedAt: {
-        [Sequelize.Op.lt]: new Date(productCategoryId.endDate),  //new Date().toISOString(),
-        [Sequelize.Op.gt]: new Date(productCategoryId.startDate)  //new Date("2018-01-01").toISOString()
+        [Sequelize.Op.lte]: new Date(productCategoryId.endDate),  //new Date().toISOString(),
+        [Sequelize.Op.gte]: new Date(productCategoryId.startDate)  //new Date("2018-01-01").toISOString()
       }
     },
     include: [
