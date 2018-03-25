@@ -3241,6 +3241,14 @@ $(document).ready(function () {
           $resultRow.text("Add a Party Master First.");
           return;
         }
+        //
+        data.partyMasterRows.sort(function (a, b) {
+          if ( a.name.toUpperCase() > b.name.toUpperCase() )
+            return 1;
+          if ( a.name.toUpperCase() < b.name.toUpperCase() )
+            return -1;
+          return 0;
+        })
         data.partyMasterRows.forEach(function (partyMaster) {
           str += `<option name="partyMastersList" value="${partyMaster.id}">${partyMaster.name}</option>`
         });
