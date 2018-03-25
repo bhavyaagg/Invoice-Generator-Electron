@@ -3327,7 +3327,7 @@ $(document).ready(function () {
               
               <li class="list-group-item">
                 <div class="row align-items-center">
-                  <div class="col">Opening Balance</div>
+                  <div class="col">O.B.</div>
                   <div class="col">${$ledgerStartDate.val().split('-').reverse().join('/')}</div>
                   <div class="col"></div>
                   <div class="col"></div>
@@ -3345,12 +3345,12 @@ $(document).ready(function () {
 
               let debitTotal = 0, creditTotal = data.ledgerRows[0].partymaster.openingBalance;
               data.ledgerRows.forEach(function (ledgerRow) {
-                //console.log(ledgerRow);
+               // console.log(ledgerRow);
                 creditTotal += ledgerRow.credit;
                 debitTotal += ledgerRow.debit;
                 let strBtn = '';
 
-                console.log('ledger value'+ new Date(ledgerRow.dateOfTransaction).valueOf() );
+                //console.log('ledger value'+ new Date(ledgerRow.dateOfTransaction).valueOf() );
 
                 if(new Date(ledgerRow.dateOfTransaction).valueOf() < startDate ||
                   new Date(ledgerRow.dateOfTransaction).valueOf() > endDate ) {
@@ -3416,6 +3416,8 @@ $(document).ready(function () {
                 $('#printLedger').hide();
                 $('#addInvoiceItemBtn').hide();
                 $('#addPackingChargesBtn').hide();
+                $('.deletePayment').hide();
+                $('#ledgerDateSubmit').hide();
 
                 let mainContent = $('#mainContent')[0];
 
@@ -3453,6 +3455,8 @@ $(document).ready(function () {
     });
 
     $addPayment.click(function () {
+
+
       let partyMasterId = +($('#partyMastersList').val());
       if (partyMasterId === 0) {
         $resultRow.removeClass('text-success').addClass('text-danger');
@@ -3460,6 +3464,8 @@ $(document).ready(function () {
       } else {
         $addPaymentSubmit[0].setAttribute('partyMasterId', partyMasterId);
         $addPaymentModal.modal('show');
+
+        $addPaymentDate.val(getCurrentDate())
       }
     });
 
@@ -3485,12 +3491,15 @@ $(document).ready(function () {
             $ledgerButton.click();
             $resultRow.removeClass('text-danger').addClass('text-success');
             $resultRow.text("Payment Has Been Added");
+
           } else {
             $resultRow.removeClass('text-success').addClass('text-danger');
             $resultRow.text("Payment Could Not Be Added Because " + data.error);
           }
         })
       }
+
+      $addPaymentSubmit.unbind("click");
     });
 
     $masterLedger.click(e => {
