@@ -937,6 +937,9 @@ $(document).ready(function () {
                 data.invoiceItems.forEach(invoiceItem => {
 
                   invoiceDetail[+invoiceItem.id] = invoiceItem;
+
+                  if(invoiceItem.qty < 0)
+                    invoiceItem.qty = -1 * invoiceItem.qty;
                   $invoiceItemList.append(`
                     <li class="list-group-item" id="amountCalcList" style="padding: 0px; border: 1px solid black">
                       <div class="row" padding-top: -5px"> 
@@ -1908,9 +1911,13 @@ $(document).ready(function () {
 
             //$('*').css('padding', "");
 
+            invoiceListItemsChanged = Object.values(invoiceListItems).map(invoiceDetailItem => {
+              invoiceDetailItem.qty = -1 * invoiceDetailItem.qty
+              return invoiceDetailItem
+            });
             ipcRenderer.send('submitInvoiceDetail', {
               invoiceId: slipNumber,
-              listItems: Object.values(invoiceListItems)
+              listItems: invoiceListItemsChanged
             })
 
 
