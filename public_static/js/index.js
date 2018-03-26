@@ -240,6 +240,13 @@ $(document).ready(function () {
           let str = `
             
           `;
+          data.partyMasterRows.sort(function (a, b) {
+            if ( a.name.toUpperCase() > b.name.toUpperCase() )
+              return 1;
+            if ( a.name.toUpperCase() < b.name.toUpperCase() )
+              return -1;
+            return 0;
+          })
 
           data.partyMasterRows.forEach(function (row) {
             partyMasterRowObj[row.id] = row;
