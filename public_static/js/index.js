@@ -709,6 +709,10 @@ $(document).ready(function () {
 
         let invoiceItemObj = {};
         //console.log('invoice items' + invoiceItems);
+
+        invoiceItems.sort( function(a, b) {
+          return b.id - a.id;
+        })
         invoiceItems.forEach(invoiceItem => {
           invoiceItemObj[invoiceItem.id] = invoiceItem;
           str += `
