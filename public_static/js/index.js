@@ -632,7 +632,10 @@ $(document).ready(function () {
     });
 
     let $viewInvoicesButton = $('#viewInvoicesButton');
+
     $viewInvoicesButton.click(function () {
+
+      console.log('Clicked time' + new Date().valueOf());
 
       $mainContent.empty();
       $resultRow.empty();
@@ -689,6 +692,7 @@ $(document).ready(function () {
 
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
+        console.log('data fetched' + new Date().valueOf() );
         if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
 
           $mainContent.empty();
@@ -758,13 +762,13 @@ $(document).ready(function () {
 
         str += '</ul>';
         //let productCategoryId = +(e.target.getAttribute("productCategoryId"));
-
+        console.log('before rendering' + new Date().valueOf());
         $mainContent.append(str);
-
-        $('.printInvoiceAgain').click(function (e) {
+        console.log('After rendered' + new Date().valueOf());
+        function printInvoiceAgain(eventPrint) {
 
           console.log('print view click');
-          let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));
+          let invoiceItemId = +(eventPrint.target.getAttribute("invoiceItemId"));
           let invoiceItem = invoiceItemObj[invoiceItemId];
           console.log(invoiceItem);
           $mainContent.empty();
@@ -950,6 +954,7 @@ $(document).ready(function () {
                         </div>
                         <div class="col-2">
                           ${(+invoiceItem.qty) * (+invoiceItem.product.price) }
+                          <button class="btn invoiceListSavedItemClass" data-id="${invoiceItem.id}">X</button>
                         </div>
                       </div>
                     </li>
@@ -959,6 +964,20 @@ $(document).ready(function () {
                   totalAmt += (((+invoiceItem.qty) * (+invoiceItem.product.price)) * (100 - (+discount)) * (100 - splDiscount)) / 10000;
 
                 })
+
+                $('.invoiceListSavedItemClass').click(function (e) {
+
+                  console.log('clciked to delete ' +(e.target.getAttribute('data-id')))
+                  ipcRenderer.send('deleteInvoiceDetail', {
+                    invoiceItemId: +(e.target.getAttribute('data-id'))
+                  })
+
+                  ipcRenderer.once('getDeletedInvoiceDetail', function(e, invoiceData) {
+                    console.log('deleted');
+                    console.log(invoiceData);
+                    printInvoiceAgain(eventPrint);
+                  })
+                });
 
                 let packingCharges = 0;
                 totalAmt = roundTo(totalAmt, 1);
@@ -1024,6 +1043,8 @@ $(document).ready(function () {
                     per: per,
                     price: selectedProduct.price
                   };
+
+                  //Jugaad se cahl rha hai
                   $invoiceItemList.append(`
                     <li class="list-group-item" id='${"amountCalcList" + String(listItemCount)}' style="padding: 0px; border: 1px solid black">
                       <div class="row" style="padding-top: -5px"> 
@@ -1226,7 +1247,8 @@ $(document).ready(function () {
 
           })
 
-        });
+        }
+        $('.printInvoiceAgain').click(printInvoiceAgain);
 
         $('.delete-invoice-item').click(function (e) {
           let invoiceItemId = +(e.target.getAttribute("invoiceItemId"));

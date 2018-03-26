@@ -37,6 +37,33 @@ function viewInvoiceDetailsById(event, data) {
   })
 }
 
+function deleteInvoiceDetail(event, data) {
+  models.InvoiceDetail.destroy({
+    where: {
+      id: data.invoiceItemId
+    }
+  }).then(resultRow => {
+    if(resultRow.length > 0) {
+      event.sender.send('getDeletedInvoiceDetail', {
+        success: true,
+        invoiceDetailItem: resultRow.get()
+      })
+    }
+    else {
+      event.sender.send('getDeletedInvoiceDetail', {
+        success: false,
+        err: "No object found"
+      })
+    }
+  }).catch(err => {
+    event.sender.send('getDeletedInvoiceDetail', {
+      success: false,
+      error: err
+    })
+  })
+}
+
 module.exports = exports = {
-  viewInvoiceDetailsById
+  viewInvoiceDetailsById,
+  deleteInvoiceDetail
 };

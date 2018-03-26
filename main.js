@@ -90,6 +90,8 @@ ipcMain.on('updateBalance', routes.partyMaster.updateBalance);
 
 ipcMain.on('submitInvoiceDetail', routes.invoice.submitInvoiceDetail);
 
+ipcMain.on('deleteInvoiceDetail', routes.invoiceDetail.deleteInvoiceDetail );
+
 ipcMain.on('viewInvoiceItems', routes.invoice.viewInvoiceItems);
 
 ipcMain.on('viewLedgerByPartyMasterId', routes.ledger.viewLedgerByPartyMasterId);
