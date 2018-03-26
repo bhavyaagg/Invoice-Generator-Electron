@@ -43,7 +43,7 @@ function deleteInvoiceDetail(event, data) {
       id: data.invoiceItemId
     }
   }).then(resultRow => {
-    if(resultRow.length > 0) {
+    if(resultRow >0) {
       event.sender.send('getDeletedInvoiceDetail', {
         success: true,
         invoiceDetailItem: resultRow.get()

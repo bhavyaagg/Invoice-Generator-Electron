@@ -933,7 +933,10 @@ $(document).ready(function () {
                 let discount = discountData.discountObj.discount;
                 let splDiscount = discountData.discountObj.splDiscount;
 
+                let invoiceDetail = {};
                 data.invoiceItems.forEach(invoiceItem => {
+
+                  invoiceDetail[+invoiceItem.id] = invoiceItem;
                   $invoiceItemList.append(`
                     <li class="list-group-item" id="amountCalcList" style="padding: 0px; border: 1px solid black">
                       <div class="row" padding-top: -5px"> 
@@ -961,21 +964,48 @@ $(document).ready(function () {
                   `)
                   qtyCount += invoiceItem.qty;
                   totalAmtWithoutDis += +((+invoiceItem.qty) * (+invoiceItem.product.price));
-                  totalAmt += (((+invoiceItem.qty) * (+invoiceItem.product.price)) * (100 - (+discount)) * (100 - splDiscount)) / 10000;
 
                 })
 
+                totalAmt = (totalAmtWithoutDis * (100 - (+discount)) * (100 - splDiscount)) / 10000;
+
+
                 $('.invoiceListSavedItemClass').click(function (e) {
 
-                  console.log('clciked to delete ' +(e.target.getAttribute('data-id')))
+                  let invoiceDetailId = +(e.target.getAttribute('data-id'));
+                  console.log('clciked to delete ' + invoiceDetailId);
                   ipcRenderer.send('deleteInvoiceDetail', {
-                    invoiceItemId: +(e.target.getAttribute('data-id'))
+                    invoiceItemId: +(invoiceDetailId)
                   })
 
                   ipcRenderer.once('getDeletedInvoiceDetail', function(e, invoiceData) {
                     console.log('deleted');
                     console.log(invoiceData);
-                    printInvoiceAgain(eventPrint);
+
+                    let productPrice = (+(invoiceDetail[invoiceDetailId].qty) * +(invoiceDetail[invoiceDetailId].product.price))
+                    console.log(productPrice);
+
+                    let grandTotalChanged = invoiceItem.grandTotal - productPrice*(100-discount)*(100-splDiscount)*(100-invoiceItem.partymaster.dataValues.cd)/1000000;
+                    invoiceItemObj[invoiceItemId].grandTotal = grandTotalChanged;
+
+
+
+                    console.log(grandTotalChanged);
+
+
+                    ipcRenderer.send('editInvoice', {
+                      id: +(invoiceItem.id),
+                      grandTotal: +(grandTotalChanged)
+                    });
+
+                    ipcRenderer.once('editedInvoiceItem', (e, data) => {
+                      console.log(data);
+                      if(data.success) {
+                        printInvoiceAgain(eventPrint);
+                      }
+                    });
+
+
                   })
                 });
 
@@ -1128,6 +1158,7 @@ $(document).ready(function () {
                   $('#submitInvoiceAgain').hide();
                   $('#addPackingChargesBtn').hide();
                   $('.invoiceListItemClass').hide();
+                  $('.invoiceListSavedItemClass').hide();
 
                   let mainContent = $('#mainContent')[0];
 
