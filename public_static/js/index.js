@@ -1221,7 +1221,7 @@ $(document).ready(function () {
                           ipcRenderer.once('updatedCreditByInvoiceId', (event, data) => {
                             if (data.success) {
                               $('#editInvoiceItemModal').modal('hide');
-                              $("#editInvoiceSubmit").unbind("click");
+                              $("#editInvoiceSubmit").off('click');
                               $viewInvoicesButton.click();
 
                             }
@@ -1237,7 +1237,7 @@ $(document).ready(function () {
                           ipcRenderer.once('updatedDebitByInvoiceId', (event, data) => {
                             if (data.success) {
                               $('#editInvoiceItemModal').modal('hide');
-                              $("#editInvoiceSubmit").unbind("click");
+                              $("#editInvoiceSubmit").off('click');
                               $viewInvoicesButton.click();
 
                             }
@@ -1380,7 +1380,7 @@ $(document).ready(function () {
                 ipcRenderer.once('updatedCreditByInvoiceId', (event, data) => {
                   if (data.success) {
                     $('#editInvoiceItemModal').modal('hide');
-                    $("#editInvoiceSubmit").unbind("click");
+                    $("#editInvoiceSubmit").off('click');
                     $viewInvoicesButton.click();
 
                   }
@@ -2385,7 +2385,7 @@ $(document).ready(function () {
                   $('#viewPartyMaster').click();
                 }
               })
-              $("#editPartySubmit").unbind("click");
+              $("#editPartySubmit").off('click');
             })
           });
           let viewPartyDiscounts = $('.viewDiscounts');
@@ -2493,7 +2493,7 @@ $(document).ready(function () {
                         $resultRow.text("Error is" + data.error);
                       }
                     });
-                    $("#editProductCategoryDiscountSubmit").unbind("click");
+                    $("#editProductCategoryDiscountSubmit").off('click');
                   })
                 })
               }
@@ -3578,7 +3578,7 @@ $(document).ready(function () {
         })
       }
 
-      $addPaymentSubmit.unbind("click");
+      $addPaymentSubmit.off('click');
     });
 
     $masterLedger.click(e => {
