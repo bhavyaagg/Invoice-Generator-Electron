@@ -97,7 +97,11 @@ function submitInvoiceDetail(event, invoiceDetail) {
 
 function viewInvoiceItems(event) {
   models.Invoice.findAll({
-    include: [models.PartyMaster, models.ProductCategory]
+    include: [{
+      model: models.PartyMaster
+    }, {
+      model: models.ProductCategory
+    }]
   })
     .then(function (invoiceItems) {
       if (invoiceItems.length > 0) {

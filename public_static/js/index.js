@@ -700,6 +700,7 @@ $(document).ready(function () {
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
         console.log('data fetched' + new Date().valueOf() );
+        console.log(data.error);
         if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
 
           $mainContent.empty();
