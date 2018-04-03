@@ -2383,10 +2383,11 @@ $(document).ready(function () {
                 console.log(data);
                 if (data.success) {
                   $('#editPartyMasterModal').modal('hide');
+                  $("#editPartySubmit").off('click');
                   $('#viewPartyMaster').click();
                 }
               })
-              $("#editPartySubmit").off('click');
+
             })
           });
           let viewPartyDiscounts = $('.viewDiscounts');
