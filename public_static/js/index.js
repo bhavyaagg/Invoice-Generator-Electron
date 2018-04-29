@@ -241,9 +241,9 @@ $(document).ready(function () {
             
           `;
           data.partyMasterRows.sort(function (a, b) {
-            if ( a.name.toUpperCase() > b.name.toUpperCase() )
+            if (a.name.toUpperCase() > b.name.toUpperCase())
               return 1;
-            if ( a.name.toUpperCase() < b.name.toUpperCase() )
+            if (a.name.toUpperCase() < b.name.toUpperCase())
               return -1;
             return 0;
           })
@@ -500,7 +500,6 @@ $(document).ready(function () {
           qtyCount -= +(qty);
 
 
-
           $('#amountCalcList' + String(invoiceItemId)).remove();
 
           totalAmtWithoutDis -= +((+qty) * (+selectedProduct.price));
@@ -699,7 +698,7 @@ $(document).ready(function () {
 
       ipcRenderer.send('viewInvoiceItems');
       ipcRenderer.once('getInvoiceItems', function (event, data) {
-        console.log('data fetched' + new Date().valueOf() );
+        console.log('data fetched' + new Date().valueOf());
         console.log(data.error);
         if (!data.success || typeof data.invoiceItems === "undefined" || data.invoiceItems.length === 0) {
 
@@ -718,7 +717,7 @@ $(document).ready(function () {
         let invoiceItemObj = {};
         //console.log('invoice items' + invoiceItems);
 
-        invoiceItems.sort( function(a, b) {
+        invoiceItems.sort(function (a, b) {
           return b.id - a.id;
         })
         invoiceItems.forEach(invoiceItem => {
@@ -777,6 +776,7 @@ $(document).ready(function () {
         console.log('before rendering' + new Date().valueOf());
         $mainContent.append(str);
         console.log('After rendered' + new Date().valueOf());
+
         function printInvoiceAgain(eventPrint) {
 
           console.log('print view click');
@@ -950,7 +950,7 @@ $(document).ready(function () {
 
                   invoiceDetail[+invoiceItem.id] = invoiceItem;
 
-                  if(invoiceItem.qty < 0)
+                  if (invoiceItem.qty < 0)
                     invoiceItem.qty = -1 * invoiceItem.qty;
                   $invoiceItemList.append(`
                     <li class="list-group-item" id="amountCalcList" style="padding: 0px; border: 1px solid black">
@@ -993,16 +993,15 @@ $(document).ready(function () {
                     invoiceItemId: +(invoiceDetailId)
                   })
 
-                  ipcRenderer.once('getDeletedInvoiceDetail', function(e, invoiceData) {
+                  ipcRenderer.once('getDeletedInvoiceDetail', function (e, invoiceData) {
                     console.log('deleted');
                     console.log(invoiceData);
 
                     let productPrice = (+(invoiceDetail[invoiceDetailId].qty) * +(invoiceDetail[invoiceDetailId].product.price))
                     console.log(productPrice);
 
-                    let grandTotalChanged = invoiceItem.grandTotal - productPrice*(100-discount)*(100-splDiscount)*(100-invoiceItem.partymaster.dataValues.cd)/1000000;
+                    let grandTotalChanged = invoiceItem.grandTotal - productPrice * (100 - discount) * (100 - splDiscount) * (100 - invoiceItem.partymaster.dataValues.cd) / 1000000;
                     invoiceItemObj[invoiceItemId].grandTotal = grandTotalChanged;
-
 
 
                     console.log(grandTotalChanged);
@@ -1015,7 +1014,7 @@ $(document).ready(function () {
 
                     ipcRenderer.once('editedInvoiceItem', (e, data) => {
                       console.log(data);
-                      if(data.success) {
+                      if (data.success) {
                         printInvoiceAgain(eventPrint);
                       }
                     });
@@ -1144,7 +1143,6 @@ $(document).ready(function () {
                     qtyCount -= +(qty);
 
 
-
                     $('#amountCalcList' + String(invoiceItemId)).remove();
 
                     totalAmtWithoutDis -= +((+qty) * (+selectedProduct.price));
@@ -1211,8 +1209,8 @@ $(document).ready(function () {
 
                       ipcRenderer.once('getLedgerByInvoiceId', (event, data) => {
                         console.log('Current credit is ');
-                        console.log( data);
-                        if((+data.ledgerRow.credit) > 0) {
+                        console.log(data);
+                        if ((+data.ledgerRow.credit) > 0) {
                           console.log('crediting this ' + data);
                           ipcRenderer.send('updateCreditByInvoiceId', {
                             credit: (+grandTotal) + (+packingCharges),
@@ -1294,6 +1292,7 @@ $(document).ready(function () {
           })
 
         }
+
         $('.printInvoiceAgain').click(printInvoiceAgain);
 
         $('.delete-invoice-item').click(function (e) {
@@ -1840,7 +1839,6 @@ $(document).ready(function () {
 
 
           qtyCount -= +(qty);
-
 
 
           $('#amountCalcList' + String(invoiceItemId)).remove();
@@ -3316,9 +3314,9 @@ $(document).ready(function () {
         }
         //
         data.partyMasterRows.sort(function (a, b) {
-          if ( a.name.toUpperCase() > b.name.toUpperCase() )
+          if (a.name.toUpperCase() > b.name.toUpperCase())
             return 1;
-          if ( a.name.toUpperCase() < b.name.toUpperCase() )
+          if (a.name.toUpperCase() < b.name.toUpperCase())
             return -1;
           return 0;
         })
@@ -3358,7 +3356,7 @@ $(document).ready(function () {
         </div>
       `);
 
-      let $ledgerContent = $('#ledgerContent') ;
+      let $ledgerContent = $('#ledgerContent');
       $('#ledgerDateSubmit').click(function () {
 
         $ledgerContent.empty();
@@ -3400,11 +3398,11 @@ $(document).ready(function () {
                   </div>
                 </li>
             `;
-            let openingBalance = data.ledgerRows[0].partymaster.openingBalance;
+              let openingBalance = data.ledgerRows[0].partymaster.openingBalance;
 
-            let $ledgerStartDate =  $('#ledgerStartDate');
-            let $ledgerEndDate = $('#ledgerEndDate');
-            str += `
+              let $ledgerStartDate = $('#ledgerStartDate');
+              let $ledgerEndDate = $('#ledgerEndDate');
+              str += `
               
               <li class="list-group-item">
                 <div class="row align-items-center">
@@ -3425,20 +3423,26 @@ $(document).ready(function () {
               console.log('end date' + (new Date($ledgerEndDate.val())).valueOf());
 
               let debitTotal = 0, creditTotal = data.ledgerRows[0].partymaster.openingBalance;
+
+              data.ledgerRows.sort(function (row1, row2) {
+                return (new Date(row1.dateOfTransaction)).valueOf()
+                  - (new Date(row2.dateOfTransaction)).valueOf();
+              });
+
               data.ledgerRows.forEach(function (ledgerRow) {
-               // console.log(ledgerRow);
+                // console.log(ledgerRow);
                 creditTotal += ledgerRow.credit;
                 debitTotal += ledgerRow.debit;
                 let strBtn = '';
 
                 //console.log('ledger value'+ new Date(ledgerRow.dateOfTransaction).valueOf() );
 
-                if(new Date(ledgerRow.dateOfTransaction).valueOf() < startDate ||
-                  new Date(ledgerRow.dateOfTransaction).valueOf() > endDate ) {
-                  openingBalance = creditTotal - debitTotal ;
-                  return ;
+                if (new Date(ledgerRow.dateOfTransaction).valueOf() < startDate ||
+                  new Date(ledgerRow.dateOfTransaction).valueOf() > endDate) {
+                  openingBalance = creditTotal - debitTotal;
+                  return;
                 }
-                if (ledgerRow.debit > 0 && ledgerRow.credit === 0 && ledgerRow.invoiceId ===  null) {
+                if (ledgerRow.debit > 0 && ledgerRow.credit === 0 && ledgerRow.invoiceId === null) {
                   strBtn = `<button class="btn btn-primary deletePayment" ledgerId="${ledgerRow.id}">Delete</button>`
                 }
                 str += `
@@ -3599,6 +3603,9 @@ $(document).ready(function () {
                     <b>Party Name</b>
                   </div>
                   <div class="col">
+                    <b>OP</b>
+                  </div>
+                  <div class="col">
                     <b>Debit</b>
                   </div>
                   <div class="col">
@@ -3621,13 +3628,16 @@ $(document).ready(function () {
                     ${ledgerItem.partymaster.name}
                   </div>
                   <div class="col">
+                    ${ledgerItem.partymaster.openingBalance}
+                  </div>
+                  <div class="col">
                     ${ledgerItem.debit}
                   </div>
                   <div class="col">
                     ${ledgerItem.credit}
                   </div>
                   <div class="col">
-                    ${(+(ledgerItem.credit) - ledgerItem.debit)}
+                    ${(+(ledgerItem.partymaster.openingBalance) + (ledgerItem.credit) - ledgerItem.debit)}
                   </div>
                   
                 </div>
@@ -3642,6 +3652,9 @@ $(document).ready(function () {
                   
                   <div class="col">
                     <b>TOTAL</b>
+                  </div>
+                  <div class="col">
+                    <b></b>
                   </div>
                   <div class="col">
                     <b>${totalDebit}</b>
