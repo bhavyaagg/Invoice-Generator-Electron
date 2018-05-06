@@ -6,7 +6,6 @@ const models = require('./../db/models');
 const Sequelize = require('sequelize');
 
 
-
 function addProduct(event, data) {
   models.Product.create({
     name: data.productName,
@@ -187,31 +186,42 @@ function viewProductByPCategoryId(event, productCategory) {
 
 
 function viewProductSales(event, salesDate) {
+  //console.log(salesDate);
   models.InvoiceDetail.findAll({
-    include: [models.Product],
-    where:{
+
+    where: {
+      '$product.productcategoryId$': {
+        [Sequelize.Op.gte]:0
+      },
       updatedAt: {
         [Sequelize.Op.lte]: new Date(salesDate.endDate),  //new Date().toISOString(),
         [Sequelize.Op.gte]: new Date(salesDate.startDate)  //new Date("2018-01-01").toISOString()
       }
     },
+    include: [models.Product],
     group: 'productId',
     attributes: [
       [models.sequelize.fn('SUM', models.sequelize.col('qty')), 'totalQty']
     ]
   }).then(rows => {
-    console.log(rows)
+    console.log('**************');
+    //
+    // console.log(rows[0]);
+    // console.log(rows[0].get())
     event.sender.send('getProductSales', {
       success: true,
       productSales: rows.map((v) => {
+        //console.log('working');
         v = v.get();
+
         v.product = v.product.get();
+
         return v;
       })
-    })
+    });
   }).catch(err => {
     event.sender.send('getProductSales', {
-      success: true,
+      success: false,
       error: err
     })
   })

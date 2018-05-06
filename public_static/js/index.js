@@ -3002,14 +3002,15 @@ $(document).ready(function () {
               console.log(1)
               let productCategoryId = +(e.target.getAttribute("productCategoryId"));
               if (productCategoryId === 0) {
-                console.log(1)
+                console.log("Correct if");
                 ipcRenderer.send('viewProductSales', {
                   startDate: $('#productSaleStartDate').val(),
                   endDate: $('#productSaleEndDate').val()
                 });
 
                 ipcRenderer.once('getProductSales', (event, productData) => {
-                  console.log(productData)
+                  console.log('called');
+                  console.log(productData);
                   if (productData.success) {
 
                     productData.productSales.sort(function (a, b) {
@@ -3018,7 +3019,7 @@ $(document).ready(function () {
                       if (+(a.totalQty) > +(b.totalQty))
                         return -1;
                       return 0;
-                    })
+                    });
 
                     console.log(productData);
                     $mainContent.append(`
