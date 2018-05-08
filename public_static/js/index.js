@@ -48,6 +48,10 @@ $(document).ready(function () {
       <div class="col text-center">
         <button id="addInvoiceReturn" class="btn btn-primary">Return Invoice</button>
       </div>
+      
+      <div class="col text-center">
+        <button id="deleteInvoices" class="btn btn-primary">Delete Invoices</button>
+      </div>
     `);
 
     $('#addInvoiceButton').click(function () {
@@ -1981,6 +1985,10 @@ $(document).ready(function () {
       }
 
     });
+    
+    $('#deleteInvoices').click(function () {
+      
+    })
 
   });
 

@@ -16,14 +16,14 @@ function viewInvoiceDetailsById(event, data) {
     if (resultRows.length > 0) {
       event.sender.send('getInvoiceDetailById', {
         success: true,
-        invoiceItems: resultRows.map(v=>{
+        invoiceItems: resultRows.map(v => {
           v = v.get();
           v.product = v.product.get();
           return v;
         })
       })
     }
-    else{
+    else {
       event.sender.send('getInvoiceDetailById', {
         success: false,
         error: "No object Found"
@@ -43,7 +43,7 @@ function deleteInvoiceDetail(event, data) {
       id: data.invoiceItemId
     }
   }).then(resultRow => {
-    if(resultRow >0) {
+    if (resultRow > 0) {
       event.sender.send('getDeletedInvoiceDetail', {
         success: true,
         invoiceDetailItem: resultRow.get()
@@ -63,7 +63,62 @@ function deleteInvoiceDetail(event, data) {
   })
 }
 
+function deleteEverything(event, data) {
+  models.InvoiceDetail.destroy({
+    where:{
+      createdAt: {
+        [Sequelize.Op.lte]: new Date(data.endDate),  //new Date().toISOString(),
+      }
+    },
+    truncate: true
+  }).then(rows => {
+    models.Invoice.destroy({
+      where:{
+        createdAt: {
+          [Sequelize.Op.lte]: new Date(data.endDate),  //new Date().toISOString(),
+        }
+      },
+      truncate: true
+    })
+      .then(rows2 => {
+        models.Ledger.destroy({
+          where:{
+            createdAt: {
+              [Sequelize.Op.lte]: new Date(data.endDate),  //new Date().toISOString(),
+            }
+          },
+          truncate: true
+        }).then(roes3 => {
+          event.sender.send('getDeletedEverything', {
+            success: true,
+
+          })
+        })
+          .catch( err => {
+            event.sender.send('getDeletedEverything', {
+              success: false,
+              error: err
+            })
+          })
+      })
+      .catch(err => {
+        event.sender.send('getDeletedEverything', {
+          success: false,
+          error: err
+        })
+
+      })
+  })
+    .catch(err => {
+      event.sender.send('getDeletedEverything', {
+        success: false,
+        error: err
+      })
+    })
+}
+
 module.exports = exports = {
   viewInvoiceDetailsById,
-  deleteInvoiceDetail
+  deleteInvoiceDetail,
+  deleteEverything
 };
