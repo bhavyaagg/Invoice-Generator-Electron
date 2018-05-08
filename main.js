@@ -140,3 +140,5 @@ ipcMain.on('updateDebitByInvoiceId', routes.ledger.updateDebitByInvoiceId);
 ipcMain.on('viewMasterLedger', routes.ledger.viewMasterLedger);
 
 ipcMain.on('deletePayment', routes.ledger.deletePayment);
+
+ipcMain.on('deleteInvoicesByDate', routes.invoiceDetail.deleteEverything)

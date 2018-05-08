@@ -4,6 +4,7 @@
 
 
 const models = require('./../db/models');
+const Sequelize = require('sequelize');
 
 function viewInvoiceDetailsById(event, data) {
   console.log(data);
@@ -70,7 +71,7 @@ function deleteEverything(event, data) {
         [Sequelize.Op.lte]: new Date(data.endDate),  //new Date().toISOString(),
       }
     },
-    truncate: true
+
   }).then(rows => {
     models.Invoice.destroy({
       where:{
@@ -78,7 +79,7 @@ function deleteEverything(event, data) {
           [Sequelize.Op.lte]: new Date(data.endDate),  //new Date().toISOString(),
         }
       },
-      truncate: true
+
     })
       .then(rows2 => {
         models.Ledger.destroy({
@@ -87,7 +88,7 @@ function deleteEverything(event, data) {
               [Sequelize.Op.lte]: new Date(data.endDate),  //new Date().toISOString(),
             }
           },
-          truncate: true
+
         }).then(roes3 => {
           event.sender.send('getDeletedEverything', {
             success: true,

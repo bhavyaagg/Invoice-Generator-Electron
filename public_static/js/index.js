@@ -1985,9 +1985,32 @@ $(document).ready(function () {
       }
 
     });
-    
+
     $('#deleteInvoices').click(function () {
-      
+      $mainContent.empty().append(`
+        <div class="row form-group">
+          
+          <div class="col-6">
+            <input class="form-control" type="date" id="invoiceDeleteEndDate" value="${getCurrentDate()}">
+          </div> 
+          <button class="btn btn-success" id="invoiceDeleteSubmit">
+                Go
+          </button>
+        </div>
+      `);
+
+      $('#invoiceDeleteSubmit').click(function () {
+
+        ipcRenderer.send('deleteInvoicesByDate', {
+          endDate: $('#invoiceDeleteEndDate').val()
+        })
+
+        ipcRenderer.once('getDeletedEverything', (event, data) => {
+          if(data.success) {
+            $('#resultRow').text("Done");
+          }
+        })
+      })
     })
 
   });
