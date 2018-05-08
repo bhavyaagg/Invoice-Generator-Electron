@@ -3068,8 +3068,40 @@ $(document).ready(function () {
                         </div>
                       </li>
                     </ul>
+                    <input class="btn btn-primary printMasterLedger" type="submit" value="PRINT" >
                   `;
                     $('.productSaleData').empty().append(str);
+
+                    $('.printMasterLedger').click(function () {
+                      $('.printMasterLedger').hide();
+                      $('#productSaleDateSubmit').hide();
+
+                      let mainContent = $('#mainContent')[0];
+
+                      $(document.body).empty().append(mainContent);
+                      $(document.body).css('padding-top', '0px')
+
+                      $('input, select').css('border', 'none');
+                      $('select').css('background', 'white').css('padding-left', "0");
+                      $('#mainContent').css('padding', "0px");
+                      $('*').css('font-size', '12px');
+
+                      //$('*').css('padding', "");
+
+                      // TODO PRINT MAIN CONTENT NOT WORKING HERE
+                      ipcRenderer.send('printInvoice');
+                      ipcRenderer.once('printedInvoice', function (event, data) {
+                        console.log(data);
+                        if (data.success) {
+                          location.reload();
+                        } else {
+                          window.alert("Could not add invoice");
+                          $('#resultRow').removeClass('text-success').addClass('text-danger');
+                          $('#resultRow').text("Invoice Could Not Be Added");
+                          $mainContent.empty();
+                        }
+                      })
+                    })
                   }
                 });
 
@@ -3141,13 +3173,46 @@ $(document).ready(function () {
                             </div>
                           </li>
                         </ul>
+                        <input class="btn btn-primary printMasterLedger" type="submit" value="PRINT">
                       </div>
                     `;
                     $('.saleDataList').empty();
                     $mainContent.append(str);
+                    $('.printMasterLedger').click(function () {
+                      $('.printMasterLedger').hide();
+                      $('#productSaleDateSubmit').hide();
+
+                      let mainContent = $('#mainContent')[0];
+
+                      $(document.body).empty().append(mainContent);
+                      $(document.body).css('padding-top', '0px')
+
+                      $('input, select').css('border', 'none');
+                      $('select').css('background', 'white').css('padding-left', "0");
+                      $('#mainContent').css('padding', "0px");
+                      $('*').css('font-size', '12px');
+
+                      //$('*').css('padding', "");
+
+                      // TODO PRINT MAIN CONTENT NOT WORKING HERE
+                      ipcRenderer.send('printInvoice');
+                      ipcRenderer.once('printedInvoice', function (event, data) {
+                        console.log(data);
+                        if (data.success) {
+                          location.reload();
+                        } else {
+                          window.alert("Could not add invoice");
+                          $('#resultRow').removeClass('text-success').addClass('text-danger');
+                          $('#resultRow').text("Invoice Could Not Be Added");
+                          $mainContent.empty();
+                        }
+                      })
+                    })
                   }
                 });
               }
+
+
               //here
             });
             $('#productSaleDateSubmit').click();

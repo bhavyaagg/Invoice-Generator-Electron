@@ -204,7 +204,7 @@ function viewProductSales(event, salesDate) {
       [models.sequelize.fn('SUM', models.sequelize.col('qty')), 'totalQty']
     ]
   }).then(rows => {
-    console.log('**************');
+    //console.log('**************');
     //
     // console.log(rows[0]);
     // console.log(rows[0].get())
