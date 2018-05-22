@@ -2006,7 +2006,7 @@ $(document).ready(function () {
         })
 
         ipcRenderer.once('getDeletedEverything', (event, data) => {
-          if(data.success) {
+          if (data.success) {
             $('#resultRow').text("Done");
           }
         })
@@ -3494,17 +3494,22 @@ $(document).ready(function () {
                     <div class="col"></div>
                   </div>
                 </li>
-            `;
+            `
               let openingBalance = data.ledgerRows[0].partymaster.openingBalance;
+              let openingDate = data.ledgerRows[0].partymaster.openingBalanceDate;
 
               let $ledgerStartDate = $('#ledgerStartDate');
+
+
               let $ledgerEndDate = $('#ledgerEndDate');
               str += `
               
               <li class="list-group-item">
                 <div class="row align-items-center">
                   <div class="col">O.B.</div>
-                  <div class="col">${$ledgerStartDate.val().split('-').reverse().join('/')}</div>
+                  <div class="col">${
+                $ledgerStartDate.val()>openingDate?$ledgerStartDate.val():openingDate
+                }</div>
                   <div class="col"></div>
                   <div class="col"></div>
                   <div class="col"></div>
