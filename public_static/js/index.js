@@ -2716,6 +2716,8 @@ $(document).ready(function () {
               </li>
           `;
 
+          data.products.sort(function(a,b) {return a.name>b.name})
+
           data.products.forEach(function (product) {
             str += `
             <li class="list-group-item">
