@@ -111,7 +111,7 @@ function deleteProductById(event, product) {
 function viewProducts(event) {
   models.Product.findAll({
     include: [models.ProductCategory],
-    order: [models.sequelize.literal(`\`productcategory\`.\`id\` `)]
+    order: ['name']
   }).then(function (rows) {
     if (rows.length > 0) {
       event.sender.send('getProducts', {
