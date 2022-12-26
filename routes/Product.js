@@ -118,7 +118,10 @@ function viewProducts(event) {
         success: true,
         products: rows.map((v) => {
           v = v.get();
-          v.productcategory = v.productcategory.get();
+          console.log(v)
+          if (v.productcategory !== null) {
+            v.productcategory = v.productcategory.get();
+          }
           return v;
         })
       });
@@ -149,8 +152,7 @@ function viewProductById(event, product) {
         success: true,
         product: product.get()
       })
-    }
-    else {
+    } else {
       event.sender.send('getProductById', {
         success: false,
         error: "Incorrect Product Id"
@@ -187,7 +189,7 @@ function viewProductSales(event, salesDate) {
 
     where: {
       '$product.productcategoryId$': {
-        [Sequelize.Op.gte]:0
+        [Sequelize.Op.gte]: 0
       },
       updatedAt: {
         [Sequelize.Op.lte]: new Date(salesDate.endDate),  //new Date().toISOString(),

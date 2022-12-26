@@ -47,7 +47,8 @@ const PartyMaster = sequelize.define('partymaster', {
   transport: Sequelize.DataTypes.STRING,
   discount: Sequelize.DataTypes.DECIMAL,
   splDiscount: Sequelize.DataTypes.DECIMAL,
-  balance: {type: Sequelize.DataTypes.DECIMAL, allowNull: true}
+  balance: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
+  isLocal: {type: Sequelize.DataTypes.BOOLEAN}
 });
 
 const PartyMasterProductCategoryDiscount = sequelize.define('partymasterproductcategorydiscount', {

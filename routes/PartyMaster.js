@@ -85,6 +85,7 @@ function editPartyMaster(event, data) {
     transport: data.transport,
     discount: data.discount,
     splDiscount: data.splDiscount,
+    isLocal: data.isLocal,
   }, {
     where: {
       id: data.id

@@ -58,141 +58,7 @@ $(document).ready(function () {
       $mainContent.empty();
       $resultRow.empty();
 
-      $mainContent.append(`
-        <div class="row">
-          <div class="col text-center">
-            <h3>XYZ</h3>
-            <h6>Rough Estimate</h6>
-          </div>
-        </div>
-        
-        <div class="row">
-          <div class="col-4">
-            <div class="form-group row">
-              <label for="partyMasterList" class="col-4 col-form-label">Name: </label>
-              <select id="partyMasterList" class="custom-select col-8 pr-0">
-                <option name="partyMasterList" value="0">None</option>
-              </select>
-            </div> 
-          </div>
-          <div class="col-5">
-            <div class="form-group row no-gutters align-items-center">
-              <div class="col-4">Slip No./Date</div>
-              <div class="col-2 pt-2 pb-2 pl-1" id="slipNo"></div>
-              <div class="col-6">
-                <input class="form-control pr-0 pl-0" type="date" id="invoiceDate">
-              </div>  
-            </div> 
-          </div>
-        </div>
-        <div class="row no-gutters">
-          <div class="col-2 mt-2" >
-            <div class="form-group row align-items-center no-gutters">
-              <div class="col-3">Marka</div>
-              <div class="col-9">
-                <input type="text" value="" id="marka" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
-              </div> 
-            </div>   
-          </div>
-          <div class="col-5">
-            <div class="form-group row align-items-center no-gutters">
-              <div class="col-3">GR No/Date</div>
-              <div class="col-3">
-                <input type="number" value="0" id="bilityNumber" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
-              </div>
-              <div class="col-6">
-                <input class="form-control pl-0 pr-0" type="date" id="bilityDate">
-              </div>  
-            </div>
-          </div>
-          <div class="col-5">
-            <div class="form-group row align-items-center no-gutters">
-              <div class="col-4">C. No/Date</div>
-              <div class="col-2">
-                <input class="form-control pr-0 pl-0" type="text" value="0" id="chalanNumber">
-              </div>
-              <div class="col-6">
-                <input class="form-control pl-0 pr-0" type="date" id="chalanDate">
-              </div>  
-            </div>
-          </div>
-        </div>  
-        
-        <div class="row no-gutters">
-          <div class="col-3 mt-2" >
-            <div class="form-group row align-items-center no-gutters">
-              <div class="col-3">Destination</div>
-              <div class="col-9">
-                <input type="text" value="" id="destination" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
-              </div> 
-            </div>  
-          </div>
-          
-          <div class="col-2">
-            <div class="form-group row no-gutters">
-              <label for="cases" class="col-5 col-form-label">Cases:</label>
-              <div class="col-7">
-                <input class="form-control pr-0" type="number" value="0" id="casesInp">
-              </div>
-            </div>
-          </div>
-          <div class="col-7">
-            <div class="form-group row no-gutters">
-              <label for="transport" class="col-2 col-form-label">Transport: </label> 
-              <div class="col-10">
-                <input class="form-control" type="text" value="" id="transport">
-              </div>
-            </div>
-          </div>
-          
-          
-        </div>
-
-        
-        <ul class="list-group text-center" id="invoiceItemList">
-          <li class="list-group-item">
-            <div class="row">
-              <div class="col-1">
-                <b>S.No.</b>
-              </div>
-              <div class="col-5">
-                <b>Description of Goods</b>
-              </div>
-              <div class="col-1">
-                <b>Qty</b>
-              </div>
-              <div class="col-2">
-                <b>Rate</b>
-              </div>
-              <div class="col-1">
-                <b>Per</b>
-              </div>
-              <div class="col-2">
-                <b>Amt</b>
-              </div>
-            </div>
-          </li>
-        </ul>
-        <div class="row" style="padding-right: 50px;">
-          <div class="col-12" id="totalAmt">
-            
-          </div>  
-        </div>
-        
-        <div class="row" id="submitBtnDiv">
-          <div class="col-5"><b></b></div>
-          <div class="col-2">
-            <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
-          
-          </div>
-          <div class="col-5">
-            <input class="btn btn-primary" type="submit" value="Add Invoice Item" id="addInvoiceItemBtn">
-            <input class="btn btn-primary" type="submit" value="Add Freight Charges" id="addPackingChargesBtn">
-          </div>
-        </div>
-        
-      `);
-
+      showInvoiceHeader()
       $('input').addClass("pl-1").addClass('pr-1');
       $('#mainContent div.form-group').css('margin-bottom', '5px');
 
@@ -1369,7 +1235,6 @@ $(document).ready(function () {
             return;
           }
 
-
           let str = `
             
           `;
@@ -1813,13 +1678,6 @@ $(document).ready(function () {
         </div>
         
         <div class="form-group row">
-          <label for="destination" class="col-3 col-form-label">Destination: </label>
-          <div class="col-9">
-            <input class="form-control" type="text" value="" id="destination">
-          </div>
-        </div>
-        
-        <div class="form-group row">
           <label for="marka" class="col-3 col-form-label">Marka: </label>
           <div class="col-9">
             <input class="form-control" type="text" value="" id="marka">
@@ -1841,13 +1699,6 @@ $(document).ready(function () {
         </div>
         
         <div class="form-group row">
-          <label for="transport" class="col-3 col-form-label">Transport: </label>
-          <div class="col-9">
-            <input class="form-control" type="text" value="" id="transport">
-          </div>
-        </div>
-        
-        <div class="form-group row">
           <label for="discount" class="col-3 col-form-label">Discount(%): </label>
           <div class="col-9">
             <input class="form-control" type="number" id="discount">
@@ -1859,7 +1710,28 @@ $(document).ready(function () {
           <div class="col-9">
             <input class="form-control" type="number" id="splDiscount">
           </div>
-        </div>        
+        </div>     
+        <div class="form-group row">
+          <label for="isLocal" class="col-3 col-form-label">Is Local: </label>
+          <div class="col-9">
+            <select class="form-control" type="checkbox" id="isLocal">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            </select>
+          </div>
+        </div>    
+        <div class="form-group row">
+          <label for="destination" class="col-3 col-form-label">Destination: </label>
+          <div class="col-9">
+            <input class="form-control" type="text" value="" id="destination">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="transport" class="col-3 col-form-label">Transport: </label>
+          <div class="col-9">
+            <input class="form-control" type="text" value="" id="transport">
+          </div>
+        </div>
          
         <div class="row">
           <div class="col text-center">
@@ -1872,7 +1744,6 @@ $(document).ready(function () {
       `)
 
       $('#submitPartyMaster').click(function () {
-
         let partyMasterData = {
           name: $('#partyName').val(),
           destination: $('#destination').val(),
@@ -1883,12 +1754,14 @@ $(document).ready(function () {
           discount: $('#discount').val(),
           splDiscount: $('#splDiscount').val(),
           balance: +($('#openingBalance').val()),
+          isLocal: $('#isLocal').val() === "yes"
         };
 
-        if (!partyMasterData.name || !partyMasterData.destination || !partyMasterData.marka
+        if (!partyMasterData.name || !partyMasterData.marka
           || partyMasterData.openingBalance === "" || partyMasterData.openingBalanceDate === ""
-          || !partyMasterData.transport || !partyMasterData.discount === ""
-          || partyMasterData.splDiscount === "") {
+          || partyMasterData.discount === "" || partyMasterData.splDiscount === ""
+          || (!partyMasterData.isLocal && (!partyMasterData.transport || !partyMasterData.destination))
+        ) {
           $resultRow.removeClass('text-success').addClass('text-danger');
           $resultRow.text("Please Provide all the fields");
           // console.log(partyMasterData);
@@ -1949,7 +1822,7 @@ $(document).ready(function () {
                  <div class="row">
                   <div class="col text-center">
                     <button id="submitPartyMasterAndDiscounts" class="btn btn-primary">Submit</button>
-                  </div>  
+                  </div>
                 </div>
               `;
               $mainContent.append(str);
@@ -1998,13 +1871,6 @@ $(document).ready(function () {
               $resultRow.text("Product Categories Could Not Be Viewed Because " + data.error);
             }
           });
-
-
-          /* */
-
-          //console.log("ho gya")
-          /*$resultRow.removeClass('text-danger').addClass('text-success');
-          $resultRow.text("Product Category Has Been Added");*/
         }
       });
 
@@ -2026,7 +1892,6 @@ $(document).ready(function () {
       ipcRenderer.once('getPartyMaster', function (event, data) {
         $mainContent.empty();
         if (data.success) {
-
           if (data.partyMasterRows.length === 0) {
             $mainContent.empty();
             $resultRow.empty();
@@ -2047,7 +1912,7 @@ $(document).ready(function () {
                     <b>Party Name</b>
                   </div>
                   <div class="col">
-                    <b>Destination</b>
+                    <b>Local</b>
                   </div>
                   <div class="col">
                     <b>Marka</b>
@@ -2058,8 +1923,11 @@ $(document).ready(function () {
                   <div class="col-1">
                     <b>Opening Date</b>
                   </div>
-                  <div class="col-2">
+                  <div class="col">
                     <b>Transport</b>
+                  </div>
+                  <div class="col">
+                    <b>Destination</b>
                   </div>
                   <div class="col-3">
                    
@@ -2069,6 +1937,7 @@ $(document).ready(function () {
           `;
 
           let partyMasterRowObj = {};
+          console.log(data)
           data.partyMasterRows.forEach(function (party) {
             partyMasterRowObj[party.id] = party;
             str += `
@@ -2082,7 +1951,7 @@ $(document).ready(function () {
                     ${party.name}
                   </div>
                   <div class="col">
-                    ${party.destination}
+                    ${party.isLocal? "Y" : "N"}
                   </div>
                   <div class="col">
                     ${party.marka}
@@ -2093,8 +1962,11 @@ $(document).ready(function () {
                   <div class="col-1">
                     ${party.openingBalanceDate}
                   </div>
-                  <div class="col-2">
+                  <div class="col">
                     ${party.transport}
+                  </div>
+                  <div class="col">
+                    ${party.destination}
                   </div>
                   <div class="col-3">
                    <button class="btn btn-primary editPartyMasterBtn">Edit</button>
@@ -3727,6 +3599,141 @@ $(document).ready(function () {
       </div>
               
     `);
+  }
+
+  function showInvoiceHeader() {
+    $mainContent.append(`
+        <div class="row">
+          <div class="col text-center">
+            <h3>XYZ</h3>
+            <h6>Rough Estimate</h6>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="partyMasterList" class="col-4 col-form-label">Name: </label>
+              <select id="partyMasterList" class="custom-select col-8 pr-0">
+                <option name="partyMasterList" value="0">None</option>
+              </select>
+            </div> 
+          </div>
+          <div class="col-5">
+            <div class="form-group row no-gutters align-items-center">
+              <div class="col-4">Slip No./Date</div>
+              <div class="col-2 pt-2 pb-2 pl-1" id="slipNo"></div>
+              <div class="col-6">
+                <input class="form-control pr-0 pl-0" type="date" id="invoiceDate">
+              </div>  
+            </div> 
+          </div>
+        </div>
+        <div class="row no-gutters">
+          <div class="col-2 mt-2" >
+            <div class="form-group row align-items-center no-gutters">
+              <div class="col-3">Marka</div>
+              <div class="col-9">
+                <input type="text" value="" id="marka" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
+              </div> 
+            </div>   
+          </div>
+          <div class="col-5">
+            <div class="form-group row align-items-center no-gutters">
+              <div class="col-3">GR No/Date</div>
+              <div class="col-3">
+                <input type="number" value="0" id="bilityNumber" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
+              </div>
+              <div class="col-6">
+                <input class="form-control pl-0 pr-0" type="date" id="bilityDate">
+              </div>  
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="form-group row align-items-center no-gutters">
+              <div class="col-4">C. No/Date</div>
+              <div class="col-2">
+                <input class="form-control pr-0 pl-0" type="text" value="0" id="chalanNumber">
+              </div>
+              <div class="col-6">
+                <input class="form-control pl-0 pr-0" type="date" id="chalanDate">
+              </div>  
+            </div>
+          </div>
+        </div>  
+        
+        <div class="row no-gutters">
+          <div class="col-3 mt-2" >
+            <div class="form-group row align-items-center no-gutters">
+              <div class="col-3">Destination</div>
+              <div class="col-9">
+                <input type="text" value="" id="destination" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
+              </div> 
+            </div>  
+          </div>
+          
+          <div class="col-2">
+            <div class="form-group row no-gutters">
+              <label for="cases" class="col-5 col-form-label">Cases:</label>
+              <div class="col-7">
+                <input class="form-control pr-0" type="number" value="0" id="casesInp">
+              </div>
+            </div>
+          </div>
+          <div class="col-7">
+            <div class="form-group row no-gutters">
+              <label for="transport" class="col-2 col-form-label">Transport: </label> 
+              <div class="col-10">
+                <input class="form-control" type="text" value="" id="transport">
+              </div>
+            </div>
+          </div>
+          
+          
+        </div>
+
+        <ul class="list-group text-center" id="invoiceItemList">
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col-1">
+                <b>S.No.</b>
+              </div>
+              <div class="col-5">
+                <b>Description of Goods</b>
+              </div>
+              <div class="col-1">
+                <b>Qty</b>
+              </div>
+              <div class="col-2">
+                <b>Rate</b>
+              </div>
+              <div class="col-1">
+                <b>Per</b>
+              </div>
+              <div class="col-2">
+                <b>Amt</b>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="row" style="padding-right: 50px;">
+          <div class="col-12" id="totalAmt">
+            
+          </div>  
+        </div>
+        
+        <div class="row" id="submitBtnDiv">
+          <div class="col-5"><b></b></div>
+          <div class="col-2">
+            <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoice">
+          
+          </div>
+          <div class="col-5">
+            <input class="btn btn-primary" type="submit" value="Add Invoice Item" id="addInvoiceItemBtn">
+            <input class="btn btn-primary" type="submit" value="Add Freight Charges" id="addPackingChargesBtn">
+          </div>
+        </div>
+      `);
   }
 });
 
