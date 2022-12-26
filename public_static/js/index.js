@@ -96,6 +96,7 @@ $(document).ready(function () {
           let str = `
             
           `;
+          console.log(data)
           data.partyMasterRows.sort(function (a, b) {
             if (a.name.toUpperCase() > b.name.toUpperCase())
               return 1;
@@ -120,23 +121,30 @@ $(document).ready(function () {
       });
 
       ipcRenderer.send('viewProducts');
-      ipcRenderer.once('getProducts', function (event, productList) {
-        console.log('productList' + productList.success);
-        console.log(productList);
-        if (!productList.success || productList.products.length === 0) {
+      ipcRenderer.once('getProducts', function (event, productListData) {
+        console.log('productList ' + productListData.success);
+        console.log(productListData);
+        if (!productListData.success || productListData.products.length === 0) {
           $mainContent.empty();
           $resultRow.empty();
           $resultRow.removeClass('text-success').addClass('text-danger');
           $resultRow.text("No product or some error");
           return;
         }
-        console.log(productList.products);
+        console.log(productListData.products);
         let str = '';
-        productList.products.forEach(product => {
-          productObj[product.id] = product;
+        const productList = []
+        const $productList = $('#productList');
+        productListData.products.forEach(product => {
+          const name = `${product.productcategory.name} - ${product.name}`;
+          productObj[name] = product;
           str += `<option name="productList" value="${product.id}">${product.name}</option>`
+          productList.push(name)
         });
-        $('#productList').empty().append(str);
+        $productList.autocomplete({
+          source: productList,
+          appendTo: "#addInvoiceItemModal"
+        })
       });
 
       let slipNumber;
@@ -165,9 +173,7 @@ $(document).ready(function () {
         selectedPartyMaster = partyMasterRowObj[$partyMasterList.val()];
 
         if (selectedPartyMaster) {
-          //$marka.empty();
           $marka.val(`  ${selectedPartyMaster.marka}`);
-
           if (selectedPartyMaster.isLocal) {
             $('#bilityDiv').hide()
             $('#destinationDiv').hide()
@@ -191,15 +197,13 @@ $(document).ready(function () {
           $destination.empty().append(' ')
         }
         console.log($partyMasterList.val());
+        console.log(selectedPartyMaster)
         if (!!selectedPartyMaster) {
           ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
             partymasterId: +(selectedPartyMaster.id),
           });
 
           ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, data) {
-            console.log(selectedPartyMaster.id);
-            console.log("Data");
-            console.log(data);
             if (data && data.success) {
               selectedPartyMaster.discount = data.discountObj;
               selectedPartyMaster.splDiscount = data.discountObj;
@@ -215,6 +219,7 @@ $(document).ready(function () {
 
       let packingCharges = 0;
       let $productList = $('#productList');
+      let $qty = $('#qty');
       let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
 
       let totalAmtWithoutDis = 0, totalAmt = 0;
@@ -228,6 +233,8 @@ $(document).ready(function () {
         }
 
         $resultRow.empty();
+        $productList.val('')
+        $qty.val('')
         $('#addInvoiceItemModal').modal('show');
       })
 
@@ -249,11 +256,9 @@ $(document).ready(function () {
       let invoiceListItems = {};
       $addInvoiceItemSubmit.click(function (e) {
         let qty = $('#qty').val();
-        const productToBeAdded = parseInt($productList.val());
-        console.log("Testtttt");
-        console.log(productToBeAdded);
-        console.log(productObj)
-        let selectedProduct = productObj[productToBeAdded];
+        const productToBeAdded = $productList.val();
+        const selectedProduct = productObj[productToBeAdded];
+        console.log(selectedProduct)
         let per = $('#per').val();
         per = $(`option[name="unitType"][value="${per}"]`).text();
 
@@ -3632,7 +3637,7 @@ $(document).ready(function () {
           </div>
           <div class="col-4">
             <div class="form-group row align-items-center no-gutters">
-              <div class="col-3">Marka</div>
+              <div class="col-3">Marka:</div>
               <div class="col-6">
                 <input type="text" value="" id="marka" class="form-control">
               </div> 
@@ -3650,7 +3655,7 @@ $(document).ready(function () {
         <div class="row mt-2">
           <div class="col-6">
             <div class="form-group row no-gutters align-items-center">
-              <div class="col-4">Slip No./Date</div>
+              <div class="col-4">Slip No./Date:</div>
               <div class="col-2 pt-2 pb-2 pl-1" id="slipNo"></div>
               <div class="col-6">
                 <input class="form-control pr-0 pl-0" type="date" id="invoiceDate">
@@ -3659,7 +3664,7 @@ $(document).ready(function () {
           </div>
           <div class="col-6">
             <div class="form-group row align-items-center no-gutters">
-              <div class="col-4">C. No/Date</div>
+              <div class="col-4">Challan No/Date:</div>
               <div class="col-2">
                 <input class="form-control pr-0 pl-0" type="text" value="0" id="chalanNumber">
               </div>
@@ -3673,7 +3678,7 @@ $(document).ready(function () {
         <div class="row mt-2">
           <div class="col-4" id="bilityDiv">
             <div class="form-group row align-items-center no-gutters">
-              <div class="col-3">GR No/Date</div>
+              <div class="col-3">GR No/Date:</div>
               <div class="col-3">
                 <input type="number" value="0" id="bilityNumber" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
               </div>
@@ -3683,17 +3688,17 @@ $(document).ready(function () {
             </div>
           </div>
           <div class="col-4" id="destinationDiv">
-            <div class="form-group row align-items-center no-gutters">
-              <div class="col-3">Destination</div>
+            <div class="form-group row align-items-center">
+              <div class="col-3">Destination:</div>
               <div class="col-9">
-                <input type="text" value="" id="destination" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
+                <input type="text" value="" id="destination" class="form-control">
               </div>
             </div>  
           </div>
           <div class="col-4" id="transportDiv">
-            <div class="form-group row no-gutters">
-              <label for="transport" class="col-2 col-form-label">Transport: </label> 
-              <div class="col-10">
+            <div class="form-group row">
+              <label for="transport" class="col-3 col-form-label">Transport:</label> 
+              <div class="col-9">
                 <input class="form-control" type="text" value="" id="transport">
               </div>
             </div>
