@@ -8,6 +8,7 @@ body {
     margin: 0;
     width: 100%;
     height: 100%;
+    background-color: whitesmoke;
 }
 
 .container-fluid {
@@ -28,6 +29,7 @@ button {
     padding-left: 20px;
     padding-right: 20px;
     margin-bottom: 20px;
+    margin-top: 30px;
 }
 
 #subHeader {
@@ -44,4 +46,25 @@ button {
 
 * {
     font-size: 14px;
+}
+
+.main-buttons > .btn {
+    font-size: 22px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.left-menu {
+    border-left: 1px solid black;
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+}
+
+.right-menu {
+    border: 1px solid black;
+}
+
+.row-custom {
+    margin-right: 0;
+    margin-left: 0;
 }

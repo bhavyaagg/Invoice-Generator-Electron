@@ -8,6 +8,7 @@
     "start": "node_modules/.bin/electron .",
     "rebuild": "node_modules/.bin/electron-rebuild -f -w sqlite3",
     "dist": "build",
+    "dist-win": "electron-builder -w",
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
@@ -39,8 +40,7 @@
     }
   },
   "engines": {
-    "node": "^9",
-    "npm": "5"
+    "node": "^16"
   },
   "repository": {
     "type": "git",
@@ -56,12 +56,12 @@
   },
   "homepage": "https://github.com/bhavyaagg/Invoice-Generator-Electron#readme",
   "devDependencies": {
-    "electron": "^3.0.6",
-    "electron-builder": "^20.28.4",
-    "electron-rebuild": "^1.8.2"
+    "electron": "^20.0.3",
+    "electron-builder": "^23.3.3",
+    "electron-rebuild": "^3.2.9"
   },
   "dependencies": {
-    "sequelize": "^4.41.0",
-    "sqlite3": "^4.0.3"
+    "sequelize": "^6.21.4",
+    "sqlite3": "^5.0.11"
   }
 }

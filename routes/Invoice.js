@@ -13,7 +13,6 @@ function submitInvoice(event, invoiceItemData) {
         partymasterId: invoiceItemData.partymasterId,
         dateOfTransaction: invoiceItemData.dateOfInvoice,
         credit: invoiceItemData.grandTotal,
-        productCategoryName: invoiceItemData.productCategoryName,
         invoiceId: invoiceItem.get().id,
         debit: 0,
         balance: parseFloat(invoiceItemData.partyMasterBalance) + parseFloat(invoiceItemData.grandTotal)
@@ -99,9 +98,6 @@ function viewInvoiceItems(event) {
   models.Invoice.findAll({
     include: [{
       model: models.PartyMaster,
-      required: true
-    }, {
-      model: models.ProductCategory,
       required: true
     }]
   })

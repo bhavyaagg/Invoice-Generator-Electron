@@ -1,4 +1,4 @@
-const {app, BrowserWindow, ipcMain} = require('electron');
+const {app, BrowserWindow, ipcMain, webContents} = require('electron');
 const {dialog} = require('electron')
 const fs = require('fs');
 
@@ -44,25 +44,22 @@ function printMainContent(event) {
 
 function savePDF(file_path) {
   if (!print_win) {
+    console.log("Saving error")
     dialog.showErrorBox('Error', "The printing window isn't created");
     return;
   }
 
   if (file_path) {
-    print_win.webContents.printToPDF(getPDFPrintSettings(), function (err, data) {
-      if (err) {
-        dialog.showErrorBox('Error', err);
-        return;
-      }
-      fs.writeFile(file_path, data, function (err) {
-        if (err) {
-          dialog.showErrorBox('Error', err);
-          return;
-        }
-        save_pdf_path = file_path;
-
-      });
-    });
+    print_win.webContents.printToPDF(getPDFPrintSettings())
+      .then(data => {
+        fs.writeFileSync(file_path, data, (error) => {
+          console.log(error)
+          if (error) throw error
+          console.log(`Wrote PDF successfully to ${file_path}`)
+        })
+      }).catch(error => {
+      console.log(`Failed to write PDF to ${file_path}: `, error)
+    })
   }
 }
 
@@ -78,7 +75,6 @@ function preparePrint(print) {
 
   print_win = print;
   print_win.show();
-
 
   print_win.on('closed', function () {
     print_win = null;

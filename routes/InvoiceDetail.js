@@ -7,7 +7,6 @@ const models = require('./../db/models');
 const Sequelize = require('sequelize');
 
 function viewInvoiceDetailsById(event, data) {
-  console.log(data);
   models.InvoiceDetail.findAll({
     where: {
       invoiceId: data.invoiceId

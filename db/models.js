@@ -47,7 +47,6 @@ const PartyMaster = sequelize.define('partymaster', {
   transport: Sequelize.DataTypes.STRING,
   discount: Sequelize.DataTypes.DECIMAL,
   splDiscount: Sequelize.DataTypes.DECIMAL,
-  cd: Sequelize.DataTypes.DECIMAL,
   balance: {type: Sequelize.DataTypes.DECIMAL, allowNull: true}
 });
 
@@ -77,9 +76,6 @@ const Invoice = sequelize.define('invoice', {
 Invoice.belongsTo(PartyMaster);
 PartyMaster.hasMany(Invoice);
 
-Invoice.belongsTo(ProductCategory);
-ProductCategory.hasMany(Invoice);
-
 const InvoiceDetail = sequelize.define('invoicedetail', {
   id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
   qty: Sequelize.DataTypes.DECIMAL,
@@ -99,7 +95,6 @@ const Ledger = sequelize.define('ledger', {
   debit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
   credit: {type: Sequelize.DataTypes.DECIMAL, allowNull: true},
   balance: Sequelize.DataTypes.DECIMAL,
-  productCategoryName: {type: Sequelize.DataTypes.STRING, allowNull: true},
   invoiceId: {type: Sequelize.DataTypes.INTEGER, allowNull: true}
 });
 

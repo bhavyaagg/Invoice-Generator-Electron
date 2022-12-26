@@ -8,45 +8,49 @@ function addPartyMasterProductCategoryDiscount(event, dataList) {
   dataList.forEach(data => {
     models.PartyMasterProductCategoryDiscount
       .create(data)
-      .then(result=>{
+      .then(result => {
 
       })
       .catch(err => {
         event.sender.send('addedPartyMasterProductCategoryDiscount', {
-          success: false,
-          error: err
+          success: false, error: err
         })
       })
   })
 }
 
 function viewDiscountByPartyMasterIdAndProductCategoryId(event, data) {
-
+  console.log(event)
+  console.log(data);
   models.PartyMasterProductCategoryDiscount
-    .find({
+    .findAll({
       where: {
-        partymasterId: data.partymasterId,
-        productcategoryId: data.productcategoryId
+        partymasterId: data.partymasterId
       }
     })
-    .then(result => {
-      if (result ) {
+    .then(rows => {
+      if (rows) {
+        const discountObj = {};
+        rows.map((v) => {
+          const record = v.get();
+          discountObj[record["productcategoryId"]] = {
+            discount: record["discount"],
+            splDiscount: record["splDiscount"]
+          };
+        });
         event.sender.send('getDiscountByPartyMasterIdAndProductCategoryId', {
-          success: true,
-          discountObj: result.get()
+          success: true, discountObj: discountObj
         })
-      }
-      else {
+      } else {
         event.sender.send('getDiscountByPartyMasterIdAndProductCategoryId', {
-          success: false,
-          error: "Object Not found"
+          success: false, error: "Object Not found"
         })
       }
     })
     .catch(err => {
+      console.log(err);
       event.sender.send('getDiscountByPartyMasterIdAndProductCategoryId', {
-        success: false,
-        error: err
+        success: false, error: err
       })
     })
 }
@@ -55,29 +59,30 @@ function viewDiscountByPartyMasterIdAndProductCategoryId(event, data) {
 function viewDiscountsByPartyId(event, data) {
   models.PartyMasterProductCategoryDiscount
     .findAll({
-      where:{
+      where: {
         partymasterId: data.partyMasterId
-      },
-      include: [models.ProductCategory]
+      }, include: [models.ProductCategory]
     })
-    .then(partyMasterDiscountList=>{
-      if(partyMasterDiscountList.length>0) {
+    .then(results => {
+      if (results.length > 0) {
+        const partyMasterDiscountList = [];
+        results.map((v) => {
+          const element = v.get();
+          element.productcategory = element.productcategory.get();
+          partyMasterDiscountList.push(element);
+        })
         event.sender.send('getDiscountsByPartyId', {
-          success: true,
-          partyMasterDiscounts: partyMasterDiscountList
+          success: true, partyMasterDiscounts: partyMasterDiscountList
+        })
+      } else {
+        event.sender.send('getDiscountsByPartyId', {
+          success: false, error: "No Object Found"
         })
       }
-      else{
-        event.sender.send('getDiscountsByPartyId', {
-          success: false,
-          error: "No Object Found"
-        })
-      }
     })
-    .catch(err=>{
-      event.sender.send('getDiscountsByPartyId',{
-        success: false,
-        error: err
+    .catch(err => {
+      event.sender.send('getDiscountsByPartyId', {
+        success: false, error: err
       })
     })
 }
@@ -85,12 +90,10 @@ function viewDiscountsByPartyId(event, data) {
 
 function updateDiscountByPartyIdProductCategoryId(event, data) {
   models.PartyMasterProductCategoryDiscount.update({
-    discount: data.discount,
-    splDiscount: data.splDiscount
+    discount: data.discount, splDiscount: data.splDiscount
   }, {
     where: {
-      partymasterId: data.partyMasterId,
-      productcategoryId: data.productCategoryId
+      partymasterId: data.partyMasterId, productcategoryId: data.productCategoryId
     }
   }).then(function (result) {
     if (result[0] > 0) {
@@ -99,15 +102,13 @@ function updateDiscountByPartyIdProductCategoryId(event, data) {
       })
     } else {
       event.sender.send('updatedPartyProductCategoryDiscount', {
-        success: false,
-        error: "Incorrect ID"
+        success: false, error: "Incorrect ID"
       })
     }
   }).catch(function (err) {
     console.log(err)
     event.sender.send('updatedPartyProductCategoryDiscount', {
-      success: false,
-      error: err
+      success: false, error: err
     });
   })
 }

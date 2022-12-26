@@ -166,7 +166,7 @@ function deletePayment(event, data) {
   })
 }
 function viewLedgerByInvoiceId(event, data) {
-  models.Ledger.find({
+  models.Ledger.findOne({
     where: {
       invoiceId: data.invoiceId
     }

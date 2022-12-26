@@ -17,7 +17,11 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: mainScreenDimensions.width,
     height: mainScreenDimensions.height,
-    defaultFontSize: 10
+    defaultFontSize: 10,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    }
   });
   console.log(process.versions.node)
   mainWindow.loadURL(url.format({
@@ -90,7 +94,7 @@ ipcMain.on('updateBalance', routes.partyMaster.updateBalance);
 
 ipcMain.on('submitInvoiceDetail', routes.invoice.submitInvoiceDetail);
 
-ipcMain.on('deleteInvoiceDetail', routes.invoiceDetail.deleteInvoiceDetail );
+ipcMain.on('deleteInvoiceDetail', routes.invoiceDetail.deleteInvoiceDetail);
 
 ipcMain.on('viewInvoiceItems', routes.invoice.viewInvoiceItems);
 
@@ -118,13 +122,13 @@ ipcMain.on('updatePartyProductCategoryDiscount', routes.partyMasterProductCatego
 
 ipcMain.on('printInvoice', function (event, data) {
   print.preparePrint(mainWindow);
-  //print.savePDF(__dirname + '/invoices/' + data.id+'.pdf');
+  print.savePDF(__dirname + '/invoices/' + data.id + '.pdf');
   print.print(event);
 });
 
 ipcMain.on('printMainContent', function (event, data) {
   print.preparePrint(mainWindow);
-  //print.savePDF(__dirname + '/invoices/' + data.id+'.pdf');
+  // print.savePDF(__dirname + '/invoices/' + data.id + '.pdf');
   print.printMainContent(event);
 });
 

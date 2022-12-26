@@ -1,437 +1,436 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>Invoice Generator</title>
-  <link rel="stylesheet" href="css/bootstrap.css">
-  <link rel="stylesheet" href="css/index.css">
+    <title>Invoice Generator</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-
 <div class="modal fade" id="editProductCategoryModal" tabindex="-1" role="dialog"
      aria-labelledby="Edit Product Category"
      aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Product Category</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="form-group row">
-            <label for="editProductCategoryName" class="col-4 col-form-label">Product Category Name: </label>
-            <div class="col-8">
-              <input id="editProductCategoryName" class="form-control" type="text">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Product Category</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group row">
+                        <label for="editProductCategoryName" class="col-4 col-form-label">Product Category
+                            Name: </label>
+                        <div class="col-8">
+                            <input id="editProductCategoryName" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-danger" id="editProductCategoryError"></p>
+            <div class="modal-footer">
+                <button id="editProductCategorySubmit" class=" btn btn-success">
+                    Submit
+                </button>
+            </div>
         </div>
-      </div>
-      <p class="text-center text-danger" id="editProductCategoryError"></p>
-      <div class="modal-footer">
-        <button id="editProductCategorySubmit" class=" btn btn-success">
-          Submit
-        </button>
-      </div>
     </div>
-  </div>
 </div>
 <div class="modal fade" id="editPartyMasterModal" tabindex="-1" role="dialog"
-     aria-labelledby="Edit Party Master"
+     aria-labelledby="Edit Party"
      aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Party Master</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="form-group row">
-            <label for="editPartyName" class="col-4 col-form-label">Party Name: </label>
-            <div class="col-8">
-              <input id="editPartyName" class="form-control" type="text">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Party</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
-          <div class="form-group row">
-            <label for="editDestination" class="col-4 col-form-label">Destination: </label>
-            <div class="col-8">
-              <input id="editDestination" class="form-control" type="text">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label for="editMarka" class="col-4 col-form-label">Marka: </label>
-            <div class="col-8">
-              <input id="editMarka" class="form-control" type="text">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label for="editOpeningBalance" class="col-4 col-form-label">Opening Balance: </label>
-            <div class="col-8">
-              <input id="editOpeningBalance" class="form-control" type="text">
-            </div>
-          </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group row">
+                        <label for="editPartyName" class="col-4 col-form-label">Party Name: </label>
+                        <div class="col-8">
+                            <input id="editPartyName" class="form-control" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editDestination" class="col-4 col-form-label">Destination: </label>
+                        <div class="col-8">
+                            <input id="editDestination" class="form-control" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editMarka" class="col-4 col-form-label">Marka: </label>
+                        <div class="col-8">
+                            <input id="editMarka" class="form-control" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editOpeningBalance" class="col-4 col-form-label">Opening Balance: </label>
+                        <div class="col-8">
+                            <input id="editOpeningBalance" class="form-control" type="text">
+                        </div>
+                    </div>
 
-          <div class="form-group row">
-            <label for="editOpeningBalanceDate" class="col-3 col-form-label">Opening Balance Date: </label>
-            <div class="col-9">
-              <input class="form-control" type="date"  id="editOpeningBalanceDate">
-            </div>
-          </div>
+                    <div class="form-group row">
+                        <label for="editOpeningBalanceDate" class="col-3 col-form-label">Opening Balance Date: </label>
+                        <div class="col-9">
+                            <input class="form-control" type="date" id="editOpeningBalanceDate">
+                        </div>
+                    </div>
 
-          <div class="form-group row">
-            <label for="editTransport" class="col-3 col-form-label">Transport: </label>
-            <div class="col-9">
-              <input class="form-control" type="text" value="" id="editTransport">
-            </div>
-          </div>
+                    <div class="form-group row">
+                        <label for="editTransport" class="col-3 col-form-label">Transport: </label>
+                        <div class="col-9">
+                            <input class="form-control" type="text" value="" id="editTransport">
+                        </div>
+                    </div>
 
-          <div class="form-group row">
-            <label for="editDiscount" class="col-3 col-form-label">Discount(%): </label>
-            <div class="col-9">
-              <input class="form-control" type="number" id="editDiscount">
-            </div>
-          </div>
+                    <div class="form-group row">
+                        <label for="editDiscount" class="col-3 col-form-label">Discount(%): </label>
+                        <div class="col-9">
+                            <input class="form-control" type="number" id="editDiscount">
+                        </div>
+                    </div>
 
-          <div class="form-group row">
-            <label for="editSplDiscount" class="col-3 col-form-label">Spl. Discount(%): </label>
-            <div class="col-9">
-              <input class="form-control" type="number" id="editSplDiscount">
+                    <div class="form-group row">
+                        <label for="editSplDiscount" class="col-3 col-form-label">Spl. Discount(%): </label>
+                        <div class="col-9">
+                            <input class="form-control" type="number" id="editSplDiscount">
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="form-group row">
-            <label for="editCd" class="col-3 col-form-label">CD(%): </label>
-            <div class="col-9">
-              <input class="form-control" type="number" id="editCd">
+            <p class="text-center text-danger" id="editPartySubmitError"></p>
+            <div class="modal-footer">
+                <button id="editPartySubmit" class=" btn btn-success">
+                    Submit
+                </button>
             </div>
-          </div>
         </div>
-      </div>
-      <p class="text-center text-danger" id="editPartySubmitError"></p>
-      <div class="modal-footer">
-        <button id="editPartySubmit" class=" btn btn-success">
-          Submit
-        </button>
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="editPartyProductCategoryDiscountModal" tabindex="-1" role="dialog"
      aria-labelledby="Edit Product Category Discount"
      aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Product Category Discount</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="form-group row">
-            <label for="editProductCategoryDiscount" class="col-4 col-form-label">Discount: </label>
-            <div class="col-8">
-              <input id="editProductCategoryDiscount" class="form-control" type="number">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Product Category Discount</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
-          <div class="form-group row">
-            <label for="editProductCategorySplDiscount" class="col-4 col-form-label">Spl Discount: </label>
-            <div class="col-8">
-              <input id="editProductCategorySplDiscount" class="form-control" type="number">
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group row">
+                        <label for="editProductCategoryDiscount" class="col-4 col-form-label">Discount: </label>
+                        <div class="col-8">
+                            <input id="editProductCategoryDiscount" class="form-control" type="number">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editProductCategorySplDiscount" class="col-4 col-form-label">Spl Discount: </label>
+                        <div class="col-8">
+                            <input id="editProductCategorySplDiscount" class="form-control" type="number">
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <p class="text-center text-danger" id="editProductCategoryDiscountError"></p>
+            <div class="modal-footer">
+                <button id="editProductCategoryDiscountSubmit" class=" btn btn-success">
+                    Submit
+                </button>
+            </div>
         </div>
-      </div>
-      <p class="text-center text-danger" id="editProductCategoryDiscountError"></p>
-      <div class="modal-footer">
-        <button id="editProductCategoryDiscountSubmit" class=" btn btn-success">
-          Submit
-        </button>
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="editProductModal" tabindex="-1" role="dialog"
      aria-labelledby="Edit Product"
      aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
 
 
-      <br/>
+            <br/>
 
 
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Product</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="form-group row">
-            <label for="editProductName" class="col-3 col-form-label">Product Name: </label>
-            <div class="col-9">
-              <input id="editProductName" class="form-control" type="text" placeholder="Enter Product Name">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
-          <div class="form-group row">
-            <label for="editProductPrice" class="col-3 col-form-label">Product Price: </label>
-            <div class="col-9">
-              <input id="editProductPrice" class="form-control" type="number" placeholder="Enter Product Price">
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group row">
+                        <label for="editProductName" class="col-3 col-form-label">Product Name: </label>
+                        <div class="col-9">
+                            <input id="editProductName" class="form-control" type="text"
+                                   placeholder="Enter Product Name">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editProductPrice" class="col-3 col-form-label">Product Price: </label>
+                        <div class="col-9">
+                            <input id="editProductPrice" class="form-control" type="number"
+                                   placeholder="Enter Product Price">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editProductCategoryForProductList" class="col-3 col-form-label">Select Product
+                            Category: </label>
+                        <div class="col-9">
+                            <select id="editProductCategoryForProductList" class="custom-select">
+                                <option name="editProductCategoryForProductList" value="0">None</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="form-group row">
-            <label for="editProductCategoryForProductList" class="col-3 col-form-label">Select Product
-              Category: </label>
-            <div class="col-9">
-              <select id="editProductCategoryForProductList" class="custom-select">
-                <option name="editProductCategoryForProductList" value="0">None</option>
-              </select>
+            <p class="text-center text-danger" id="editProductError"></p>
+            <div class="modal-footer">
+                <button id="editProductSubmit" class="btn btn-success">
+                    Submit
+                </button>
             </div>
-          </div>
         </div>
-      </div>
-      <p class="text-center text-danger" id="editProductError"></p>
-      <div class="modal-footer">
-        <button id="editProductSubmit" class="btn btn-success">
-          Submit
-        </button>
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="addInvoiceItemModal" tabindex="-1" role="dialog"
      aria-labelledby="Add Invoice Item"
      aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Add Invoice Item</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="form-group row">
-
-            <label for="productList" class="col-3 col-form-label">Product Name: </label>
-            <select class="custom-select" id="productList">
-              <option name="productList" value="0">None</option>
-            </select>
-
-          </div>
-          <div class="form-group row">
-            <label for="qty" class="col-3 col-form-label">Qty: </label>
-            <div class="col-9">
-              <input class="form-control" type="number" value="" id="qty">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Invoice Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
-          <div class="form-group row">
-            <label for="per" class="col-3 col-form-label">Per: </label>
-            <select class="custom-select" id="per">
-              <option name="unitType" value="0">Set</option>
-              <option name="unitType" value="1">Piece</option>
-            </select>
-          </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group row">
+
+                        <label for="productList" class="col-3 col-form-label">Product Name: </label>
+                        <select class="custom-select" id="productList">
+                            <option name="productList" value="0">None</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group row">
+                        <label for="qty" class="col-3 col-form-label">Qty: </label>
+                        <div class="col-9">
+                            <input class="form-control" type="number" value="" id="qty">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="per" class="col-3 col-form-label">Per: </label>
+                        <select class="custom-select" id="per">
+                            <option name="unitType" value="0">Set</option>
+                            <option name="unitType" value="1">Piece</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-danger" id="addItemInvoiceError"></p>
+            <div class="modal-footer">
+                <button id="addInvoiceItemSubmit" class="btn btn-success">
+                    Submit
+                </button>
+            </div>
         </div>
-      </div>
-      <p class="text-center text-danger" id="addItemInvoiceError"></p>
-      <div class="modal-footer">
-        <button id="addInvoiceItemSubmit" class="btn btn-success">
-          Submit
-        </button>
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="addPackingChargesModal" tabindex="-1" role="dialog"
      aria-labelledby="Add Invoice Item"
      aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Add Packing Charges</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="form-group row">
-            <label for="packingCharges" class="col-3 col-form-label">Packing Charges: </label>
-            <div class="col-9">
-              <input class="form-control" type="number" value="" id="packingCharges">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Freight Charges</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group row">
+                        <label for="packingCharges" class="col-3 col-form-label">Freight Charges: </label>
+                        <div class="col-9">
+                            <input class="form-control" type="number" value="" id="packingCharges">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-danger" id="addPackingChargesError"></p>
+            <div class="modal-footer">
+                <button id="addPackingChargesSubmit" class=" btn btn-success">
+                    Submit
+                </button>
+            </div>
         </div>
-      </div>
-      <p class="text-center text-danger" id="addPackingChargesError"></p>
-      <div class="modal-footer">
-        <button id="addPackingChargesSubmit" class=" btn btn-success">
-          Submit
-        </button>
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="addPaymentModal" tabindex="-1" role="dialog"
      aria-labelledby="Add Payment"
      aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Add Payment</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="form-group row">
-            <label for="addPaymentDescription" class="col-3 col-form-label">Payment Description: </label>
-            <div class="col-9">
-              <input id="addPaymentDescription" class="form-control" type="text"
-                     placeholder="Enter Payment Description">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
-          <div class="form-group row">
-            <label for="addPaymentDate" class="col-3 col-form-label">Payment Date: </label>
-            <div class="col-9">
-              <input id="addPaymentDate" class="form-control" type="date">
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group row">
+                        <label for="addPaymentDescription" class="col-3 col-form-label">Payment Description: </label>
+                        <div class="col-9">
+                            <input id="addPaymentDescription" class="form-control" type="text"
+                                   placeholder="Enter Payment Description">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="addPaymentDate" class="col-3 col-form-label">Payment Date: </label>
+                        <div class="col-9">
+                            <input id="addPaymentDate" class="form-control" type="date">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="addPaymentAmount" class="col-3 col-form-label">Payment Amount: </label>
+                        <div class="col-9">
+                            <input id="addPaymentAmount" class="form-control" type="number"
+                                   placeholder="Enter Payment Amount">
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="form-group row">
-            <label for="addPaymentAmount" class="col-3 col-form-label">Payment Amount: </label>
-            <div class="col-9">
-              <input id="addPaymentAmount" class="form-control" type="number"
-                     placeholder="Enter Payment Amount">
+            <p class="text-center text-danger" id="addPaymentError"></p>
+            <div class="modal-footer">
+                <button id="addPaymentSubmit" class="btn btn-success">
+                    Submit
+                </button>
             </div>
-          </div>
         </div>
-      </div>
-      <p class="text-center text-danger" id="addPaymentError"></p>
-      <div class="modal-footer">
-        <button id="addPaymentSubmit" class="btn btn-success">
-          Submit
-        </button>
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="editInvoiceItemModal" tabindex="-1" role="dialog"
      aria-labelledby="Edit Invoice Item"
      aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Invoice Item</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="form-group row">
-            <label for="editCases" class="col-3 col-form-label">Cases: </label>
-            <div class="col-9">
-              <input class="form-control" type="number" value="" id="editCases">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Invoice Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group row">
+                        <label for="editCases" class="col-3 col-form-label">Cases: </label>
+                        <div class="col-9">
+                            <input class="form-control" type="number" value="" id="editCases">
+                        </div>
+                    </div>
 
-          <div class="form-group row">
-            <label for="editDateOfInvoice" class="col-3 col-form-label">Invoice Date: </label>
-            <div class="col-9">
-              <input class="form-control" type="date" id="editDateOfInvoice">
-            </div>
-          </div>
+                    <div class="form-group row">
+                        <label for="editDateOfInvoice" class="col-3 col-form-label">Invoice Date: </label>
+                        <div class="col-9">
+                            <input class="form-control" type="date" id="editDateOfInvoice">
+                        </div>
+                    </div>
 
-          <div class="form-group row">
-            <label for="editBilityNo" class="col-3 col-form-label">Bility Number: </label>
-            <div class="col-9">
-              <input class="form-control" type="number" value="" id="editBilityNo">
-            </div>
-          </div>
+                    <div class="form-group row">
+                        <label for="editBilityNo" class="col-3 col-form-label">Bility Number: </label>
+                        <div class="col-9">
+                            <input class="form-control" type="number" value="" id="editBilityNo">
+                        </div>
+                    </div>
 
-          <div class="form-group row">
-            <label for="editBilityDate" class="col-3 col-form-label">Bility Date: </label>
-            <div class="col-9">
-              <input class="form-control" type="date" id="editBilityDate">
-            </div>
-          </div>
+                    <div class="form-group row">
+                        <label for="editBilityDate" class="col-3 col-form-label">Bility Date: </label>
+                        <div class="col-9">
+                            <input class="form-control" type="date" id="editBilityDate">
+                        </div>
+                    </div>
 
-          <div class="form-group row">
-            <label for="editChalanNo" class="col-3 col-form-label">Chalan No: </label>
-            <div class="col-9">
-              <input class="form-control" type="text" value="" id="editChalanNo">
-            </div>
-          </div>
+                    <div class="form-group row">
+                        <label for="editChalanNo" class="col-3 col-form-label">Chalan No: </label>
+                        <div class="col-9">
+                            <input class="form-control" type="text" value="" id="editChalanNo">
+                        </div>
+                    </div>
 
-          <div class="form-group row">
-            <label for="editChalanDate" class="col-3 col-form-label">Chalan Date: </label>
-            <div class="col-9">
-              <input class="form-control" type="date" id="editChalanDate">
-            </div>
-          </div>
+                    <div class="form-group row">
+                        <label for="editChalanDate" class="col-3 col-form-label">Chalan Date: </label>
+                        <div class="col-9">
+                            <input class="form-control" type="date" id="editChalanDate">
+                        </div>
+                    </div>
 
-          <div class="form-group row">
-            <label for="editGrandTotal" class="col-3 col-form-label">Grand Total: </label>
-            <div class="col-9">
-              <input class="form-control" type="number" id="editGrandTotal">
+                    <div class="form-group row">
+                        <label for="editGrandTotal" class="col-3 col-form-label">Grand Total: </label>
+                        <div class="col-9">
+                            <input class="form-control" type="number" id="editGrandTotal">
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <p class="text-center text-danger" id="editItemInvoiceError"></p>
+            <div class="modal-footer">
+                <button id="editInvoiceSubmit" class=" btn btn-success">
+                    Submit
+                </button>
+            </div>
         </div>
-      </div>
-      <p class="text-center text-danger" id="editItemInvoiceError"></p>
-      <div class="modal-footer">
-        <button id="editInvoiceSubmit" class=" btn btn-success">
-          Submit
-        </button>
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="container-fluid">
-  <div class="row" id="header">
-    <div class="col text-center">
-      <button id="invoicesButton" class="btn btn-primary">Invoice</button>
+    <div class="row justify-content-center" id="header">
+        <div class="col-auto text-center btn-group main-buttons">
+            <button id="invoicesButton" class="btn btn-primary">Invoice</button>
+            <button id="partyMasterButton" class="btn btn-primary">Party</button>
+            <button id="productButton" class="btn btn-primary">Product</button>
+            <button id="ledgerButton" class="btn btn-primary">Ledger</button>
+        </div>
+<!--        <div class="col text-center">-->
+<!--            <button id="partyMasterButton" class="btn btn-primary">Party</button>-->
+<!--        </div>-->
+<!--        <div class="col text-center">-->
+<!--            <button id="productButton" class="btn btn-primary">Product</button>-->
+<!--        </div>-->
+<!--        <div class="col text-center">-->
+<!--            <button id="ledgerButton" class="btn btn-primary">Ledger</button>-->
+<!--        </div>-->
     </div>
-    <div class="col text-center">
-      <button id="partyMasterButton" class="btn btn-primary">Party Master</button>
-    </div>
-    <div class="col text-center">
-      <button id="productButton" class="btn btn-primary">Product</button>
-    </div>
-    <div class="col text-center">
-      <button id="ledgerButton" class="btn btn-primary">Ledger</button>
-    </div>
-  </div>
 
-  <div id="subHeader" class="row align-items-center">
-
-  </div>
-
-  <div class="row">
-    <div id="mainContent" class="col-12">
+    <div id="subHeader" class="row align-items-center">
 
     </div>
-    <div id="resultRow" class="col-12 text-center"></div>
-  </div>
+
+    <div class="row">
+        <div id="mainContent" class="col-12">
+
+        </div>
+        <div id="resultRow" class="col-12 text-center"></div>
+    </div>
 
 </div>
 

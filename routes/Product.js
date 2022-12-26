@@ -138,7 +138,7 @@ function viewProducts(event) {
 }
 
 function viewProductById(event, product) {
-  models.Product.find({
+  models.Product.findOne({
     where: {
       id: product.id
     }
@@ -165,11 +165,7 @@ function viewProductById(event, product) {
 }
 
 function viewProductByPCategoryId(event, productCategory) {
-  console.log(productCategory);
   models.Product.findAll({
-    where: {
-      productcategoryId: productCategory.id
-    },
     order: [models.sequelize.literal(`\`product\`.\`name\` `)]
   }).then(function (product) {
     event.sender.send('getProductByPCategoryId', {

@@ -7,7 +7,6 @@ const models = require('./../db/models');
 function addPartyMaster(event, data) {
   models.PartyMaster.create(data)
     .then(partyMaster => {
-      console.log(partyMaster.get());
       event.sender.send('addedPartyMaster', {
         success: true,
         partyMasterData: partyMaster.get()
@@ -38,7 +37,7 @@ function viewPartyMaster(event) {
 }
 
 function addPaymentForPartyMaster(event, data) {
-  models.PartyMaster.find({
+  models.PartyMaster.findOne({
     where: {
       id: data.partyMasterId
     }
@@ -65,7 +64,7 @@ function addPaymentForPartyMaster(event, data) {
     } else {
       event.sender.send('addedPaymentForPartyMaster', {
         success: false,
-        error: "Party Master Does Not Exists."
+        error: "Party Does Not Exists."
       })
     }
   }).catch(function () {
@@ -86,7 +85,6 @@ function editPartyMaster(event, data) {
     transport: data.transport,
     discount: data.discount,
     splDiscount: data.splDiscount,
-    cd: data.cd
   }, {
     where: {
       id: data.id
@@ -96,8 +94,7 @@ function editPartyMaster(event, data) {
       event.sender.send('editedPartyMaster', {
         success: true
       })
-    }
-    else {
+    } else {
       event.sender.send('editedPartyMaster', {
         success: false
       })
@@ -124,8 +121,7 @@ function updateBalance(event, data) {
       event.sender.send('updatedBalance', {
         success: true
       })
-    }
-    else {
+    } else {
       event.sender.send('updatedBalance', {
         success: false,
         error: "No object Found"
@@ -181,7 +177,7 @@ function deletePartyMaster(event, partymaster) {
             })
           } else {
             // Error
-            throw new Error("No Party Master Found")
+            throw new Error("No Party Found")
           }
         })
       })

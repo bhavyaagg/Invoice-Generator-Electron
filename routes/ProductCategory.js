@@ -34,7 +34,7 @@ function viewProductCategories(event) {
 }
 
 function viewProductCategoryById(event, productCategory) {
-  models.ProductCategory.find({
+  models.ProductCategory.findOne({
     where: {
       id: productCategory.id
     }
