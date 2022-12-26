@@ -168,12 +168,21 @@ $(document).ready(function () {
           //$marka.empty();
           $marka.val(`  ${selectedPartyMaster.marka}`);
 
-          $transport.empty();
-          $transport.val(selectedPartyMaster.transport);
-
-          $destination.empty().val(' ' + selectedPartyMaster.destination)
+          if (selectedPartyMaster.isLocal) {
+            $('#bilityDiv').hide()
+            $('#destinationDiv').hide()
+            $('#transportDiv').hide()
+          } else {
+            $('#bilityDiv').show()
+            $('#destinationDiv').show()
+            $('#transportDiv').show()
+            $transport.empty().val(selectedPartyMaster.transport);
+            $destination.empty().val(' ' + selectedPartyMaster.destination)
+          }
         } else {
-          //$marka.empty();
+          $('#bilityDiv').show()
+          $('#destinationDiv').show()
+          $('#transportDiv').show()
           $marka.val(``);
 
           $transport.empty();
@@ -182,19 +191,21 @@ $(document).ready(function () {
           $destination.empty().append(' ')
         }
         console.log($partyMasterList.val());
-        ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
-          partymasterId: +(selectedPartyMaster.id),
-        });
+        if (!!selectedPartyMaster) {
+          ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
+            partymasterId: +(selectedPartyMaster.id),
+          });
 
-        ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, data) {
-          console.log(selectedPartyMaster.id);
-          console.log("Data");
-          console.log(data);
-          if (data && data.success) {
-            selectedPartyMaster.discount = data.discountObj;
-            selectedPartyMaster.splDiscount = data.discountObj;
-          }
-        })
+          ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, data) {
+            console.log(selectedPartyMaster.id);
+            console.log("Data");
+            console.log(data);
+            if (data && data.success) {
+              selectedPartyMaster.discount = data.discountObj;
+              selectedPartyMaster.splDiscount = data.discountObj;
+            }
+          })
+        }
       });
 
       let listItemCount = 1;
@@ -1951,7 +1962,7 @@ $(document).ready(function () {
                     ${party.name}
                   </div>
                   <div class="col">
-                    ${party.isLocal? "Y" : "N"}
+                    ${party.isLocal ? "Y" : "N"}
                   </div>
                   <div class="col">
                     ${party.marka}
@@ -3613,13 +3624,31 @@ $(document).ready(function () {
         <div class="row">
           <div class="col-4">
             <div class="form-group row">
-              <label for="partyMasterList" class="col-4 col-form-label">Name: </label>
-              <select id="partyMasterList" class="custom-select col-8 pr-0">
+              <label for="partyMasterList" class="col-3 col-form-label">Name: </label>
+              <select id="partyMasterList" class="custom-select col-6 pr-0">
                 <option name="partyMasterList" value="0">None</option>
               </select>
             </div> 
           </div>
-          <div class="col-5">
+          <div class="col-4">
+            <div class="form-group row align-items-center no-gutters">
+              <div class="col-3">Marka</div>
+              <div class="col-6">
+                <input type="text" value="" id="marka" class="form-control">
+              </div> 
+            </div>   
+          </div>
+          <div class="col-4">
+            <div class="form-group row no-gutters">
+              <label for="cases" class="col-5 col-form-label">Cases:</label>
+              <div class="col-7">
+                <input class="form-control pr-0" type="number" value="0" id="casesInp">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-6">
             <div class="form-group row no-gutters align-items-center">
               <div class="col-4">Slip No./Date</div>
               <div class="col-2 pt-2 pb-2 pl-1" id="slipNo"></div>
@@ -3628,28 +3657,7 @@ $(document).ready(function () {
               </div>  
             </div> 
           </div>
-        </div>
-        <div class="row no-gutters">
-          <div class="col-2 mt-2" >
-            <div class="form-group row align-items-center no-gutters">
-              <div class="col-3">Marka</div>
-              <div class="col-9">
-                <input type="text" value="" id="marka" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
-              </div> 
-            </div>   
-          </div>
-          <div class="col-5">
-            <div class="form-group row align-items-center no-gutters">
-              <div class="col-3">GR No/Date</div>
-              <div class="col-3">
-                <input type="number" value="0" id="bilityNumber" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
-              </div>
-              <div class="col-6">
-                <input class="form-control pl-0 pr-0" type="date" id="bilityDate">
-              </div>  
-            </div>
-          </div>
-          <div class="col-5">
+          <div class="col-6">
             <div class="form-group row align-items-center no-gutters">
               <div class="col-4">C. No/Date</div>
               <div class="col-2">
@@ -3662,25 +3670,27 @@ $(document).ready(function () {
           </div>
         </div>  
         
-        <div class="row no-gutters">
-          <div class="col-3 mt-2" >
+        <div class="row mt-2">
+          <div class="col-4" id="bilityDiv">
+            <div class="form-group row align-items-center no-gutters">
+              <div class="col-3">GR No/Date</div>
+              <div class="col-3">
+                <input type="number" value="0" id="bilityNumber" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
+              </div>
+              <div class="col-6">
+                <input class="form-control pl-0 pr-0" type="date" id="bilityDate">
+              </div>  
+            </div>
+          </div>
+          <div class="col-4" id="destinationDiv">
             <div class="form-group row align-items-center no-gutters">
               <div class="col-3">Destination</div>
               <div class="col-9">
                 <input type="text" value="" id="destination" class="form-control pr-0 pl-0" style="padding-left: 0!important;padding-right: 0!important;">
-              </div> 
+              </div>
             </div>  
           </div>
-          
-          <div class="col-2">
-            <div class="form-group row no-gutters">
-              <label for="cases" class="col-5 col-form-label">Cases:</label>
-              <div class="col-7">
-                <input class="form-control pr-0" type="number" value="0" id="casesInp">
-              </div>
-            </div>
-          </div>
-          <div class="col-7">
+          <div class="col-4" id="transportDiv">
             <div class="form-group row no-gutters">
               <label for="transport" class="col-2 col-form-label">Transport: </label> 
               <div class="col-10">
@@ -3688,11 +3698,9 @@ $(document).ready(function () {
               </div>
             </div>
           </div>
-          
-          
         </div>
 
-        <ul class="list-group text-center" id="invoiceItemList">
+        <ul class="list-group text-center mt-3" id="invoiceItemList">
           <li class="list-group-item">
             <div class="row">
               <div class="col-1">
