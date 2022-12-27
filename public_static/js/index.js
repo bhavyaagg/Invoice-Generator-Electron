@@ -74,8 +74,8 @@ $(document).ready(function () {
 
       let currentDate = getCurrentDate();
       $invoiceDate.val(currentDate);
-      // $bilityDate.val(currentDate);
-      // $chalanDate.val(currentDate);
+      $bilityDate.val(currentDate);
+      $chalanDate.val(currentDate);
       let $partyMasterList = $('#partyMasterList');
       let partyMasterRowObj = {};                    // All data with S.no. as key
 
@@ -281,27 +281,30 @@ $(document).ready(function () {
           splDiscount: splDiscount,
         };
         $invoiceItemList.append(`
-            <li class="list-group-item" id='${"amountCalcList" + String(listItemCount)}' style="padding: 0px; border: 1px solid black">
+            <li class="list-group-item" id='${"amountCalcList" + String(listItemCount)}' style="padding-top: 0;padding-bottom: 0; border: 1px solid black">
               <div class="row" style="padding-top: -5px"> 
-                <div class="col-1">
+                <div class="col-1 d-flex justify-content-center align-items-center">
                   ${listItemCount}
                 </div>
-                <div class="col-5">
+                <div class="col-5 d-flex justify-content-center align-items-center">
                   ${selectedProduct.name}
                 </div>
-                <div class="col-1">
+                <div class="col-1 d-flex justify-content-center align-items-center">
                   ${qty}
                 </div>
-                <div class="col-2" id="productPrice">
+                <div class="col-1 d-flex justify-content-center align-items-center" id="productPrice">
                   ${selectedProduct.price}
                 </div>
-                <div class="col-1"> 
-                  ${per}  
+                <div class="col-1 d-flex justify-content-center align-items-center"> 
+                  ${per}
                 </div>
-                <div class="col-2">
+                <div class="col-2 d-flex justify-content-center align-items-center">
                   ${(+qty) * (+selectedProduct.price) * ((100 - discount) / 100)}
+                </div> 
+                <div class="col-1 d-flex justify-content-center align-items-center">
                   <button class="btn invoiceListItemClass" data-id="${listItemCount}">X</button>
                 </div> 
+                
               </div>
             </li>
         `)
@@ -353,13 +356,17 @@ $(document).ready(function () {
         })
       });
       $('#submitInvoice').click(function () {
-        let bilityDate = ($bilityDate.val() ? $bilityDate.val() : null)
+        let bilityDate = $bilityDate.val();
         let chalanDate = $chalanDate.val();
 
         if (listItemCount === 1)
           return;
-        console.log($bilityDate.val());
-        console.log($chalanDate.val());
+        if (!bilityDate) {
+          bilityDate = getCurrentDate();
+        }
+        if (!chalanDate) {
+          chalanDate = getCurrentDate();
+        }
         ipcRenderer.send('submitInvoice', {
           id: slipNumber,
           cases: String($cases.val()),
@@ -468,7 +475,6 @@ $(document).ready(function () {
         <ul class="list-group text-center">
           <li class="list-group-item">
             <div class="row">
-              
               <div class="col">
                 <b>Slip No.</b>
               </div>
@@ -533,6 +539,7 @@ $(document).ready(function () {
         })
         invoiceItems.forEach(invoiceItem => {
           invoiceItemObj[invoiceItem.id] = invoiceItem;
+          const isLocal = invoiceItem.partymaster.dataValues.isLocal;
           str += `
           <li class="list-group-item">
             <div class="row">
@@ -549,10 +556,10 @@ $(document).ready(function () {
                 ${invoiceItem.dateOfInvoice}
               </div>
               <div class="col">
-                ${invoiceItem.bilityNo}
+                ${isLocal ? "" : invoiceItem.bilityNo}
               </div>
               <div class="col-1">
-                ${(invoiceItem.bilityDate === null ? "" : invoiceItem.bilityDate)}
+                ${isLocal ? "" : invoiceItem.bilityDate}
               </div>
               <div class="col">
                 ${invoiceItem.chalanNo}
@@ -588,6 +595,7 @@ $(document).ready(function () {
         function printInvoiceAgain(eventPrint) {
           let invoiceItemId = +(eventPrint.target.getAttribute("invoiceItemId"));
           let invoiceItem = invoiceItemObj[invoiceItemId];
+          console.log(invoiceItem)
           $mainContent.empty();
           ipcRenderer.send('viewInvoiceDetailsById', {
             invoiceId: invoiceItemId
@@ -1181,7 +1189,7 @@ $(document).ready(function () {
               <div class="col-1">
                 <b>Qty</b>
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 <b>Rate</b>
               </div>
               <div class="col-1">
@@ -1189,6 +1197,9 @@ $(document).ready(function () {
               </div>
               <div class="col-2">
                 <b>Amt</b>
+              </div>
+              <div class="col-1">
+                <b>X</b>
               </div>
             </div>
           </li>
@@ -3492,6 +3503,9 @@ $(document).ready(function () {
   }
 
   function getDate(date) {
+    if (!date) {
+      return ""
+    }
     if (date.charAt(4) === "-" && date.charAt(7) === "-") {
       return date.substring(8) + "/" + date.substring(5, 7) + "/" + date.substring(0, 4);
     }
@@ -3499,19 +3513,19 @@ $(document).ready(function () {
   }
 
   function showPrintView(invoiceItem) {
-    console.log(12343)
+    const isLocal = invoiceItem.partymaster.dataValues.isLocal;
     $mainContent.empty();
 
     $resultRow.empty();
 
-    $mainContent.append(`
+
+    let str = `
       <div class="row">
         <div class="col text-center">
           <h3>XYZ</h3>
           <h6>Rough Estimate</h6>
         </div>
       </div>
-      
       
       <div class="row">
         <div class="col-12">
@@ -3538,40 +3552,43 @@ $(document).ready(function () {
             
           </div>
           <div class="col-6 right-menu"> 
-<!--            <div class="row">-->
-<!--                <div class="col-12">&nbsp;</div>-->
-<!--            </div>-->
             <div class="row">
-<!--              <div class="col"></div>-->
               <div class="col-6 d-flex justify-content-between">
                 <span>Challan No: ${invoiceItem.chalanNo}</span>
                 <span>Date: ${getDate(invoiceItem.chalanDate)}</span>
               </div>
             </div>
-            
-            <div class="row">
-              <div class="col-12 pr-0">
-                <span>Transport: ${invoiceItem.partymaster.dataValues.transport}</span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12 pr-0">
-                <span>Destination: ${invoiceItem.partymaster.dataValues.destination}</span>
-              </div>
-            </div> 
-            <div class="row">
-              <div class="col-6 d-flex justify-content-between">
-                <span>GR No: ${invoiceItem.bilityNo}</span>
-                <span>Date: ${getDate(invoiceItem.bilityDate)}</span>
-              </div>
-            </div>
+            `;
+
+
+    if (!isLocal) {
+      str += `
+        <div class="row">
+          <div class="col-12 pr-0">
+            <span>Transport: ${invoiceItem.partymaster.dataValues.transport}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 pr-0">
+            <span>Destination: ${invoiceItem.partymaster.dataValues.destination}</span>
+          </div>
+        </div> 
+        <div class="row">
+          <div class="col-6 d-flex justify-content-between">
+            <span>GR No: ${invoiceItem.bilityNo}</span>
+            <span>Date: ${getDate(invoiceItem.bilityDate)}</span>
+          </div>
+        </div>
+      `
+
+    }
+
+    str += ` 
           </div>
         </div>
 
         </div>
       </div>
-      
-
  
       <ul class="list-group mt-3 text-center" id="invoiceItemList">
         <li class="list-group-item items-list" style="padding-left: 0; padding-right: 0">
@@ -3613,8 +3630,9 @@ $(document).ready(function () {
           <input class="btn btn-primary" type="submit" value="Add Invoice Item" id="addInvoiceItemBtn">
         </div>
       </div>
-              
-    `);
+    `;
+
+    $mainContent.append(str);
   }
 
   function showInvoiceHeader() {
@@ -3717,7 +3735,7 @@ $(document).ready(function () {
               <div class="col-1">
                 <b>Qty</b>
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 <b>Rate</b>
               </div>
               <div class="col-1">
@@ -3725,6 +3743,9 @@ $(document).ready(function () {
               </div>
               <div class="col-2">
                 <b>Amt</b>
+              </div>
+              <div class="col-1">
+                <b>X</b>
               </div>
             </div>
           </li>
