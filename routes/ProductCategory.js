@@ -23,7 +23,7 @@ function viewProductCategories(event) {
   models.ProductCategory.findAll({}).then(function (rows) {
     event.sender.send('getProductCategories', {
       success: true,
-      productCategories: rows.map((v) => v.get())
+      productCategories: rows.map((v) => v.get()).sort((v1, v2) => v1.name.localeCompare(v2.name))
     });
   }).catch(function (err) {
     event.sender.send('getProductCategories', {

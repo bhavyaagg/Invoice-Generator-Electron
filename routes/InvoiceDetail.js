@@ -11,7 +11,7 @@ function viewInvoiceDetailsById(event, data) {
     where: {
       invoiceId: data.invoiceId
     },
-    include: [models.Product]
+    include: [{model: models.Product, include: [models.ProductCategory]}]
   }).then(resultRows => {
     if (resultRows.length > 0) {
       event.sender.send('getInvoiceDetailById', {

@@ -107,8 +107,7 @@ function viewInvoiceItems(event) {
           success: true,
           invoiceItems: invoiceItems.map(invoiceItem => invoiceItem.get())
         })
-      }
-      else {
+      } else {
         event.sender.send('getInvoiceItems', {
           success: false,
           error: "No Element Found"
@@ -139,8 +138,7 @@ function deleteInvoiceItemById(event, invoiceItemId) {
           event.sender.send('deletedInvoiceItemById', {
             success: true,
           })
-        }
-        else {
+        } else {
           event.sender.send('deletedInvoiceItemById', {
             success: false,
             error: "Incorrect ID"
@@ -154,8 +152,7 @@ function deleteInvoiceItemById(event, invoiceItemId) {
           error: err
         })
       })
-    }
-    else {
+    } else {
       event.sender.send('deletedInvoiceById', {
         success: false,
         error: "Incorrect ID"
@@ -182,8 +179,7 @@ function viewInvoiceItemById(event, invoiceItemId) {
         success: true,
         invoiceItem: invoiceItem.get()
       })
-    }
-    else {
+    } else {
       event.sender.send('getInvoiceItemById', {
         success: true,
         error: "Not Found"

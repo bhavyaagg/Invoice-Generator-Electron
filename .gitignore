@@ -6,3 +6,6 @@ secrets.js
 dbData/
 *.sqlite
 invoicegenerator.sqlite3
+scripts/
+productData/
+scripts/

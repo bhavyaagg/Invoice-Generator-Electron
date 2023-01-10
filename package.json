@@ -35,7 +35,7 @@
       "icon": "build/icons"
     },
     "win": {
-      "target": "squirrel",
+      "target": "nsis",
       "icon": "build/icon.ico"
     }
   },
@@ -61,6 +61,8 @@
     "electron-rebuild": "^3.2.9"
   },
   "dependencies": {
+    "convert-excel-to-json": "^1.7.0",
+    "electron-builder-squirrel-windows": "^24.0.0-alpha.8",
     "sequelize": "^6.21.4",
     "sqlite3": "^5.0.11"
   }

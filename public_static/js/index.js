@@ -128,7 +128,6 @@ $(document).ready(function () {
           $resultRow.text("No product or some error");
           return;
         }
-        console.log(productListData.products);
         let str = '';
         const productList = []
         const $productList = $('#productList');
@@ -139,7 +138,23 @@ $(document).ready(function () {
           productList.push(name)
         });
         $productList.autocomplete({
-          source: productList,
+          source: function (request, response) {
+            console.log(request.term)
+            // const matches = $.map(acList, function (acItem) {
+            //   if (acItem.toUpperCase().indexOf(request.term.toUpperCase()) === 0) {
+            //     return acItem;
+            //   }
+            // });
+            const searchWords = request.term.split(" ");
+            let regexString = "";
+            for (let searchWord of searchWords) {
+              regexString += "(?=.*" + searchWord + ")";
+            }
+            const regex = new RegExp(regexString, "i");
+
+            const matches = productList.filter((product) => regex.test(product))
+            response(matches);
+          },
           appendTo: "#addInvoiceItemModal"
         })
       });
@@ -284,16 +299,16 @@ $(document).ready(function () {
                   ${listItemCount}
                 </div>
                 <div class="col-5 d-flex justify-content-center align-items-center">
-                  ${selectedProduct.name}
+                  ${selectedProduct.productcategory.name} - ${selectedProduct.name}
                 </div>
                 <div class="col-1 d-flex justify-content-center align-items-center">
                   ${qty}
                 </div>
-                <div class="col-1 d-flex justify-content-center align-items-center" id="productPrice">
-                  ${selectedProduct.price}
-                </div>
                 <div class="col-1 d-flex justify-content-center align-items-center"> 
                   ${per}
+                </div>
+                <div class="col-1 d-flex justify-content-center align-items-center" id="productPrice">
+                  ${selectedProduct.price}
                 </div>
                 <div class="col-2 d-flex justify-content-center align-items-center">
                   ${(+qty) * (+selectedProduct.price) * ((100 - discount) / 100)}
@@ -347,6 +362,7 @@ $(document).ready(function () {
 
       $('#printInvoice').click(function () {
         let mainContent = $('#mainContent')[0];
+        console.log(mainContent);
         $(document.body).empty().append(mainContent);
         ipcRenderer.send('printInvoice', {
           id: slipNumber
@@ -436,16 +452,14 @@ $(document).ready(function () {
       });
 
       function updateAmtDiv() {
-        $('#totalAmt').empty();
-        $('#totalAmt').append(`
-          <div >
-            
-            <hr>
-              <p class="text-right"><b>Total Qty: ${qtyCount} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Amount:  ${totalAmt}</b></p>
-            <hr>
-            <p class="text-right">
-            
-            <b>
+        $('#totalAmt').empty().append(`
+          <div class="row">
+            <div class="col-6"></div>
+            <div class="col-1 text-center">
+              <b>${qtyCount}</b>
+            </div>
+            <div class="col-3"></div>
+            <div class="col-2">${totalAmt}</div>
               
               Freight Charges:  ${packingCharges}
             
@@ -618,7 +632,12 @@ $(document).ready(function () {
               if (discountData && discountData.success) {
                 let invoiceDetail = {};
                 console.log(data.invoiceItems)
-                data.invoiceItems.forEach(invoiceDetailItem => {
+                const invoiceItems = data.invoiceItems.sort((item1, item2) => {
+                  const name1 = item1.product.productcategory.dataValues.name + " " + item1.product.name;
+                  const name2 = item2.product.productcategory.dataValues.name + " " + item2.product.name;
+                  return name1.localeCompare(name2);
+                })
+                invoiceItems.forEach(invoiceDetailItem => {
                   const selectedProductCategoryId = invoiceDetailItem.product.productcategoryId;
                   const discount = discountData.discountObj[selectedProductCategoryId].discount;
                   const splDiscount = discountData.discountObj[selectedProductCategoryId].splDiscount;
@@ -629,22 +648,23 @@ $(document).ready(function () {
                   $invoiceItemList.append(`
                     <li class="list-group-item items-list" id="amountCalcList" style="padding: 0px;">
                       <div class="row" padding-top: -5px"> 
-                        <div class="col-1">
+                        <div class="col-1 text-center">
                           ${listItemCount++}
                         </div>
-                        <div class="col-5">
-                          ${invoiceDetailItem.product.name}
+                        <div class="col-6">
+                          ${invoiceDetailItem.product.productcategory.dataValues.name} - ${invoiceDetailItem.product.name}
                         </div>
-                        <div class="col-1">
+                        <div class="col-1 text-center">
                           ${invoiceDetailItem.qty}
                         </div>
-                        <div class="col-2" id="productPrice">
-                          ${invoiceDetailItem.product.price}
-                        </div>
-                        <div class="col-1"> 
+                        <div class="col-1 text-center"> 
                           ${invoiceDetailItem.unitType}  
                         </div>
-                        <div class="col-2">
+                        <div class="col text-center" id="productPrice">
+                          ${invoiceDetailItem.product.price}
+                        </div>
+                        
+                        <div class="col text-center">
                           ${(+invoiceDetailItem.qty) * (+invoiceDetailItem.product.price) * ((100 - discount) / 100)}
                         </div>
                       </div>
@@ -786,11 +806,11 @@ $(document).ready(function () {
                         <div class="col-1">
                           ${qty}
                         </div>
-                        <div class="col-2" id="productPrice">
-                          ${selectedProduct.price}
-                        </div>
                         <div class="col-1"> 
                           ${per}  
+                        </div>
+                        <div class="col-2" id="productPrice">
+                          ${selectedProduct.price}
                         </div>
                         <div class="col-2">
                           ${(+qty) * (+selectedProduct.price)}
@@ -942,21 +962,26 @@ $(document).ready(function () {
                 function updateAmtDiv() {
                   $('#totalAmt').empty();
                   $('#totalAmt').append(`
-                  <div >
-                    
-                    <hr>
-                      <p class="text-right"><b>Total Qty: ${qtyCount} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Amount:  ${totalAmt}</b></p>
-                    <hr>
-                    <p class="text-right">
-                    
-                    <b>
-                      
-                      Freight Charges:  ${packingCharges}
-                    
-                    </b>
-                    </p>
-                   
-                    <h5 class="text-right">Grand Total:  ${(+grandTotal) + (+packingCharges)}</h5>
+                  <div class="row mt-2">
+                    <div class="col-7"></div>
+                    <div class="col-1 text-center">
+                      <b>${qtyCount}</b>
+                    </div>
+                    <div class="col-1"></div>
+                    <div class="col"></div>
+                    <div class="col text-center">${totalAmt}</div>
+                  </div>
+                  <div class="row mt-4">
+                    <div class="col-10"></div>
+                    <div class="col-2 text-right pr-5">
+                        <b>Freight:  ${packingCharges}</b>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-10"></div>
+                    <div class="col-2 text-right pr-5">
+                        <b class="total-amt">Total:  ${(+grandTotal) + (+packingCharges)}</b>
+                    </div>
                   </div>
                 `)
                 }
@@ -1767,49 +1792,26 @@ $(document).ready(function () {
         $mainContent.empty();
         $resultRow.empty();
         if (data.success) {
-          let str = `
-            <ul class="list-group text-center">
-              <li class="list-group-item">
-                <div class="row align-items-center">
-                  <div class="col-3">
-                    <b>Product Name</b>
-                  </div>
-                  <div class="col-3">
-                    <b>Product Price</b>
-                  </div>
-                  <div class="col-3">
-                    <b>Product Category</b>
-                  </div>
-                </div>
-              </li>
-          `;
-
-          data.products.forEach(function (product) {
-            str += `
-            <li class="list-group-item">
-              <div class="row align-items-center">
-                <div class="col-3">
-                  ${product.name}
-                </div>
-                <div class="col-3">
-                  ${product.price}
-                </div>
-                <div class="col-3">
-                  ${product.productcategory.name}
-                </div>
-                <div class="col">
-                    <button class="btn btn-success edit-product" productId=${product.id}>EDIT</button>
-                </div>
-                <div class="col">
-                  <button class="btn btn-danger delete-product" productId=${product.id}>DELETE</button>
-                </div>
-              </div>
-            </li>
-            `
+          showAllProductsView(data.products);
+          const productList = []
+          const productObj = {};
+          data.products.forEach(product => {
+            const name = `${product.productcategory.name} - ${product.name}`;
+            productObj[name] = product;
+            productList.push(name)
           });
-          str += "</ul>"
+          $('#allProductSearch').on('input', (e) => {
+            const searchWords = e.target.value.split(" ");
+            let regexString = "";
+            for (let searchWord of searchWords) {
+              regexString += "(?=.*" + searchWord + ")";
+            }
+            const regex = new RegExp(regexString, "i");
 
-          $mainContent.append(str);
+            const matches = productList.filter((product) => regex.test(product))
+            const filteredProducts = matches.map((match) => productObj[match])
+            showAllProducts(filteredProducts);
+          })
 
           $('.edit-product').click(function (e) {
             let productId = +(e.target.getAttribute("productId"));
@@ -2935,6 +2937,7 @@ $(document).ready(function () {
 
   function showPrintView(invoiceItem) {
     const isLocal = invoiceItem.partymaster.dataValues.isLocal;
+
     $mainContent.empty();
 
     $resultRow.empty();
@@ -3011,31 +3014,31 @@ $(document).ready(function () {
         </div>
       </div>
  
-      <ul class="list-group mt-3 text-center" id="invoiceItemList">
+      <ul class="list-group mt-3" id="invoiceItemList">
         <li class="list-group-item items-list" style="padding-left: 0; padding-right: 0">
           <div class="row">
-            <div class="col-1">
+            <div class="col-1 text-center">
               <b>S.No.</b>
             </div>
-            <div class="col-5">
-              <b>Description of Goods</b>
+            <div class="col-6 text-center">
+              <b>Items</b>
             </div>
-            <div class="col-1">
+            <div class="col-1 text-center">
               <b>Qty</b>
             </div>
-            <div class="col-2">
-              <b>Rate</b>
-            </div>
-            <div class="col-1">
+            <div class="col-1 text-center">
               <b>Per</b>
             </div>
-            <div class="col-2">
+            <div class="col text-center">
+              <b>Rate</b>
+            </div>
+            <div class="col text-center">
               <b>Amt</b>
             </div>
           </div>
         </li>
       </ul>
-      <div class="row" style="padding-right: 50px;">
+      <div class="row" style="">
         <div class="col-12" id="totalAmt">
           
         </div>  
@@ -3144,23 +3147,23 @@ $(document).ready(function () {
           </div>
         </div>
 
-        <ul class="list-group text-center mt-3" id="invoiceItemList">
+        <ul class="list-group mt-3" id="invoiceItemList">
           <li class="list-group-item">
             <div class="row">
               <div class="col-1">
                 <b>S.No.</b>
               </div>
               <div class="col-5">
-                <b>Description of Goods</b>
+                <b>Items</b>
               </div>
               <div class="col-1">
                 <b>Qty</b>
               </div>
               <div class="col-1">
-                <b>Rate</b>
+                <b>Per</b>
               </div>
               <div class="col-1">
-                <b>Per</b>
+                <b>Rate</b>
               </div>
               <div class="col-2">
                 <b>Amt</b>
@@ -3190,6 +3193,70 @@ $(document).ready(function () {
         </div>
       `);
   }
+
+  function showAllProductsView(products) {
+    $mainContent.empty();
+    $resultRow.empty();
+    let str = `
+            <ul class="list-group text-center">
+              <li class="list-group-item">
+                <div class="form-group row">
+                  <label for="allProductSearch" class="col-3 col-form-label">Search Product: </label>
+                  <div class="col-9">
+                      <input class="form-control" id="allProductSearch">
+                  </div>
+                </div>
+              </li>
+              
+              <li class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-3">
+                    <b>Product Name</b>
+                  </div>
+                  <div class="col-3">
+                    <b>Product Price</b>
+                  </div>
+                  <div class="col-3">
+                    <b>Product Category</b>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <ul class="list-group text-center" id="allProductsUL">
+            </ul>
+          `;
+    $mainContent.append(str);
+    showAllProducts(products);
+  }
+
+  function showAllProducts(products) {
+    let str = "";
+    products.forEach(function (product) {
+      str += `
+            <li class="list-group-item">
+              <div class="row align-items-center">
+                <div class="col-3">
+                  ${product.name}
+                </div>
+                <div class="col-3">
+                  ${product.price}
+                </div>
+                <div class="col-3">
+                  ${product.productcategory.name}
+                </div>
+                <div class="col">
+                    <button class="btn btn-success edit-product" productId=${product.id}>EDIT</button>
+                </div>
+                <div class="col">
+                  <button class="btn btn-danger delete-product" productId=${product.id}>DELETE</button>
+                </div>
+              </div>
+            </li>
+            `
+    });
+    $('#allProductsUL').empty().append(str);
+  }
+
 });
 
 
