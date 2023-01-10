@@ -12,7 +12,8 @@ $(document).ready(function () {
     , $ledgerButton = $('#ledgerButton')
     , $subHeader = $('#subHeader')
     , $mainContent = $('#mainContent')
-    , $resultRow = $('#resultRow');
+    , $resultRow = $('#resultRow')
+    , $header = $('#header');
 
   const $editProductCategoryModal = $('#editProductCategoryModal');
   const $editProductModal = $('#editProductModal');
@@ -763,7 +764,7 @@ $(document).ready(function () {
                 ipcRenderer.once('printedInvoice', function (event, data) {
                   if (data.success) {
                     console.log("Printed")
-                    $('#resultRow').text("Invoice Printed");
+                    // $('#resultRow').text("Invoice Printed");
                     // location.reload();
                   } else {
                     window.alert("Could not add invoice");
@@ -2938,19 +2939,14 @@ $(document).ready(function () {
   function showPrintView(invoiceItem) {
     const isLocal = invoiceItem.partymaster.dataValues.isLocal;
 
+    $header.empty().hide();
+    $subHeader.empty().hide()
     $mainContent.empty();
 
     $resultRow.empty();
 
 
     let str = `
-      <div class="row">
-        <div class="col text-center">
-          <h3>XYZ</h3>
-          <h6>Rough Estimate</h6>
-        </div>
-      </div>
-      
       <div class="row">
         <div class="col-12">
           <div class="row row-custom mt-2">
@@ -2977,8 +2973,12 @@ $(document).ready(function () {
           </div>
           <div class="col-6 right-menu"> 
             <div class="row">
-              <div class="col-6 d-flex justify-content-between">
+              <div class="col-6">
                 <span>Challan No: ${invoiceItem.chalanNo}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
                 <span>Date: ${getDate(invoiceItem.chalanDate)}</span>
               </div>
             </div>
@@ -3044,16 +3044,6 @@ $(document).ready(function () {
         </div>  
       </div>  
       
-      <div class="row" id="submitBtnDiv">
-        <div class="col-5"><b></b></div>
-        <div class="col-2">
-          <input class="btn btn-primary" type="submit" value="Submit Invoice" id="submitInvoiceAgain">
-        
-        </div>
-        <div class="col-5">
-          <input class="btn btn-primary" type="submit" value="Add Invoice Item" id="addInvoiceItemBtn">
-        </div>
-      </div>
     `;
 
     $mainContent.append(str);
