@@ -69,20 +69,30 @@ $(document).ready(function () {
       let $bilityDate = $('#bilityDate');
       let $chalanNumber = $('#chalanNumber');
       let $chalanDate = $('#chalanDate');
+      let $bilityDiv = $('#bilityDiv');
+      let $destinationDiv = $('#destinationDiv');
+      let $transportDiv = $('#transportDiv');
+      let $partyMasterList = $('#partyMasterList');
+      let $invoiceItemList = $('#invoiceItemList');
+      let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
+      let $productList = $('#productList');
+      let $qty = $('#qty');
 
-      let currentDate = getCurrentDate();
+      let partyMasterRowObj = {};                    // All data with S.no. as key
+      let invoiceListItems = {};
+      let listItemCount = 1;
+      let nameToProductMap = {};
+      let packingCharges = 0;
+      let totals = {};
+
+      const currentDate = getCurrentDate();
       $invoiceDate.val(currentDate);
       $bilityDate.val(currentDate);
       $chalanDate.val(currentDate);
-      let $partyMasterList = $('#partyMasterList');
-      let partyMasterRowObj = {};                    // All data with S.no. as key
-
-      let grandTotal = 0;
       // Get data in party Dropdown
       ipcRenderer.send('viewPartyMaster');
       ipcRenderer.once('getPartyMaster', function (event, data) {
         if (data.success) {
-
           if (data.partyMasterRows.length === 0) {
             $mainContent.empty();
             $resultRow.empty();
@@ -91,23 +101,12 @@ $(document).ready(function () {
             return;
           }
 
-          let str = `
-            
-          `;
-          console.log(data)
-          data.partyMasterRows.sort(function (a, b) {
-            if (a.name.toUpperCase() > b.name.toUpperCase())
-              return 1;
-            if (a.name.toUpperCase() < b.name.toUpperCase())
-              return -1;
-            return 0;
-          })
+          let str = ``;
+          data.partyMasterRows.sort((a, b) => a.name.localeCompare(b.name))
 
           data.partyMasterRows.forEach(function (row) {
             partyMasterRowObj[row.id] = row;
-            str += `
-              <option name="partyMasterList" value="${row.id}">${row.name}</option>
-            `;
+            str += `<option name="partyMasterList" value="${row.id}">${row.name}</option>`;
           });
 
           $partyMasterList.append(str);
@@ -115,13 +114,10 @@ $(document).ready(function () {
           $resultRow.removeClass('text-success').addClass('text-danger');
           $resultRow.text("Error is" + data.error);
         }
-
       });
 
       ipcRenderer.send('viewProducts');
       ipcRenderer.once('getProducts', function (event, productListData) {
-        console.log('productList ' + productListData.success);
-        console.log(productListData);
         if (!productListData.success || productListData.products.length === 0) {
           $mainContent.empty();
           $resultRow.empty();
@@ -134,25 +130,18 @@ $(document).ready(function () {
         const $productList = $('#productList');
         productListData.products.forEach(product => {
           const name = `${product.productcategory.name} - ${product.name}`;
-          productObj[name] = product;
+          nameToProductMap[name] = product;
           str += `<option name="productList" value="${product.id}">${product.name}</option>`
           productList.push(name)
         });
         $productList.autocomplete({
           source: function (request, response) {
-            console.log(request.term)
-            // const matches = $.map(acList, function (acItem) {
-            //   if (acItem.toUpperCase().indexOf(request.term.toUpperCase()) === 0) {
-            //     return acItem;
-            //   }
-            // });
             const searchWords = request.term.split(" ");
             let regexString = "";
             for (let searchWord of searchWords) {
               regexString += "(?=.*" + searchWord + ")";
             }
             const regex = new RegExp(regexString, "i");
-
             const matches = productList.filter((product) => regex.test(product))
             response(matches);
           },
@@ -180,42 +169,30 @@ $(document).ready(function () {
       let selectedPartyMaster;
 
       $partyMasterList.change(function () {
-        if ($partyMasterList.val() === 0)   // Check for none in list
+        if ($partyMasterList.val() === 0) {  // Check for none in list
           return;
-        console.log(partyMasterRowObj[$partyMasterList.val()]);
-        selectedPartyMaster = partyMasterRowObj[$partyMasterList.val()];
+        }
+        $bilityDiv.show()
+        $destinationDiv.show()
+        $transportDiv.show()
+        $marka.empty().val(``);
+        $transport.empty().val("");
+        $destination.empty().append(" ");
 
-        if (selectedPartyMaster) {
+        selectedPartyMaster = partyMasterRowObj[$partyMasterList.val()];
+        const partymasterId = Number.parseInt(selectedPartyMaster.id);
+        if (selectedPartyMaster && !Number.isNaN(partymasterId)) {
           $marka.val(`  ${selectedPartyMaster.marka}`);
           if (selectedPartyMaster.isLocal) {
-            $('#bilityDiv').hide()
-            $('#destinationDiv').hide()
-            $('#transportDiv').hide()
+            $bilityDiv.hide();
+            $destinationDiv.hide();
+            $transportDiv.hide();
           } else {
-            $('#bilityDiv').show()
-            $('#destinationDiv').show()
-            $('#transportDiv').show()
             $transport.empty().val(selectedPartyMaster.transport);
             $destination.empty().val(' ' + selectedPartyMaster.destination)
           }
-        } else {
-          $('#bilityDiv').show()
-          $('#destinationDiv').show()
-          $('#transportDiv').show()
-          $marka.val(``);
 
-          $transport.empty();
-          $transport.val("");
-
-          $destination.empty().append(' ')
-        }
-        console.log($partyMasterList.val());
-        console.log(selectedPartyMaster)
-        if (!!selectedPartyMaster) {
-          ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {
-            partymasterId: +(selectedPartyMaster.id),
-          });
-
+          ipcRenderer.send('viewDiscountByPartyMasterIdAndProductCategoryId', {partymasterId});
           ipcRenderer.once('getDiscountByPartyMasterIdAndProductCategoryId', function (event, data) {
             if (data && data.success) {
               selectedPartyMaster.discount = data.discountObj;
@@ -223,64 +200,23 @@ $(document).ready(function () {
             }
           })
         }
+
       });
 
-      let listItemCount = 1;
-      let qtyCount = 0;
-      let $invoiceItemList = $('#invoiceItemList');
-      let productObj = {};
-
-      let packingCharges = 0;
-      let $productList = $('#productList');
-      let $qty = $('#qty');
-      let $addInvoiceItemSubmit = $('#addInvoiceItemSubmit');
-
-      let totalAmtWithoutDis = 0, totalAmt = 0;
-
-      $('#addInvoiceItemBtn').click(function () {
-        if (selectedPartyMaster === undefined) {
-
-          $resultRow.removeClass('text-success').addClass('text-danger');
-          $resultRow.text("Select Party");
+      $addInvoiceItemSubmit.click(function (e) {
+        const selectedProduct = nameToProductMap[$productList.val()];
+        if (!selectedProduct) {
           return;
         }
 
-        $resultRow.empty();
-        $productList.val('')
-        $qty.val('')
-        $('#addInvoiceItemModal').modal('show');
-      })
+        let qty = Number.parseInt($('#qty').val());
+        if (Number.isNaN(qty) || qty <= 0) {
+          $('#addItemInvoiceError').text("Please enter correct quantity");
+        }
 
-      $('#addPackingChargesBtn').click(function () {
-        $('#addPackingChargesModal').modal('show');
-      });
-
-      $('#addPackingChargesSubmit').click(function () {
-
-        let pcharges = $('#packingCharges').val();
-        if (pcharges == "")
-          return;
-        let prevPackingCharges = packingCharges;
-        packingCharges = pcharges;
-        grandTotal = (+grandTotal) + (+packingCharges) - (+prevPackingCharges);
-        updateAmtDiv();
-        $('#addPackingChargesModal').modal('hide');
-      });
-      let invoiceListItems = {};
-      $addInvoiceItemSubmit.click(function (e) {
-        let qty = $('#qty').val();
-        const productToBeAdded = $productList.val();
-        const selectedProduct = productObj[productToBeAdded];
-        console.log(selectedProduct)
         let per = $('#per').val();
         per = $(`option[name="unitType"][value="${per}"]`).text();
-
-        if (qty <= 0 || typeof selectedProduct === "undefined")
-          return;
-        console.log(selectedProduct)
         const selectedProductCategoryId = selectedProduct.productcategoryId;
-        console.log(selectedProductCategoryId)
-        console.log(selectedPartyMaster)
         const discount = selectedPartyMaster.discount[selectedProductCategoryId].discount;
         const splDiscount = selectedPartyMaster.discount[selectedProductCategoryId].splDiscount;
 
@@ -296,79 +232,53 @@ $(document).ready(function () {
         $invoiceItemList.append(`
             <li class="list-group-item" id='${"amountCalcList" + String(listItemCount)}' style="padding-top: 0;padding-bottom: 0; border: 1px solid black">
               <div class="row" style="padding-top: -5px"> 
-                <div class="col-1 d-flex justify-content-center align-items-center">
+                <div class="col-1 d-flex align-items-center">
                   ${listItemCount}
                 </div>
-                <div class="col-5 d-flex justify-content-center align-items-center">
+                <div class="col-5 d-flex align-items-center">
                   ${selectedProduct.productcategory.name} - ${selectedProduct.name}
                 </div>
-                <div class="col-1 d-flex justify-content-center align-items-center">
+                <div class="col-1 d-flex align-items-center justify-content-center">
                   ${qty}
                 </div>
-                <div class="col-1 d-flex justify-content-center align-items-center"> 
+                <div class="col-1 d-flex align-items-center justify-content-center"> 
                   ${per}
                 </div>
-                <div class="col-1 d-flex justify-content-center align-items-center" id="productPrice">
+                <div class="col-1 d-flex align-items-center justify-content-center" id="productPrice">
                   ${selectedProduct.price}
                 </div>
-                <div class="col-2 d-flex justify-content-center align-items-center">
-                  ${(+qty) * (+selectedProduct.price) * ((100 - discount) / 100)}
+                <div class="col-2 d-flex align-items-center justify-content-center">
+                  ${getProductAmount(qty, selectedProduct.price, discount)}
                 </div> 
-                <div class="col-1 d-flex justify-content-center align-items-center">
+                <div class="col-1 d-flex align-items-center justify-content-center">
                   <button class="btn invoiceListItemClass" data-id="${listItemCount}">X</button>
                 </div> 
                 
               </div>
             </li>
         `)
+        totals = calculateInvoiceAmount(invoiceListItems)
+        updateAmtDiv(totals.qty, totals.amount, packingCharges);
+        // qtyCount += qty;
+        // totalAmtWithoutDis += +(qty * (+selectedProduct.price));
+        // totalAmt += (qty * selectedProduct.price * (100 - discount)) / 100;
+        // totalAmt = roundTo(totalAmt, 1);
+        //
+        // grandTotal = totalAmt + (+(packingCharges));
+        // grandTotal = roundTo(grandTotal, 1);
 
-        qtyCount += +(qty);
-        totalAmtWithoutDis += +((+qty) * (+selectedProduct.price));
-        // totalAmt += (qty * selectedProduct.price * (100 - discount) * (100 - splDiscount)) / 10000;
-        totalAmt += (qty * selectedProduct.price * (100 - discount)) / 100;
-        totalAmt = roundTo(totalAmt, 1);
-
-        grandTotal = totalAmt + (+(packingCharges));
-        grandTotal = roundTo(grandTotal, 1);
-        updateAmtDiv();
         $('#addInvoiceItemModal').modal('hide');
         $('#amountCalcList' + String(listItemCount)).click(function (e) {
-
           let invoiceItemId = +(e.target.getAttribute('data-id'));
-
-          let selectedProduct = invoiceListItems[invoiceItemId];
-          console.log(selectedProduct)
-          console.log(invoiceListItems)
-          let qty = selectedProduct.qty;
-          qtyCount -= +(qty);
           $('#amountCalcList' + String(invoiceItemId)).remove();
-          totalAmtWithoutDis -= +((+qty) * (+selectedProduct.price));
-          // totalAmt -= (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount)) * (100 - selectedPartyMaster.splDiscount)) / 10000;
-          totalAmt -= (((+qty) * (+selectedProduct.price)) * (100 - (+selectedPartyMaster.discount))) / 100;
-          totalAmt = roundTo(totalAmt, 1);
-          grandTotal = totalAmt + (+(packingCharges));
-          grandTotal = roundTo(grandTotal, 1);
-          updateAmtDiv();
           delete invoiceListItems[invoiceItemId];
-          calculateInvoiceAmount();
+          totals = calculateInvoiceAmount(invoiceListItems)
+          updateAmtDiv(totals.qty, totals.amount, packingCharges);
         });
         listItemCount++;
       });
 
-      function calculateInvoiceAmount() {
-        console.log(invoiceListItems);
 
-      }
-
-
-      $('#printInvoice').click(function () {
-        let mainContent = $('#mainContent')[0];
-        console.log(mainContent);
-        $(document.body).empty().append(mainContent);
-        ipcRenderer.send('printInvoice', {
-          id: slipNumber
-        })
-      });
       $('#submitInvoice').click(function () {
         let bilityDate = $bilityDate.val();
         let chalanDate = $chalanDate.val();
@@ -383,7 +293,7 @@ $(document).ready(function () {
         }
         ipcRenderer.send('submitInvoice', {
           id: slipNumber,
-          cases: String($cases.val()),
+          cases: $cases.val(),
           dateOfInvoice: $invoiceDate.val(),
           bilityNo: $bilityNumber.val(),
           bilityDate: bilityDate,
@@ -391,7 +301,7 @@ $(document).ready(function () {
           chalanDate: chalanDate,
           partymasterId: selectedPartyMaster.id,
           partyMasterBalance: selectedPartyMaster.balance,
-          grandTotal: grandTotal
+          grandTotal: totals.amount + packingCharges,
         });
 
         if (!bilityDate) {
@@ -408,26 +318,19 @@ $(document).ready(function () {
             $('#addInvoiceItemBtn').hide();
             $('#addPackingChargesBtn').hide();
             $('.invoiceListItemClass').hide();
-            console.log(data);
             $slipNumber.append(data.invoiceItem.id);
             slipNumber = data.invoiceItem.id;
-            let mainContent = $('#mainContent')[0];
 
-            $(document.body).empty().append(mainContent);
-            $(document.body).css('padding-top', '0px')
-
+            $(document.body).empty().append($mainContent[0]).css('padding-top', '0px')
+            $mainContent.css('padding', "0px");
             $('input, select').css('border', 'none');
             $('select').css('background', 'white').css('padding-left', "0");
-            $('#mainContent').css('padding', "0px");
             $('*').css('font-size', '12px');
-
-            //$('*').css('padding', "");
 
             ipcRenderer.send('submitInvoiceDetail', {
               invoiceId: slipNumber,
               listItems: Object.values(invoiceListItems)
             })
-
 
             ipcRenderer.send('printInvoice', {
               id: slipNumber
@@ -437,8 +340,8 @@ $(document).ready(function () {
                 location.reload();
               } else {
                 window.alert("Could not add invoice");
-                $('#resultRow').removeClass('text-success').addClass('text-danger');
-                $('#resultRow').text("Invoice Could Not Be Added");
+                $resultRow.removeClass('text-success').addClass('text-danger');
+                $resultRow.text("Invoice Could Not Be Added");
                 $mainContent.empty();
               }
             })
@@ -448,35 +351,46 @@ $(document).ready(function () {
             $resultRow.text("Invoice Could Not Be Added Because " + data.error);
           }
         });
+      });
+      $('#addInvoiceItemBtn').click(function () {
+        if (selectedPartyMaster === undefined) {
+          $resultRow.removeClass('text-success').addClass('text-danger');
+          $resultRow.text("Select Party");
+          return;
+        }
 
+        $resultRow.empty();
+        $productList.val('')
+        $qty.val('')
+        $('#addInvoiceItemModal').modal('show');
+      })
+      $('#addPackingChargesBtn').click(function () {
+        $('#addPackingChargesModal').modal('show');
+      });
+      $('#addPackingChargesSubmit').click(function () {
 
+        let packagingCharges = Number.parseInt($('#packingCharges').val());
+        if (Number.isNaN(packagingCharges) || packagingCharges < 0) {
+          return;
+        }
+        packingCharges = packagingCharges;
+        updateAmtDiv(totals.qty, totals.amount, packingCharges);
+        $('#addPackingChargesModal').modal('hide');
+      });
+      $('#printInvoice').click(function () {
+        let mainContent = $('#mainContent')[0];
+        console.log(mainContent);
+        $(document.body).empty().append(mainContent);
+        ipcRenderer.send('printInvoice', {
+          id: slipNumber
+        })
       });
 
-      function updateAmtDiv() {
-        $('#totalAmt').empty().append(`
-          <div class="row">
-            <div class="col-6"></div>
-            <div class="col-1 text-center">
-              <b>${qtyCount}</b>
-            </div>
-            <div class="col-3"></div>
-            <div class="col-2">${totalAmt}</div>
-              
-              Freight Charges:  ${packingCharges}
-            
-            </b>
-            </p>
-           
-            <h5 class="text-right">Grand Total:  ${grandTotal}</h5>
-          </div>
-        `)
-      }
+
     });
 
-    let $viewInvoicesButton = $('#viewInvoicesButton');
-
-    $viewInvoicesButton.click(function () {
-
+    $('#viewInvoicesButton').click(function () {
+      let $viewInvoicesButton = $('#viewInvoicesButton');
       console.log('Clicked time' + new Date().valueOf());
 
       $mainContent.empty();
@@ -666,7 +580,7 @@ $(document).ready(function () {
                         </div>
                         
                         <div class="col text-center">
-                          ${(+invoiceDetailItem.qty) * (+invoiceDetailItem.product.price) * ((100 - discount) / 100)}
+                            ${getProductAmount(invoiceDetailItem.qty, invoiceDetailItem.product.price, discount)}
                         </div>
                       </div>
                     </li>
@@ -728,7 +642,7 @@ $(document).ready(function () {
                 grandTotal = roundTo(grandTotal, 1);
 
                 packingCharges = +(invoiceItem.grandTotal) - +(grandTotal);
-                calculateInvoiceAmount(invoiceDetail);
+                // calculateInvoiceAmount(invoiceDetail);
                 updateAmtDiv();
                 $('#addInvoiceItemBtn').click(function () {
                   $('#addInvoiceItemModal').modal('show');
@@ -2922,8 +2836,47 @@ $(document).ready(function () {
     return Math.round(n * Math.pow(10, 2) / Math.pow(10, 2))
   }
 
-  function calculateInvoiceAmount(invoiceDetails) {
-    console.log(invoiceDetails);
+  function updateAmtDiv(totalQty, totalAmount, packagingCharges) {
+    console.log("Updating Amount");
+    console.log(totalAmount)
+    console.log(totalQty);
+    console.log(packagingCharges);
+    $('#totalAmt').empty().append(`
+      <div class="row mt-2">
+        <div class="col-6"></div>
+        <div class="col-1 text-center">
+          <b>${totalQty}</b>
+        </div>
+        <div class="col-2"></div>
+        <div class="col-2 text-center">${totalAmount}</div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-10"></div>
+        <div class="col-2 text-right pr-5">
+            <b>Freight:  ${packagingCharges}</b>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-10"></div>
+        <div class="col-2 text-right pr-5">
+            <b class="total-amt">Total:  ${totalAmount + packagingCharges}</b>
+        </div>
+      </div>
+    `)
+  }
+
+  function calculateInvoiceAmount(invoiceListItems) {
+    console.log("Calculating")
+    let totalQty = 0;
+    let totalAmount = 0;
+    for (let key in invoiceListItems) {
+      const item = invoiceListItems[key];
+      totalQty += item.qty;
+      const itemAmount = item.qty * item.price;
+      const amountAfterDiscount = Math.round((itemAmount * (100 - item.discount)) / 100);
+      totalAmount += amountAfterDiscount;
+    }
+    return {qty: totalQty, amount: totalAmount}
   }
 
   function getDate(date) {
@@ -2936,7 +2889,7 @@ $(document).ready(function () {
     return date;
   }
 
-  function showPrintView(invoiceItem) {
+  function showPrintView(invoiceItem) { // Done
     const isLocal = invoiceItem.partymaster.dataValues.isLocal;
 
     $header.empty().hide();
@@ -2944,7 +2897,6 @@ $(document).ready(function () {
     $mainContent.empty();
 
     $resultRow.empty();
-
 
     let str = `
       <div class="row">
@@ -2983,7 +2935,6 @@ $(document).ready(function () {
               </div>
             </div>
             `;
-
 
     if (!isLocal) {
       str += `
@@ -3137,8 +3088,8 @@ $(document).ready(function () {
           </div>
         </div>
 
-        <ul class="list-group mt-3" id="invoiceItemList">
-          <li class="list-group-item">
+        <ul class="row list-group mt-3" id="invoiceItemList">
+          <li class="col-12 list-group-item">
             <div class="row">
               <div class="col-1">
                 <b>S.No.</b>
@@ -3146,25 +3097,26 @@ $(document).ready(function () {
               <div class="col-5">
                 <b>Items</b>
               </div>
-              <div class="col-1">
+              <div class="col-1 text-center">
                 <b>Qty</b>
               </div>
-              <div class="col-1">
+              <div class="col-1 text-center">
                 <b>Per</b>
               </div>
-              <div class="col-1">
+              <div class="col-1 text-center">
                 <b>Rate</b>
               </div>
-              <div class="col-2">
+              <div class="col-2 text-center">
                 <b>Amt</b>
               </div>
-              <div class="col-1">
+              <div class="col-1 text-center">
                 <b>X</b>
               </div>
             </div>
           </li>
         </ul>
-        <div class="row" style="padding-right: 50px;">
+<!--        <div class="row" style="padding-right: 50px;">-->
+        <div class="row">
           <div class="col-12" id="totalAmt">
             
           </div>  
@@ -3247,6 +3199,10 @@ $(document).ready(function () {
     $('#allProductsUL').empty().append(str);
   }
 
+  function getProductAmount(qty, price, discount) {
+    return Math.round((qty * price * (100 - discount)) / 100)
+    // return (+qty) * (+price) * ((100 - discount) / 100)
+  }
 });
 
 
