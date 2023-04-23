@@ -76,3 +76,7 @@ button {
 .list-group-item {
     border: 1px solid black;
 }
+
+.items-list {
+    padding: 0 5px;
+}
