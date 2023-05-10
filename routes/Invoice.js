@@ -79,6 +79,7 @@ function submitInvoiceDetail(event, invoiceDetail) {
   invoiceDetail.listItems.forEach(invoiceItem => {
     models.InvoiceDetail.create({
       qty: invoiceItem.qty,
+      price: invoiceItem.price,
       unitType: invoiceItem.per,
       invoiceId: invoiceDetail.invoiceId,
       productId: invoiceItem.productId

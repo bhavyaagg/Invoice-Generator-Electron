@@ -65,8 +65,9 @@ ProductCategory.hasMany(PartyMasterProductCategoryDiscount);
 
 const Invoice = sequelize.define('invoice', {
   id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  cases: Sequelize.DataTypes.INTEGER,
+  cases: Sequelize.DataTypes.STRING,
   dateOfInvoice: Sequelize.DataTypes.DATEONLY,
+  marka: Sequelize.DataTypes.STRING,
   bilityNo: Sequelize.DataTypes.STRING,
   bilityDate: {type: Sequelize.DataTypes.DATEONLY, allowNull: true},
   chalanNo: Sequelize.DataTypes.STRING,
@@ -80,6 +81,7 @@ PartyMaster.hasMany(Invoice);
 const InvoiceDetail = sequelize.define('invoicedetail', {
   id: {type: Sequelize.DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
   qty: Sequelize.DataTypes.DECIMAL,
+  price: Sequelize.DataTypes.DECIMAL,
   unitType: Sequelize.DataTypes.STRING
 });
 
@@ -101,7 +103,6 @@ const Ledger = sequelize.define('ledger', {
 
 Ledger.belongsTo(PartyMaster);
 PartyMaster.hasMany(Ledger);
-
 sequelize.sync({force: false}).then(function () {
   console.log("Database Configured");
 });

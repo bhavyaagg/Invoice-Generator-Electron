@@ -123,6 +123,7 @@ $(document).ready(function () {
         let str = '';
         const productList = []
         const $productList = $('#productList');
+        console.log(productListData)
         productListData.products.forEach(product => {
           const name = `${product.productcategory.name} - ${product.name}`;
           nameToProductMap[name] = product;
@@ -139,7 +140,14 @@ $(document).ready(function () {
             const regex = new RegExp(regexString, "i");
             const matches = productList.filter((product) => regex.test(product))
             response(matches);
-          }, appendTo: "#addInvoiceItemModal"
+          },
+          appendTo: "#addInvoiceItemModal",
+          select: function (event, ui) {
+            console.log(event)
+            console.log(ui)
+            console.log(nameToProductMap[ui.item.value])
+            $('#price').val(nameToProductMap[ui.item.value].price)
+          }
         })
       });
 
@@ -204,8 +212,9 @@ $(document).ready(function () {
         }
 
         let qty = Number.parseInt($('#qty').val());
-        if (Number.isNaN(qty) || qty <= 0) {
-          $('#addItemInvoiceError').text("Please enter correct quantity");
+        let price = Number.parseInt($('#price').val());
+        if (Number.isNaN(qty) || Number.isNaN(price) || qty <= 0 || price <= 0) {
+          $('#addItemInvoiceError').text("Please enter correct quantity & correct rate");
         }
 
         let per = $('#per').val();
@@ -219,7 +228,7 @@ $(document).ready(function () {
           qty: qty,
           productId: selectedProduct.id,
           per: per,
-          price: selectedProduct.price,
+          price: price,
           discount: discount,
           splDiscount: splDiscount,
         };
@@ -239,10 +248,10 @@ $(document).ready(function () {
                   ${per}
                 </div>
                 <div class="col-1 d-flex align-items-center justify-content-center" id="productPrice">
-                  ${selectedProduct.price}
+                  ${invoiceListItems[listItemCount].price}
                 </div>
                 <div class="col-2 d-flex align-items-center justify-content-center">
-                  ${getProductAmount(qty, selectedProduct.price, discount)}
+                  ${getProductAmount(qty, invoiceListItems[listItemCount].price, discount)}
                 </div> 
                 <div class="col-1 d-flex align-items-center justify-content-center">
                   <button class="btn invoiceListItemClass" data-id="${listItemCount}">X</button>
@@ -284,12 +293,14 @@ $(document).ready(function () {
         if (!chalanDate) {
           chalanDate = getCurrentDate();
         }
+
         ipcRenderer.send('submitInvoice', {
           id: slipNumber,
-          cases: $cases.val(),
+          cases: $cases.val().trim(),
           dateOfInvoice: $invoiceDate.val(),
           bilityNo: $bilityNumber.val(),
           bilityDate: bilityDate,
+          marka: $marka.val().trim(),
           chalanNo: $chalanNumber.val(),
           chalanDate: chalanDate,
           partymasterId: selectedPartyMaster.id,
@@ -511,6 +522,8 @@ $(document).ready(function () {
           });
           ipcRenderer.once('getInvoiceDetailById', function (event, data) {
 
+            console.log(data)
+            console.log(invoiceItem)
             showPrintView(invoiceItem)
 
             let $invoiceItemList = $('#invoiceItemList');
@@ -535,14 +548,14 @@ $(document).ready(function () {
                   invoiceItemsMap[item.product.productcategory.dataValues.name].push(item);
                 })
 
-                for (let key in invoiceItemsMap) {
-                  invoiceItemsMap[key] = invoiceItemsMap[key].sort((item1, item2) => {
-                    const name1 = item1.product.productcategory.dataValues.name + " " + item1.product.name;
-                    const name2 = item2.product.productcategory.dataValues.name + " " + item2.product.name;
-                    return name1.localeCompare(name2);
-                  })
-                }
-
+                // for (let key in invoiceItemsMap) {
+                //   invoiceItemsMap[key] = invoiceItemsMap[key].sort((item1, item2) => {
+                //     const name1 = item1.product.productcategory.dataValues.name + " " + item1.product.name;
+                //     const name2 = item2.product.productcategory.dataValues.name + " " + item2.product.name;
+                //     return name1.localeCompare(name2);
+                //   })
+                // }
+                console.log(data.invoiceItems)
                 const productCategoryKeys = Object.keys(invoiceItemsMap).sort((key1, key2) => key1.localeCompare(key2));
                 let totalForAllCategories = 0;
                 for (let key of productCategoryKeys) {
@@ -574,10 +587,10 @@ $(document).ready(function () {
                             ${invoiceDetailItem.unitType}  
                           </div>
                           <div class="col-1 text-right" id="productPrice">
-                            ${invoiceDetailItem.product.price}
+                            ${invoiceDetailItem.price}
                           </div>
                           <div class="col-1 text-right">
-                              ${getProductAmount(invoiceDetailItem.qty, invoiceDetailItem.product.price, 0)}
+                              ${getProductAmount(invoiceDetailItem.qty, invoiceDetailItem.price, 0)}
                           </div>
                         </div>
                       </li>
@@ -934,7 +947,6 @@ $(document).ready(function () {
                 ipcRenderer.once('addedPartyMaster', function (event, data) {
                   if (data.success) {
                     pg.each((row, item) => {
-                      console.log($(item));
 
                       let productCategoryId = $(item)[0].getAttribute('productCategoryId');
                       let discount = $($(item)[0].children[1].children[0].children[0]).val();
@@ -2612,7 +2624,7 @@ $(document).ready(function () {
             </div> 
             <div class="row">
               <div class="col-12 pr-0">
-                <span>Marka: ${invoiceItem.partymaster.dataValues.marka}</span>
+                <span>Marka: ${invoiceItem.marka || invoiceItem.partymaster.dataValues.marka}</span>
               </div>
             </div> 
             <div class="row">
@@ -2735,7 +2747,7 @@ $(document).ready(function () {
             <div class="form-group row no-gutters">
               <label for="cases" class="col-5 col-form-label">Cases:</label>
               <div class="col-7">
-                <input class="form-control pr-0" type="number" value="0" id="casesInp">
+                <input class="form-control pr-0" type="text" value="0" id="casesInp">
               </div>
             </div>
           </div>
@@ -2905,7 +2917,13 @@ $(document).ready(function () {
   }
 
   function getProductAmount(qty, price, discount) {
-    return Math.round((qty * price * (100 - discount)) / 100)
+    let rate = Number.parseInt(price);
+    if (Number.isNaN(rate) || rate <= 0) {
+      $('#addItemInvoiceError').text("Please enter correct rate");
+      return;
+    }
+    console.log((qty * rate * (100 - discount)) / 100)
+    return Math.round((qty * rate * (100 - discount)) / 100)
     // return (+qty) * (+price) * ((100 - discount) / 100)
   }
 
@@ -2915,7 +2933,7 @@ $(document).ready(function () {
     const splDiscount = discountData.discountObj[categoryId].splDiscount;
     let totalWithoutDiscount = 0;
     invoiceItems.forEach(invoiceDetailItem => {
-      totalWithoutDiscount += invoiceDetailItem.qty * invoiceDetailItem.product.price;
+      totalWithoutDiscount += invoiceDetailItem.qty * invoiceDetailItem.price;
     })
     if (withDiscount) {
       return Math.round((totalWithoutDiscount * (100 - discount)) / 100);

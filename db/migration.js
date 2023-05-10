@@ -2,6 +2,7 @@ const models = require('./models');
 
 const ProductCategories = [
   {name: "P"},
+  {name: "GUARD"},
   {name: "GRILL"},
   {name: "SS"},
   {name: "CP"},
@@ -15,8 +16,10 @@ const ProductCategories = [
 
 const productCategoryToProductMap = {
   "P": [
-    ...require("../productData/Guard.json"),
     ...require("../productData/RoofRail.json"),
+  ],
+  "GUARD": [
+    ...require("../productData/Guard.json"),
   ],
   "GRILL": [
     ...require("../productData/Grill.json"),
